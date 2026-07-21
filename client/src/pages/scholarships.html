@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GUYGD – Scholarships</title>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/responsive.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="nav-logo">GUYGD</a>
+      <button class="hamburger" aria-label="Menu">&#9776;</button>
+      <div class="nav-links" id="nav-links"></div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>Scholarships</h1>
+    <p>Investing in the education of Gbeh-lay's brightest youths.</p>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Available Scholarships</h2>
+      <div class="cards-grid" id="scholarships-list">
+        <p>Loading scholarships...</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-light">
+    <div class="container">
+      <h2 class="section-title">Apply for a Scholarship</h2>
+      <div class="form-container">
+        <div class="alert" id="form-alert"></div>
+        <form id="apply-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="full_name" placeholder="Your full name" required/>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="email" placeholder="your@email.com" required/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" id="phone" placeholder="+231 xxx xxx xxx"/>
+            </div>
+            <div class="form-group">
+              <label>School / Institution</label>
+              <input type="text" id="school" placeholder="Name of your school" required/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Level of Study</label>
+              <select id="level" required>
+                <option value="">Select level</option>
+                <option value="secondary">Secondary School</option>
+                <option value="vocational">Vocational / Technical</option>
+                <option value="university">University / College</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>GPA / Grade Average</label>
+              <input type="text" id="gpa" placeholder="e.g. 3.5 or B+" required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Why do you deserve this scholarship?</label>
+            <textarea id="essay" rows="5" placeholder="Tell us about yourself, your goals, and your financial situation..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Supporting Document (PDF/Image)</label>
+            <input type="file" id="document" accept=".pdf,.jpg,.jpeg,.png"/>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Submit Application</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer"></footer>
+  <script src="/src/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Load scholarships
+      try {
+        const list = await apiFetch('/scholarships');
+        const c = document.getElementById('scholarships-list');
+        if (!list.length) { c.innerHTML = '<p>No scholarships available at this time. Check back soon.</p>'; return; }
+        c.innerHTML = list.map(s => `
+          <div class="card">
+            <div class="card-icon">🎓</div>
+            <h3>${s.title}</h3>
+            <p class="card-meta">Deadline: ${s.deadline ? new Date(s.deadline).toLocaleDateString() : 'Open'}</p>
+            <p>${s.description ? s.description.substring(0, 120) + '...' : ''}</p>
+            <span class="badge">${s.amount ? '$' + s.amount : 'Amount TBD'}</span>
+          </div>`).join('');
+      } catch { document.getElementById('scholarships-list').innerHTML = '<p>Could not load scholarships.</p>'; }
+
+      // Handle application form
+      document.getElementById('apply-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = getToken();
+        if (!token) { showAlert('form-alert', 'Please log in to apply for a scholarship.', 'error'); return; }
+        const formData = new FormData();
+        formData.append('full_name', document.getElementById('full_name').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('phone', document.getElementById('phone').value);
+        formData.append('school', document.getElementById('school').value);
+        formData.append('level', document.getElementById('level').value);
+        formData.append('gpa', document.getElementById('gpa').value);
+        formData.append('essay', document.getElementById('essay').value);
+        const doc = document.getElementById('document').files[0];
+        if (doc) formData.append('document', doc);
+        try {
+          await fetch(`${API}/scholarships/apply`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          });
+          showAlert('form-alert', 'Application submitted successfully! We will be in touch.', 'success');
+          document.getElementById('apply-form').reset();
+        } catch (err) { showAlert('form-alert', err.message, 'error'); }
+      });
+    });
+  </script>
+</body>
+</html>

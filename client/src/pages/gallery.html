@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GUYGD – Gallery</title>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/responsive.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="nav-logo">GUYGD</a>
+      <button class="hamburger" aria-label="Menu">&#9776;</button>
+      <div class="nav-links" id="nav-links"></div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>Gallery</h1>
+    <p>Moments captured from our events, programs, and community activities.</p>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px;" id="category-tabs"></div>
+      <div class="gallery-grid" id="gallery-grid"><p>Loading gallery...</p></div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:3000;display:none;align-items:center;justify-content:center;flex-direction:column;">
+    <button onclick="closeLightbox()" style="position:absolute;top:20px;right:25px;background:none;border:none;color:#fff;font-size:2rem;cursor:pointer;">✕</button>
+    <img id="lightbox-img" src="" alt="" style="max-width:90%;max-height:80vh;border-radius:8px;"/>
+    <p id="lightbox-caption" style="color:#fff;margin-top:15px;font-size:0.95rem;"></p>
+  </div>
+
+  <footer id="footer"></footer>
+  <script src="/src/js/main.js"></script>
+  <script>
+    let allImages = [];
+
+    function openLightbox(src, caption) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-caption').textContent = caption || '';
+      lb.style.display = 'flex';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+    }
+
+    function renderGallery(list) {
+      const g = document.getElementById('gallery-grid');
+      if (!list.length) { g.innerHTML = '<p>No images found.</p>'; return; }
+      g.innerHTML = list.map(img => `
+        <div class="gallery-item" onclick="openLightbox('${img.url}', '${img.caption || ''}')">
+          <img src="${img.url}" alt="${img.caption || 'Gallery image'}" loading="lazy"/>
+          <div class="gallery-overlay">${img.caption || ''}</div>
+        </div>`).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        allImages = await apiFetch('/gallery');
+        renderGallery(allImages);
+
+        // Build category tabs
+        const cats = ['All', ...new Set(allImages.map(i => i.category).filter(Boolean))];
+        document.getElementById('category-tabs').innerHTML = cats.map(c => `
+          <button class="btn ${c === 'All' ? 'btn-primary' : 'btn-green'} btn-sm" onclick="filterGallery('${c}', this)">${c}</button>`).join('');
+      } catch { document.getElementById('gallery-grid').innerHTML = '<p>Could not load gallery.</p>'; }
+    });
+
+    function filterGallery(cat, btn) {
+      document.querySelectorAll('#category-tabs .btn').forEach(b => b.className = 'btn btn-green btn-sm');
+      btn.className = 'btn btn-primary btn-sm';
+      renderGallery(cat === 'All' ? allImages : allImages.filter(i => i.category === cat));
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  </script>
+</body>
+</html>

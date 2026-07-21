@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GUYGD – Events</title>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/responsive.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="nav-logo">GUYGD</a>
+      <button class="hamburger" aria-label="Menu">&#9776;</button>
+      <div class="nav-links" id="nav-links"></div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>Events</h1>
+    <p>Join us at our upcoming events and relive past highlights.</p>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div style="display:flex;gap:10px;margin-bottom:30px;">
+        <button class="btn btn-primary" id="btn-upcoming" onclick="filterEvents('upcoming')">Upcoming</button>
+        <button class="btn btn-green" id="btn-past" onclick="filterEvents('past')">Past Events</button>
+      </div>
+      <div class="cards-grid" id="events-list"><p>Loading events...</p></div>
+    </div>
+  </section>
+
+  <footer id="footer"></footer>
+  <script src="/src/js/main.js"></script>
+  <script>
+    let allEvents = [];
+
+    function filterEvents(type) {
+      const now = new Date();
+      const filtered = type === 'upcoming'
+        ? allEvents.filter(e => new Date(e.date) >= now)
+        : allEvents.filter(e => new Date(e.date) < now);
+      renderEvents(filtered, type);
+      document.getElementById('btn-upcoming').className = type === 'upcoming' ? 'btn btn-primary' : 'btn btn-green';
+      document.getElementById('btn-past').className = type === 'past' ? 'btn btn-primary' : 'btn btn-green';
+    }
+
+    function renderEvents(list, type) {
+      const c = document.getElementById('events-list');
+      if (!list.length) { c.innerHTML = `<p>No ${type} events found.</p>`; return; }
+      c.innerHTML = list.map(e => `
+        <div class="card">
+          ${e.image ? `<img src="${e.image}" alt="${e.title}" style="width:calc(100% + 50px);height:180px;object-fit:cover;border-radius:10px 10px 0 0;margin:-25px -25px 20px;"/>` : '<div class="card-icon">📅</div>'}
+          <h3>${e.title}</h3>
+          <p class="card-meta">📅 ${new Date(e.date).toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
+          ${e.location ? `<p class="card-meta">📍 ${e.location}</p>` : ''}
+          <p>${e.description ? e.description.substring(0, 100) + '...' : ''}</p>
+          ${new Date(e.date) >= new Date() ? `<span class="badge" style="background:rgba(212,160,23,0.15);color:#856404;">Upcoming</span>` : `<span class="badge">Past</span>`}
+        </div>`).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        allEvents = await apiFetch('/events');
+        filterEvents('upcoming');
+      } catch { document.getElementById('events-list').innerHTML = '<p>Could not load events.</p>'; }
+    });
+  </script>
+</body>
+</html>

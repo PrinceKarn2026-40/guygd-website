@@ -1,0 +1,30 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+
+const app = express();
+
+app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, '../client/public/assets/images/uploads')));
+
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/members', require('./routes/members'));
+app.use('/api/scholarships', require('./routes/scholarships'));
+app.use('/api/events', require('./routes/events'));
+app.use('/api/news', require('./routes/news'));
+app.use('/api/donations', require('./routes/donations'));
+app.use('/api/contact', require('./routes/contact'));
+app.use('/api/gallery', require('./routes/gallery'));
+
+app.use(express.static(path.join(__dirname, '../client/src/pages')));
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal server error' });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`GUYGD server running on port ${PORT}`));
