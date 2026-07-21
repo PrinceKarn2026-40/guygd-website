@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GUYGD – Member Dashboard</title>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/dashboard.css"/>
+  <link rel="stylesheet" href="/src/css/responsive.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="nav-logo">GUYGD</a>
+      <button class="hamburger" aria-label="Menu">&#9776;</button>
+      <div class="nav-links" id="nav-links"></div>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-user">
+        <div class="avatar">👤</div>
+        <h4 id="sidebar-name">Member</h4>
+        <span id="sidebar-role">member</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="active" onclick="showSection('profile')"><span class="icon">👤</span> My Profile</a>
+        <a href="#" onclick="showSection('scholarships')"><span class="icon">🎓</span> My Scholarships</a>
+        <a href="#" onclick="showSection('apply')"><span class="icon">📝</span> Apply for Scholarship</a>
+        <a href="#" onclick="showSection('events')"><span class="icon">📅</span> Upcoming Events</a>
+        <a href="#" onclick="showSection('news')"><span class="icon">📰</span> Latest News</a>
+        <a href="#" onclick="logout()" style="margin-top:20px;color:#ff6b6b;"><span class="icon">🚪</span> Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+
+      <!-- Profile -->
+      <div id="section-profile" class="tab-section active">
+        <div class="dashboard-header"><h2>My Profile</h2></div>
+        <div class="panel">
+          <div class="panel-header"><h3>Account Information</h3></div>
+          <div id="profile-info" style="padding:10px;">Loading...</div>
+          <div style="margin-top:20px;">
+            <h4 style="margin-bottom:15px;">Update Password</h4>
+            <div class="alert" id="password-alert"></div>
+            <form id="password-form" style="max-width:400px;">
+              <div class="form-group"><label>New Password</label><input type="password" id="new-password" placeholder="New password" required/></div>
+              <div class="form-group"><label>Confirm Password</label><input type="password" id="confirm-password" placeholder="Confirm password" required/></div>
+              <button type="submit" class="btn btn-primary">Update Password</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Scholarships -->
+      <div id="section-scholarships" class="tab-section">
+        <div class="dashboard-header"><h2>My Scholarship Applications</h2></div>
+        <div class="panel">
+          <div class="table-container"><table>
+            <thead><tr><th>School</th><th>Level</th><th>Status</th><th>Applied</th></tr></thead>
+            <tbody id="my-scholarships-body"><tr><td colspan="4">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Apply -->
+      <div id="section-apply" class="tab-section">
+        <div class="dashboard-header"><h2>Apply for Scholarship</h2></div>
+        <div class="form-container">
+          <div class="alert" id="apply-alert"></div>
+          <form id="apply-form">
+            <div class="form-row">
+              <div class="form-group"><label>Full Name</label><input type="text" id="ap-name" required/></div>
+              <div class="form-group"><label>School / Institution</label><input type="text" id="ap-school" required/></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Level of Study</label>
+                <select id="ap-level" required>
+                  <option value="">Select level</option>
+                  <option value="High School">High School</option>
+                  <option value="Vocational">Vocational</option>
+                  <option value="Undergraduate">Undergraduate</option>
+                  <option value="Postgraduate">Postgraduate</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Supporting Document</label><input type="file" id="ap-doc" accept=".pdf,.jpg,.jpeg,.png"/></div>
+            </div>
+            <div class="form-group"><label>Essay — Why do you deserve this scholarship?</label><textarea id="ap-essay" rows="5" required></textarea></div>
+            <button type="submit" class="btn btn-primary">Submit Application</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Events -->
+      <div id="section-events" class="tab-section">
+        <div class="dashboard-header"><h2>Upcoming Events</h2></div>
+        <div class="cards-grid" id="member-events"><p>Loading...</p></div>
+      </div>
+
+      <!-- News -->
+      <div id="section-news" class="tab-section">
+        <div class="dashboard-header"><h2>Latest News</h2></div>
+        <div class="cards-grid" id="member-news"><p>Loading...</p></div>
+      </div>
+
+    </main>
+  </div>
+
+  <footer id="footer"></footer>
+  <script src="/src/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = getUser();
+      if (!user) { window.location.href = '/membership.html?login'; return; }
+      document.getElementById('sidebar-name').textContent = user.full_name || 'Member';
+      document.getElementById('sidebar-role').textContent = user.role;
+      document.getElementById('profile-info').innerHTML = `
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><td style="padding:10px;font-weight:600;width:150px;">Name</td><td>${user.full_name}</td></tr>
+          <tr><td style="padding:10px;font-weight:600;">Email</td><td>${user.email}</td></tr>
+          <tr><td style="padding:10px;font-weight:600;">Role</td><td><span class="badge">${user.role}</span></td></tr>
+          <tr><td style="padding:10px;font-weight:600;">Status</td><td><span class="status-${user.status}">${user.status}</span></td></tr>
+        </table>`;
+      loadMemberEvents();
+    });
+
+    function showSection(name) {
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('section-' + name).classList.add('active');
+      document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+      event.target.closest('a').classList.add('active');
+      if (name === 'scholarships') loadMyScholarships();
+      if (name === 'events') loadMemberEvents();
+      if (name === 'news') loadMemberNews();
+    }
+
+    function logout() {
+      localStorage.removeItem('guygd_token');
+      localStorage.removeItem('guygd_user');
+      window.location.href = '/index.html';
+    }
+
+    async function loadMyScholarships() {
+      try {
+        const list = await apiFetch('/scholarships/my');
+        document.getElementById('my-scholarships-body').innerHTML = list.length
+          ? list.map(s => `<tr><td>${s.school||'-'}</td><td>${s.level||'-'}</td><td><span class="status-${s.status}">${s.status}</span></td><td>${new Date(s.applied_at).toLocaleDateString()}</td></tr>`).join('')
+          : '<tr><td colspan="4">No applications yet.</td></tr>';
+      } catch { document.getElementById('my-scholarships-body').innerHTML = '<tr><td colspan="4">Could not load.</td></tr>'; }
+    }
+
+    document.getElementById('apply-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('applicant_name', document.getElementById('ap-name').value);
+      formData.append('school', document.getElementById('ap-school').value);
+      formData.append('level', document.getElementById('ap-level').value);
+      formData.append('essay', document.getElementById('ap-essay').value);
+      const doc = document.getElementById('ap-doc').files[0];
+      if (doc) formData.append('document', doc);
+      try {
+        await fetch(`${API}/scholarships/apply`, { method: 'POST', headers: { Authorization: `Bearer ${getToken()}` }, body: formData });
+        showAlert('apply-alert', 'Application submitted successfully!', 'success');
+        document.getElementById('apply-form').reset();
+      } catch(err) { showAlert('apply-alert', 'Submission failed.', 'error'); }
+    });
+
+    async function loadMemberEvents() {
+      try {
+        const list = await apiFetch('/events');
+        const upcoming = list.filter(e => new Date(e.event_date) >= new Date());
+        const c = document.getElementById('member-events');
+        c.innerHTML = upcoming.length ? upcoming.map(e => `
+          <div class="card">
+            <div class="card-icon">📅</div>
+            <h3>${e.title}</h3>
+            <p class="card-meta">📅 ${new Date(e.event_date).toLocaleDateString()}</p>
+            ${e.location ? `<p class="card-meta">📍 ${e.location}</p>` : ''}
+            <p>${e.description ? e.description.substring(0,100)+'...' : ''}</p>
+          </div>`).join('') : '<p>No upcoming events.</p>';
+      } catch { document.getElementById('member-events').innerHTML = '<p>Could not load events.</p>'; }
+    }
+
+    async function loadMemberNews() {
+      try {
+        const list = await apiFetch('/news');
+        const c = document.getElementById('member-news');
+        c.innerHTML = list.length ? list.slice(0,6).map(n => `
+          <div class="card">
+            <div class="card-icon">📰</div>
+            <h3>${n.title}</h3>
+            <p class="card-meta">${new Date(n.created_at).toLocaleDateString()}</p>
+            <p>${(n.summary || n.content.substring(0,100))}...</p>
+          </div>`).join('') : '<p>No news yet.</p>';
+      } catch { document.getElementById('member-news').innerHTML = '<p>Could not load news.</p>'; }
+    }
+
+    document.getElementById('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const np = document.getElementById('new-password').value;
+      const cp = document.getElementById('confirm-password').value;
+      if (np !== cp) { showAlert('password-alert', 'Passwords do not match.', 'error'); return; }
+      try {
+        await apiFetch('/members/password', { method: 'PUT', body: JSON.stringify({ password: np }) });
+        showAlert('password-alert', 'Password updated successfully!', 'success');
+        document.getElementById('password-form').reset();
+      } catch(err) { showAlert('password-alert', err.message, 'error'); }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GUYGD – Admin Dashboard</title>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/dashboard.css"/>
+  <link rel="stylesheet" href="/src/css/responsive.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="nav-logo">GUYGD</a>
+      <button class="hamburger" aria-label="Menu">&#9776;</button>
+      <div class="nav-links" id="nav-links"></div>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-user">
+        <div class="avatar">👤</div>
+        <h4 id="sidebar-name">Admin</h4>
+        <span id="sidebar-role">admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="active" onclick="showSection('overview')"><span class="icon">📊</span> Overview</a>
+        <a href="#" onclick="showSection('members')"><span class="icon">👥</span> Members</a>
+        <a href="#" onclick="showSection('scholarships')"><span class="icon">🎓</span> Scholarships</a>
+        <a href="#" onclick="showSection('events')"><span class="icon">📅</span> Events</a>
+        <a href="#" onclick="showSection('news')"><span class="icon">📰</span> News</a>
+        <a href="#" onclick="showSection('gallery')"><span class="icon">🖼️</span> Gallery</a>
+        <a href="#" onclick="showSection('donations')"><span class="icon">💰</span> Donations</a>
+        <a href="#" onclick="showSection('messages')"><span class="icon">✉️</span> Messages</a>
+        <a href="#" onclick="logout()" style="margin-top:20px;color:#ff6b6b;"><span class="icon">🚪</span> Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+
+      <!-- Overview -->
+      <div id="section-overview" class="tab-section active">
+        <div class="dashboard-header">
+          <h2>Dashboard Overview</h2>
+        </div>
+        <div class="stats-row" id="overview-stats">
+          <div class="mini-stat"><div class="icon">👥</div><div><h3 id="stat-members">-</h3><p>Total Members</p></div></div>
+          <div class="mini-stat"><div class="icon">🎓</div><div><h3 id="stat-scholarships">-</h3><p>Scholarship Apps</p></div></div>
+          <div class="mini-stat"><div class="icon">📅</div><div><h3 id="stat-events">-</h3><p>Events</p></div></div>
+          <div class="mini-stat"><div class="icon">💰</div><div><h3 id="stat-donations">-</h3><p>Donations</p></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h3>Recent Members</h3></div>
+          <div class="table-container"><table id="recent-members-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Joined</th></tr></thead>
+            <tbody id="recent-members-body"><tr><td colspan="4">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Members -->
+      <div id="section-members" class="tab-section">
+        <div class="dashboard-header">
+          <h2>Members</h2>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h3>All Members</h3></div>
+          <div class="table-container"><table>
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="members-body"><tr><td colspan="6">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Scholarships -->
+      <div id="section-scholarships" class="tab-section">
+        <div class="dashboard-header">
+          <h2>Scholarship Applications</h2>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h3>All Applications</h3></div>
+          <div class="table-container"><table>
+            <thead><tr><th>Applicant</th><th>School</th><th>Level</th><th>Status</th><th>Applied</th><th>Actions</th></tr></thead>
+            <tbody id="scholarships-body"><tr><td colspan="6">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Events -->
+      <div id="section-events" class="tab-section">
+        <div class="dashboard-header">
+          <h2>Events</h2>
+          <button class="btn btn-primary btn-sm" onclick="showEventForm()">+ Add Event</button>
+        </div>
+        <div class="panel" id="event-form-panel" style="display:none;margin-bottom:20px;">
+          <div class="panel-header"><h3>Add New Event</h3></div>
+          <div class="alert" id="event-alert"></div>
+          <form id="event-form" style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+            <div class="form-group"><label>Title</label><input type="text" id="ev-title" required/></div>
+            <div class="form-group"><label>Date</label><input type="datetime-local" id="ev-date" required/></div>
+            <div class="form-group"><label>Location</label><input type="text" id="ev-location"/></div>
+            <div class="form-group"><label>Category</label>
+              <select id="ev-category">
+                <option value="General">General</option>
+                <option value="Education">Education</option>
+                <option value="Health">Health</option>
+                <option value="Governance">Governance</option>
+                <option value="Culture">Culture</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1;"><label>Description</label><textarea id="ev-desc" rows="3"></textarea></div>
+            <div style="grid-column:1/-1;"><button type="submit" class="btn btn-primary">Save Event</button> <button type="button" class="btn btn-green" onclick="document.getElementById('event-form-panel').style.display='none'">Cancel</button></div>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h3>All Events</h3></div>
+          <div class="table-container"><table>
+            <thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Category</th><th>Actions</th></tr></thead>
+            <tbody id="events-body"><tr><td colspan="5">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- News -->
+      <div id="section-news" class="tab-section">
+        <div class="dashboard-header">
+          <h2>News</h2>
+          <button class="btn btn-primary btn-sm" onclick="showNewsForm()">+ Add News</button>
+        </div>
+        <div class="panel" id="news-form-panel" style="display:none;margin-bottom:20px;">
+          <div class="panel-header"><h3>Add News Article</h3></div>
+          <div class="alert" id="news-alert"></div>
+          <form id="news-form">
+            <div class="form-row">
+              <div class="form-group"><label>Title</label><input type="text" id="news-title" required/></div>
+              <div class="form-group"><label>Category</label><input type="text" id="news-category" placeholder="e.g. Announcement"/></div>
+            </div>
+            <div class="form-group"><label>Summary</label><input type="text" id="news-summary" placeholder="Short summary"/></div>
+            <div class="form-group"><label>Content</label><textarea id="news-content" rows="5" required></textarea></div>
+            <div class="form-group"><label>Image URL (optional)</label><input type="text" id="news-image" placeholder="https://..."/></div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <button type="submit" class="btn btn-primary">Publish</button>
+              <button type="button" class="btn btn-green" onclick="document.getElementById('news-form-panel').style.display='none'">Cancel</button>
+            </div>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h3>All Articles</h3></div>
+          <div class="table-container"><table>
+            <thead><tr><th>Title</th><th>Category</th><th>Published</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="news-body"><tr><td colspan="5">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Gallery -->
+      <div id="section-gallery" class="tab-section">
+        <div class="dashboard-header">
+          <h2>Gallery</h2>
+          <button class="btn btn-primary btn-sm" onclick="document.getElementById('gallery-form-panel').style.display='block'">+ Add Image</button>
+        </div>
+        <div class="panel" id="gallery-form-panel" style="display:none;margin-bottom:20px;">
+          <div class="panel-header"><h3>Upload Image</h3></div>
+          <div class="alert" id="gallery-alert"></div>
+          <form id="gallery-form" enctype="multipart/form-data">
+            <div class="form-row">
+              <div class="form-group"><label>Title</label><input type="text" id="gal-title" required/></div>
+              <div class="form-group"><label>Category</label><input type="text" id="gal-category" placeholder="e.g. Events"/></div>
+            </div>
+            <div class="form-group"><label>Caption</label><input type="text" id="gal-caption"/></div>
+            <div class="form-group"><label>Image File</label><input type="file" id="gal-file" accept="image/*" required/></div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+            <button type="button" class="btn btn-green" onclick="document.getElementById('gallery-form-panel').style.display='none'">Cancel</button>
+          </form>
+        </div>
+        <div class="gallery-grid" id="admin-gallery-grid"><p>Loading...</p></div>
+      </div>
+
+      <!-- Donations -->
+      <div id="section-donations" class="tab-section">
+        <div class="dashboard-header"><h2>Donations</h2></div>
+        <div class="panel">
+          <div class="panel-header"><h3>All Donations</h3></div>
+          <div class="table-container"><table>
+            <thead><tr><th>Donor</th><th>Email</th><th>Amount</th><th>Purpose</th><th>Reference</th><th>Date</th></tr></thead>
+            <tbody id="donations-body"><tr><td colspan="6">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div id="section-messages" class="tab-section">
+        <div class="dashboard-header"><h2>Contact Messages</h2></div>
+        <div class="panel">
+          <div class="panel-header"><h3>All Messages</h3></div>
+          <div class="table-container"><table>
+            <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th></tr></thead>
+            <tbody id="messages-body"><tr><td colspan="5">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <footer id="footer"></footer>
+  <script src="/src/js/main.js"></script>
+  <script>
+    // Auth guard
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = getUser();
+      if (!user || (user.role !== 'admin' && user.role !== 'executive')) {
+        window.location.href = '/membership.html?login';
+        return;
+      }
+      document.getElementById('sidebar-name').textContent = user.full_name || 'Admin';
+      document.getElementById('sidebar-role').textContent = user.role;
+      loadOverview();
+    });
+
+    function showSection(name) {
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('section-' + name).classList.add('active');
+      document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+      event.target.closest('a').classList.add('active');
+      const loaders = { members: loadMembers, scholarships: loadScholarships, events: loadEvents, news: loadNews, gallery: loadGallery, donations: loadDonations, messages: loadMessages };
+      if (loaders[name]) loaders[name]();
+    }
+
+    function logout() {
+      localStorage.removeItem('guygd_token');
+      localStorage.removeItem('guygd_user');
+      window.location.href = '/index.html';
+    }
+
+    async function loadOverview() {
+      try {
+        const [members, scholarships, events, donations] = await Promise.all([
+          apiFetch('/members'), apiFetch('/scholarships'), apiFetch('/events'), apiFetch('/donations')
+        ]);
+        document.getElementById('stat-members').textContent = members.length;
+        document.getElementById('stat-scholarships').textContent = scholarships.length;
+        document.getElementById('stat-events').textContent = events.length;
+        document.getElementById('stat-donations').textContent = donations.length;
+        document.getElementById('recent-members-body').innerHTML = members.slice(0, 5).map(m => `
+          <tr><td>${m.full_name}</td><td>${m.email}</td><td><span class="status-${m.status}">${m.status}</span></td><td>${new Date(m.joined_at).toLocaleDateString()}</td></tr>`).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    async function loadMembers() {
+      try {
+        const members = await apiFetch('/members');
+        document.getElementById('members-body').innerHTML = members.map(m => `
+          <tr>
+            <td>${m.full_name}</td><td>${m.email}</td><td>${m.phone || '-'}</td>
+            <td>${m.role}</td><td><span class="status-${m.status}">${m.status}</span></td>
+            <td>
+              <button class="btn btn-sm btn-green" onclick="updateMember(${m.id}, 'active')">Activate</button>
+              <button class="btn btn-sm btn-danger" onclick="updateMember(${m.id}, 'suspended')">Suspend</button>
+            </td>
+          </tr>`).join('');
+      } catch(e) { document.getElementById('members-body').innerHTML = '<tr><td colspan="6">Error loading members.</td></tr>'; }
+    }
+
+    async function updateMember(id, status) {
+      try {
+        await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+        loadMembers();
+      } catch(e) { alert('Failed to update member.'); }
+    }
+
+    async function loadScholarships() {
+      try {
+        const list = await apiFetch('/scholarships');
+        document.getElementById('scholarships-body').innerHTML = list.map(s => `
+          <tr>
+            <td>${s.applicant_name}</td><td>${s.school || '-'}</td><td>${s.level || '-'}</td>
+            <td><span class="status-${s.status}">${s.status}</span></td>
+            <td>${new Date(s.applied_at).toLocaleDateString()}</td>
+            <td>
+              <button class="btn btn-sm btn-green" onclick="updateScholarship(${s.id}, 'approved')">Approve</button>
+              <button class="btn btn-sm btn-danger" onclick="updateScholarship(${s.id}, 'rejected')">Reject</button>
+            </td>
+          </tr>`).join('');
+      } catch(e) { document.getElementById('scholarships-body').innerHTML = '<tr><td colspan="6">Error loading.</td></tr>'; }
+    }
+
+    async function updateScholarship(id, status) {
+      try {
+        await apiFetch(`/scholarships/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+        loadScholarships();
+      } catch(e) { alert('Failed to update.'); }
+    }
+
+    async function loadEvents() {
+      try {
+        const list = await apiFetch('/events');
+        document.getElementById('events-body').innerHTML = list.map(e => `
+          <tr>
+            <td>${e.title}</td><td>${new Date(e.event_date).toLocaleDateString()}</td>
+            <td>${e.location || '-'}</td><td>${e.category || '-'}</td>
+            <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">Delete</button></td>
+          </tr>`).join('');
+      } catch(e) { document.getElementById('events-body').innerHTML = '<tr><td colspan="5">Error loading.</td></tr>'; }
+    }
+
+    function showEventForm() { document.getElementById('event-form-panel').style.display = 'block'; }
+
+    document.getElementById('event-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await apiFetch('/events', { method: 'POST', body: JSON.stringify({
+          title: document.getElementById('ev-title').value,
+          event_date: document.getElementById('ev-date').value,
+          location: document.getElementById('ev-location').value,
+          category: document.getElementById('ev-category').value,
+          description: document.getElementById('ev-desc').value,
+        })});
+        showAlert('event-alert', 'Event created!', 'success');
+        document.getElementById('event-form').reset();
+        loadEvents();
+      } catch(err) { showAlert('event-alert', err.message, 'error'); }
+    });
+
+    async function deleteEvent(id) {
+      if (!confirm('Delete this event?')) return;
+      try { await apiFetch(`/events/${id}`, { method: 'DELETE' }); loadEvents(); }
+      catch(e) { alert('Failed to delete.'); }
+    }
+
+    async function loadNews() {
+      try {
+        const list = await apiFetch('/news');
+        document.getElementById('news-body').innerHTML = list.map(n => `
+          <tr>
+            <td>${n.title}</td><td>${n.category || '-'}</td>
+            <td>${n.published ? '✅' : '❌'}</td>
+            <td>${new Date(n.created_at).toLocaleDateString()}</td>
+            <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">Delete</button></td>
+          </tr>`).join('');
+      } catch(e) { document.getElementById('news-body').innerHTML = '<tr><td colspan="5">Error loading.</td></tr>'; }
+    }
+
+    function showNewsForm() { document.getElementById('news-form-panel').style.display = 'block'; }
+
+    document.getElementById('news-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await apiFetch('/news', { method: 'POST', body: JSON.stringify({
+          title: document.getElementById('news-title').value,
+          category: document.getElementById('news-category').value,
+          summary: document.getElementById('news-summary').value,
+          content: document.getElementById('news-content').value,
+          image_url: document.getElementById('news-image').value,
+          published: true,
+        })});
+        showAlert('news-alert', 'Article published!', 'success');
+        document.getElementById('news-form').reset();
+        loadNews();
+      } catch(err) { showAlert('news-alert', err.message, 'error'); }
+    });
+
+    async function deleteNews(id) {
+      if (!confirm('Delete this article?')) return;
+      try { await apiFetch(`/news/${id}`, { method: 'DELETE' }); loadNews(); }
+      catch(e) { alert('Failed to delete.'); }
+    }
+
+    async function loadGallery() {
+      try {
+        const list = await apiFetch('/gallery');
+        const g = document.getElementById('admin-gallery-grid');
+        if (!list.length) { g.innerHTML = '<p>No images yet.</p>'; return; }
+        g.innerHTML = list.map(img => `
+          <div class="gallery-item">
+            <img src="${img.image_url}" alt="${img.title || ''}"/>
+            <div class="gallery-overlay">${img.title || ''}</div>
+          </div>`).join('');
+      } catch(e) { document.getElementById('admin-gallery-grid').innerHTML = '<p>Error loading gallery.</p>'; }
+    }
+
+    document.getElementById('gallery-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('title', document.getElementById('gal-title').value);
+      formData.append('category', document.getElementById('gal-category').value);
+      formData.append('caption', document.getElementById('gal-caption').value);
+      formData.append('image', document.getElementById('gal-file').files[0]);
+      try {
+        await fetch(`${API}/gallery`, { method: 'POST', headers: { Authorization: `Bearer ${getToken()}` }, body: formData });
+        showAlert('gallery-alert', 'Image uploaded!', 'success');
+        document.getElementById('gallery-form').reset();
+        loadGallery();
+      } catch(err) { showAlert('gallery-alert', 'Upload failed.', 'error'); }
+    });
+
+    async function loadDonations() {
+      try {
+        const list = await apiFetch('/donations');
+        document.getElementById('donations-body').innerHTML = list.map(d => `
+          <tr><td>${d.donor_name}</td><td>${d.email}</td><td>$${d.amount}</td><td>${d.purpose || '-'}</td><td>${d.transaction_ref}</td><td>${new Date(d.donated_at).toLocaleDateString()}</td></tr>`).join('');
+      } catch(e) { document.getElementById('donations-body').innerHTML = '<tr><td colspan="6">Error loading.</td></tr>'; }
+    }
+
+    async function loadMessages() {
+      try {
+        const list = await apiFetch('/contact');
+        document.getElementById('messages-body').innerHTML = list.map(m => `
+          <tr><td>${m.sender_name}</td><td>${m.email}</td><td>${m.subject}</td><td>${m.message.substring(0,60)}...</td><td>${new Date(m.received_at).toLocaleDateString()}</td></tr>`).join('');
+      } catch(e) { document.getElementById('messages-body').innerHTML = '<tr><td colspan="5">Error loading.</td></tr>'; }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GUYGD – Donate</title>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+  <link rel="stylesheet" href="/src/css/responsive.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="nav-logo">GUYGD</a>
+      <button class="hamburger" aria-label="Menu">&#9776;</button>
+      <div class="nav-links" id="nav-links"></div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>Donate</h1>
+    <p>Your support empowers the youths of Gbeh-lay to grow and develop.</p>
+  </div>
+
+  <section class="section">
+    <div class="container two-col">
+      <div>
+        <h2>Why Your Donation Matters</h2>
+        <p>Every contribution — big or small — directly impacts the lives of young people in Gbeh-lay. Your donation helps us fund scholarships, run community programs, and develop the next generation of leaders.</p>
+        <div class="mission-vision-grid" style="margin-top:25px;">
+          <div class="mv-card">
+            <div class="mv-icon">🎓</div>
+            <h3>$25</h3>
+            <p>Provides school supplies for one student for a term.</p>
+          </div>
+          <div class="mv-card">
+            <div class="mv-icon">📚</div>
+            <h3>$100</h3>
+            <p>Covers one month of tuition for a scholarship recipient.</p>
+          </div>
+          <div class="mv-card">
+            <div class="mv-icon">🌍</div>
+            <h3>$500</h3>
+            <p>Funds a full community development program.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="form-container">
+          <h3 style="margin-bottom:20px;color:var(--green);">Make a Donation</h3>
+          <div class="alert" id="donate-alert"></div>
+          <form id="donate-form">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="donor_name" placeholder="Your full name" required/>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="donor_email" placeholder="your@email.com" required/>
+            </div>
+            <div class="form-group">
+              <label>Donation Amount (USD)</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                <button type="button" class="btn btn-sm btn-green" onclick="setAmount(25)">$25</button>
+                <button type="button" class="btn btn-sm btn-green" onclick="setAmount(50)">$50</button>
+                <button type="button" class="btn btn-sm btn-green" onclick="setAmount(100)">$100</button>
+                <button type="button" class="btn btn-sm btn-green" onclick="setAmount(500)">$500</button>
+              </div>
+              <input type="number" id="amount" placeholder="Enter amount" min="1" required/>
+            </div>
+            <div class="form-group">
+              <label>Purpose (optional)</label>
+              <select id="purpose">
+                <option value="General">General Fund</option>
+                <option value="Scholarship">Scholarship Fund</option>
+                <option value="Community">Community Programs</option>
+                <option value="Events">Events &amp; Activities</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Transaction Reference</label>
+              <input type="text" id="transaction_ref" placeholder="Mobile money / bank reference number" required/>
+            </div>
+            <p style="font-size:0.85rem;color:var(--gray);margin-bottom:15px;">
+              Please send your donation via Mobile Money or Bank Transfer, then enter the reference number above.
+              <br/><strong>Mobile Money:</strong> +231 XXX XXX XXX (GUYGD Account)
+            </p>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Submit Donation</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-light">
+    <div class="container cta-box">
+      <h2>Other Ways to Support</h2>
+      <p>Can't donate right now? You can still make a difference by volunteering or spreading the word.</p>
+      <div class="hero-btns">
+        <a href="/membership.html" class="btn btn-primary">Become a Member</a>
+        <a href="/contact.html" class="btn btn-green">Volunteer With Us</a>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer"></footer>
+  <script src="/src/js/main.js"></script>
+  <script>
+    function setAmount(val) {
+      document.getElementById('amount').value = val;
+    }
+
+    document.getElementById('donate-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await apiFetch('/donations', {
+          method: 'POST',
+          body: JSON.stringify({
+            donor_name: document.getElementById('donor_name').value,
+            email: document.getElementById('donor_email').value,
+            amount: document.getElementById('amount').value,
+            purpose: document.getElementById('purpose').value,
+            transaction_ref: document.getElementById('transaction_ref').value,
+          }),
+        });
+        showAlert('donate-alert', 'Thank you for your donation! We will verify and confirm shortly.', 'success');
+        document.getElementById('donate-form').reset();
+      } catch (err) {
+        showAlert('donate-alert', err.message || 'Submission failed. Please try again.', 'error');
+      }
+    });
+  </script>
+</body>
+</html>
