@@ -20,11 +20,17 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/api/gallery', require('./routes/gallery'));
 
 app.use(express.static(path.join(__dirname, '../client/src/pages')));
+app.use(express.static(path.join(__dirname, '../client/src')));
+app.use(express.static(path.join(__dirname, '../client')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/src/pages/index.html'));
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Internal server error' });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`GUYGD server running on port ${PORT}`));
