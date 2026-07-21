@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const auth = require('../middleware/authMiddleware');
 const role = require('../middleware/roleMiddleware');
-const { apply, getAll, getOne, updateStatus } = require('../controllers/scholarshipController');
+const { apply, getAll, getMine, getOne, updateStatus } = require('../controllers/scholarshipController');
 
 const storage = multer.diskStorage({
   destination: 'client/public/assets/images/uploads/',
@@ -11,9 +11,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-router.post('/', auth, upload.single('supporting_docs'), apply);
+router.post('/apply', auth, upload.single('document'), apply);
+router.get('/my', auth, getMine);
 router.get('/', auth, role('admin', 'executive'), getAll);
 router.get('/:id', auth, getOne);
-router.patch('/:id', auth, role('admin', 'executive'), updateStatus);
+router.put('/:id', auth, role('admin', 'executive'), updateStatus);
 
 module.exports = router;

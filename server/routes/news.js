@@ -1,18 +1,11 @@
 const router = require('express').Router();
-const multer = require('multer');
-const path = require('path');
 const auth = require('../middleware/authMiddleware');
 const role = require('../middleware/roleMiddleware');
-const { getPublished, create, update, remove } = require('../controllers/newsController');
-
-const storage = multer.diskStorage({
-  destination: 'client/public/assets/images/uploads/',
-  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
-});
-const upload = multer({ storage });
+const { getPublished, getAll, create, update, remove } = require('../controllers/newsController');
 
 router.get('/', getPublished);
-router.post('/', auth, role('admin', 'executive'), upload.single('image'), create);
+router.get('/all', auth, role('admin', 'executive'), getAll);
+router.post('/', auth, role('admin', 'executive'), create);
 router.put('/:id', auth, role('admin', 'executive'), update);
 router.delete('/:id', auth, role('admin', 'executive'), remove);
 
