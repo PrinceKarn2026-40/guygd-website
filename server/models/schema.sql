@@ -1,58 +1,57 @@
-CREATE DATABASE IF NOT EXISTS guygd_db;
-USE guygd_db;
+-- GUYGD PostgreSQL Schema
 
-CREATE TABLE members (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS members (
+  id SERIAL PRIMARY KEY,
   full_name VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   phone VARCHAR(20),
-  gender ENUM('Male', 'Female', 'Other'),
+  gender VARCHAR(10) CHECK (gender IN ('Male', 'Female', 'Other')),
   date_of_birth DATE,
   address TEXT,
-  role ENUM('member', 'admin', 'executive') DEFAULT 'member',
-  status ENUM('pending', 'active', 'suspended') DEFAULT 'pending',
+  role VARCHAR(20) DEFAULT 'member' CHECK (role IN ('member', 'admin', 'executive')),
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'suspended')),
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE scholarships (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  member_id INT,
+CREATE TABLE IF NOT EXISTS scholarships (
+  id SERIAL PRIMARY KEY,
+  member_id INT REFERENCES members(id) ON DELETE SET NULL,
   applicant_name VARCHAR(100) NOT NULL,
   school VARCHAR(150),
-  level ENUM('High School', 'Undergraduate', 'Postgraduate', 'Vocational'),
+  level VARCHAR(30) CHECK (level IN ('High School', 'Undergraduate', 'Postgraduate', 'Vocational')),
   essay TEXT,
   supporting_docs VARCHAR(255),
-  status ENUM('submitted', 'under_review', 'approved', 'rejected') DEFAULT 'submitted',
-  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE SET NULL
+  status VARCHAR(20) DEFAULT 'submitted' CHECK (status IN ('submitted', 'under_review', 'approved', 'rejected')),
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE events (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS events (
+  id SERIAL PRIMARY KEY,
   title VARCHAR(150) NOT NULL,
   description TEXT,
   location VARCHAR(200),
-  event_date DATETIME,
-  category ENUM('Education', 'Health', 'Governance', 'Culture', 'General'),
-  created_by INT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (created_by) REFERENCES members(id) ON DELETE SET NULL
+  event_date TIMESTAMP,
+  image_url VARCHAR(255),
+  category VARCHAR(30) CHECK (category IN ('Education', 'Health', 'Governance', 'Culture', 'General')),
+  created_by INT REFERENCES members(id) ON DELETE SET NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE news (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS news (
+  id SERIAL PRIMARY KEY,
   title VARCHAR(200) NOT NULL,
   content TEXT,
+  summary TEXT,
   image_url VARCHAR(255),
-  author_id INT,
+  category VARCHAR(50),
+  author_id INT REFERENCES members(id) ON DELETE SET NULL,
   published BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (author_id) REFERENCES members(id) ON DELETE SET NULL
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE donations (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS donations (
+  id SERIAL PRIMARY KEY,
   donor_name VARCHAR(100),
   email VARCHAR(100),
   amount DECIMAL(10,2),
@@ -61,8 +60,8 @@ CREATE TABLE donations (
   donated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE contact_messages (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id SERIAL PRIMARY KEY,
   sender_name VARCHAR(100),
   email VARCHAR(100),
   subject VARCHAR(200),
@@ -70,13 +69,13 @@ CREATE TABLE contact_messages (
   received_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE gallery (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS gallery (
+  id SERIAL PRIMARY KEY,
   title VARCHAR(150),
   image_url VARCHAR(255),
-  event_id INT NULL,
-  uploaded_by INT,
-  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE SET NULL,
-  FOREIGN KEY (uploaded_by) REFERENCES members(id) ON DELETE SET NULL
+  caption TEXT,
+  category VARCHAR(50),
+  event_id INT REFERENCES events(id) ON DELETE SET NULL,
+  uploaded_by INT REFERENCES members(id) ON DELETE SET NULL,
+  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
