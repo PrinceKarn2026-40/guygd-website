@@ -101,6 +101,49 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('footer')) renderFooter();
 
   const hamburger = document.querySelector('.hamburger');
-  const navLinks = document.querySelector('.nav-links');
-  if (hamburger) hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  const navLinks  = document.querySelector('.nav-links');
+  if (!hamburger || !navLinks) return;
+
+  // Replace hamburger inner content with animated bars
+  hamburger.innerHTML = '<span class="bar"></span><span class="bar"></span><span class="bar"></span>';
+  hamburger.setAttribute('aria-label', 'Toggle menu');
+  hamburger.setAttribute('aria-expanded', 'false');
+
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'nav-overlay';
+  document.body.appendChild(overlay);
+
+  function openMenu() {
+    navLinks.classList.add('open');
+    hamburger.classList.add('active');
+    overlay.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    navLinks.classList.remove('open');
+    hamburger.classList.remove('active');
+    overlay.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.contains('open') ? closeMenu() : openMenu();
+  });
+
+  // Close when any nav link is tapped
+  navLinks.addEventListener('click', e => {
+    if (e.target.tagName === 'A') closeMenu();
+  });
+
+  // Close when overlay is tapped
+  overlay.addEventListener('click', closeMenu);
+
+  // Close on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeMenu();
+  });
 });
