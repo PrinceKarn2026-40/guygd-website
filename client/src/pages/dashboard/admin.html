@@ -279,6 +279,9 @@
       <a onclick="showSection('gallery', this)">
         <span class="icon">🖼️</span> Gallery
       </a>
+      <a onclick="showSection('team', this)">
+        <span class="icon">👥</span> Our Team
+      </a>
       <a onclick="showSection('donations', this)">
         <span class="icon">💰</span> Donations
       </a>
@@ -494,6 +497,36 @@
         </div>
       </div>
 
+
+      <!-- ════ TEAM ════ -->
+      <div id="section-team" class="tab-section">
+        <div class="panel" id="team-form-panel" style="display:none;margin-bottom:20px;">
+          <div class="panel-header"><h3>Add Team Member</h3></div>
+          <div class="panel-body">
+            <div class="alert" id="team-alert"></div>
+            <form id="team-form" class="form-grid" enctype="multipart/form-data">
+              <div class="form-group"><label>Full Name *</label><input type="text" id="tm-name" required placeholder="e.g. John Doe"/></div>
+              <div class="form-group"><label>Position *</label><input type="text" id="tm-position" required placeholder="e.g. President"/></div>
+              <div class="form-group"><label>Sort Order</label><input type="number" id="tm-order" value="0" min="0"/></div>
+              <div class="form-group"><label>Photo</label><input type="file" id="tm-photo" accept="image/*"/></div>
+              <div class="form-group full"><label>Bio (optional)</label><textarea id="tm-bio" rows="2" placeholder="Short bio..."></textarea></div>
+              <div class="form-actions full">
+                <button type="submit" class="btn btn-primary">💾 Save</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('team-form-panel').style.display='none'">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Executive Leadership</h3>
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('team-form-panel').style.display='block'">+ Add Member</button>
+          </div>
+          <div class="gallery-admin-grid" id="admin-team-grid">
+            <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">👥</div><p>No team members yet.</p></div>
+          </div>
+        </div>
+      </div>
 
       <!-- ════ GALLERY ════ -->
       <div id="section-gallery" class="tab-section">
@@ -714,7 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const sectionTitles = {
   dashboard: 'Dashboard', applications: 'Scholarship Applications',
   members: 'Members', events: 'Events', news: 'News',
-  gallery: 'Gallery', donations: 'Donations', messages: 'Messages',
+  gallery: 'Gallery', team: 'Our Team', donations: 'Donations', messages: 'Messages',
   notifications: 'Notifications', reports: 'Reports',
   users: 'User Management', settings: 'Settings'
 };
@@ -728,7 +761,7 @@ function showSection(name, el) {
   const loaders = {
     dashboard: loadDashboard, applications: loadApplications,
     members: loadMembers, events: loadEvents, news: loadNews,
-    gallery: loadGallery, donations: loadDonations, messages: loadMessages,
+    gallery: loadGallery, team: loadTeam, donations: loadDonations, messages: loadMessages,
     notifications: loadNotifications, reports: loadReports, users: loadUsers
   };
   if (loaders[name]) loaders[name]();
@@ -1093,6 +1126,54 @@ async function changeRole(id, role) {
   try {
     await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ role }) });
   } catch(e) { alert('Failed to update role.'); }
+}
+
+// ── TEAM ──────────────────────────────────────────────────
+async function loadTeam() {
+  try {
+    const list = await apiFetch('/team');
+    const grid = document.getElementById('admin-team-grid');
+    grid.innerHTML = list.length ? list.map(m => `
+      <div class="gallery-admin-item" style="aspect-ratio:unset;">
+        <img src="${m.photo || ''}" alt="${m.name}" style="width:100%;height:140px;object-fit:cover;"
+          onerror="this.style.display='none'"/>
+        <div style="padding:8px;">
+          <strong style="font-size:0.85rem;">${m.name}</strong><br/>
+          <span style="font-size:0.75rem;color:#2d6a4f;">${m.position}</span>
+        </div>
+        <button class="del-btn" onclick="deleteTeam(${m.id})">&#10005;</button>
+      </div>`).join('')
+      : '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">&#128101;</div><p>No team members yet.</p></div>';
+  } catch(e) {
+    document.getElementById('admin-team-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><p>Error loading team.</p></div>';
+  }
+}
+document.getElementById('team-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('name',       document.getElementById('tm-name').value);
+  formData.append('position',   document.getElementById('tm-position').value);
+  formData.append('bio',        document.getElementById('tm-bio').value);
+  formData.append('sort_order', document.getElementById('tm-order').value);
+  const photo = document.getElementById('tm-photo').files[0];
+  if (photo) formData.append('photo', photo);
+  try {
+    const res = await fetch(`${API}/team`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${getToken()}` },
+      body: formData
+    });
+    if (!res.ok) throw new Error('Failed');
+    showAlert('team-alert', '&#10003; Team member added!', 'success');
+    document.getElementById('team-form').reset();
+    document.getElementById('team-form-panel').style.display = 'none';
+    loadTeam();
+  } catch(err) { showAlert('team-alert', 'Failed to add team member.', 'error'); }
+});
+async function deleteTeam(id) {
+  if (!confirm('Remove this team member?')) return;
+  try { await apiFetch(`/team/${id}`, { method: 'DELETE' }); loadTeam(); }
+  catch(e) { alert('Failed to remove.'); }
 }
 
 // ── SETTINGS ──────────────────────────────────────────

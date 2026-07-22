@@ -19,6 +19,7 @@ app.use('/api/news', require('./routes/news'));
 app.use('/api/donations', require('./routes/donations'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/gallery', require('./routes/gallery'));
+app.use('/api/team', require('./routes/team'));
 
 app.use(express.static(path.join(__dirname, '../client/src/pages')));
 app.use(express.static(path.join(__dirname, '../client/src')));
