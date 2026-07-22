@@ -1,0 +1,58 @@
+﻿      <a class="active" onclick="showSection('dashboard', this)">
+        <span class="icon">ðŸ“Š</span> Dashboard
+      </a>
+      <a onclick="showSection('applications', this)">
+        <span class="icon">ðŸŽ“</span> Applications
+      </a>
+      <a onclick="showSection('members', this)">
+        <span class="icon">ðŸ‘¥</span> Members
+      </a>
+      <a onclick="showSection('events', this)">
+        <span class="icon">ðŸ“…</span> Events
+      </a>
+      <a onclick="showSection('news', this)">
+        <span class="icon">ðŸ“°</span> News
+      </a>
+      <a onclick="showSection('gallery', this)">
+        <span class="icon">ðŸ–¼ï¸</span> Gallery
+      </a>
+      <a onclick="showSection('team', this)">
+        <span class="icon">ðŸ‘¥</span> Our Team
+      </a>
+      <a onclick="showSection('donations', this)">
+        <span class="icon">ðŸ’°</span> Donations
+      </a>
+      <a onclick="showSection('messages', this)">
+        <span class="icon">âœ‰ï¸</span> Messages
+      </a>
+      <div class="divider"></div>
+      <a onclick="showSection('notifications', this)">
+        <span class="icon">ðŸ””</span> Notifications
+      </a>
+      <a onclick="showSection('reports', this)">
+        <span class="icon">ðŸ“ˆ</span> Reports
+      </a>
+      <a onclick="showSection('users', this)">
+        <span class="icon">ðŸ‘¤</span> Users
+      </a>
+      <a onclick="showSection('config', this)">
+        <span class="icon">ðŸ› ï¸</span> System Config
+      </a>
+      <a onclick="showSection('settings', this)">
+        <span class="icon">âš™ï¸</span> Settings
+      </a>
+      <div class="divider"></div>
+      <a class="logout-link" onclick="logout()">
+        <span class="icon">ðŸšª</span> Logout
+      </a>
+    </nav>
+  </aside>
+
+  <!-- â•â•â•â• MAIN â•â•â•â• -->
+  <div class="admin-main">
+
+    <!-- Top Bar -->
+    <div class="admin-topbar">
+      <span class="topbar-title" id="topbar-title">Dashboard</span>
+      <div class="topbar-right">
+        <button class="notif-btn" onclick="showSection('notifications', null)" title="Notifications">
