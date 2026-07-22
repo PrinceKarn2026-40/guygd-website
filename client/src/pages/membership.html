@@ -123,8 +123,8 @@
       if (window.location.search.includes('login')) showTab('login');
       if (getUser()) {
         const user = getUser();
-        window.location.href = user.role === 'admin' || user.role === 'executive'
-          ? '/dashboard/admin.html' : '/dashboard/member.html';
+        const isAdmin = ['admin', 'executive', 'super_admin'].includes(user.role);
+        window.location.href = isAdmin ? '/dashboard/admin.html' : '/dashboard/member.html';
       }
     });
 
@@ -151,8 +151,8 @@
         localStorage.setItem('guygd_user', JSON.stringify(data.user));
         showAlert('register-alert', 'Account created! Redirecting...', 'success');
         setTimeout(() => {
-          window.location.href = data.user.role === 'admin' || data.user.role === 'executive'
-            ? '/dashboard/admin.html' : '/dashboard/member.html';
+          const isAdmin = ['admin', 'executive', 'super_admin'].includes(data.user.role);
+          window.location.href = isAdmin ? '/dashboard/admin.html' : '/dashboard/member.html';
         }, 1500);
       } catch (err) { showAlert('register-alert', err.message, 'error'); }
     });
@@ -172,8 +172,8 @@
         localStorage.setItem('guygd_user', JSON.stringify(data.user));
         showAlert('login-alert', 'Login successful! Redirecting...', 'success');
         setTimeout(() => {
-          window.location.href = data.user.role === 'admin' || data.user.role === 'executive'
-            ? '/dashboard/admin.html' : '/dashboard/member.html';
+          const isAdmin = ['admin', 'executive', 'super_admin'].includes(data.user.role);
+          window.location.href = isAdmin ? '/dashboard/admin.html' : '/dashboard/member.html';
         }, 1500);
       } catch (err) { showAlert('login-alert', err.message, 'error'); }
     });

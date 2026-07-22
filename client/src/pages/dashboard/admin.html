@@ -672,7 +672,7 @@ function dtInit(id, opts) {
 // ── INIT ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const user = getUser();
-  if (!user || (user.role !== 'admin' && user.role !== 'executive')) {
+  if (!user || !['admin', 'executive', 'super_admin'].includes(user.role)) {
     window.location.href = '/membership.html';
     return;
   }
