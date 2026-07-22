@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api';
+const API = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
 
 function getToken() { return localStorage.getItem('guygd_token'); }
 function getUser() { return JSON.parse(localStorage.getItem('guygd_user') || 'null'); }
@@ -40,7 +40,7 @@ function renderNavbar() {
     <a href="/donate.html">Donate</a>
     <a href="/contact.html">Contact</a>
     ${user
-      ? `<a href="${user.role === 'admin' || user.role === 'executive' ? '/dashboard/admin.html' : '/dashboard/member.html'}" class="btn-nav">Dashboard</a>`
+      ? `<a href="${['admin','executive','super_admin'].includes(user.role) ? '/dashboard/admin.html' : '/dashboard/member.html'}" class="btn-nav">Dashboard</a>`
       : `<a href="/membership.html" class="btn-nav">Join Us</a>`}
   `;
   document.getElementById('nav-links').innerHTML = links;
