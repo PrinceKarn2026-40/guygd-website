@@ -22,7 +22,9 @@ app.use('/api/gallery', require('./routes/gallery'));
 app.use(express.static(path.join(__dirname, '../client/src/pages')));
 app.use(express.static(path.join(__dirname, '../client/src')));
 app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../client/public')));
 app.use('/assets', express.static(path.join(__dirname, '../client/public/assets')));
+app.use('/images', express.static(path.join(__dirname, '../client/public/assets/images')));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/src/pages/index.html'));
