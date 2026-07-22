@@ -96,35 +96,9 @@ function renderFooter() {
   `;
 }
 
-function renderBottomNav() {
-  const user = getUser();
-  const existing = document.getElementById('mobile-bottom-nav');
-  const path = window.location.pathname.split('/').pop() || 'index.html';
-  const items = [
-    { href: '/index.html',   icon: '&#127968;', label: 'Home' },
-    { href: '/events.html',  icon: '&#128197;', label: 'Events' },
-    { href: '/news.html',    icon: '&#128240;', label: 'News' },
-    { href: '/gallery.html', icon: '&#128444;', label: 'Gallery' },
-    user
-      ? { href: ['admin','executive','super_admin'].includes(user.role) ? '/dashboard/admin.html' : '/dashboard/member.html', icon: '&#128100;', label: 'Dashboard' }
-      : { href: '/membership.html', icon: '&#9995;', label: 'Join Us' },
-  ];
-  const html = `<div class="mbn-items">${items.map(i =>
-    `<a href="${i.href}" class="${i.href.includes(path) ? 'active' : ''}">
-      <span class="mbn-icon">${i.icon}</span>${i.label}
-    </a>`).join('')}</div>`;
-  if (existing) { existing.innerHTML = html; return; }
-  const nav = document.createElement('nav');
-  nav.className = 'mobile-bottom-nav';
-  nav.id = 'mobile-bottom-nav';
-  nav.innerHTML = html;
-  document.body.appendChild(nav);
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('nav-links')) renderNavbar();
   if (document.getElementById('footer')) renderFooter();
-  renderBottomNav();
 
   const hamburger = document.querySelector('.hamburger');
   const navLinks = document.querySelector('.nav-links');
