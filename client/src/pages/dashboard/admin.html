@@ -7,411 +7,989 @@
   <link rel="stylesheet" href="/src/css/main.css"/>
   <link rel="stylesheet" href="/src/css/dashboard.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
+  <style>
+    body { margin: 0; background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+    .admin-layout { display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .admin-sidebar {
+      width: 240px; min-height: 100vh; background: #1a1f36;
+      display: flex; flex-direction: column; position: fixed; left: 0; top: 0; z-index: 100;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    }
+    .sidebar-brand {
+      padding: 24px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-brand h2 { color: #fff; margin: 0; font-size: 1.3rem; letter-spacing: 1px; }
+    .sidebar-brand p { color: #8b9bb4; margin: 4px 0 0; font-size: 0.75rem; }
+    .sidebar-user {
+      padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sidebar-avatar {
+      width: 40px; height: 40px; border-radius: 50%; background: #2d6a4f;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: #fff; flex-shrink: 0;
+    }
+    .sidebar-user-info h4 { color: #fff; margin: 0; font-size: 0.9rem; }
+    .sidebar-user-info span { color: #8b9bb4; font-size: 0.75rem; text-transform: capitalize; }
+    .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+    .sidebar-nav a {
+      display: flex; align-items: center; gap: 12px; padding: 11px 20px;
+      color: #8b9bb4; text-decoration: none; font-size: 0.88rem;
+      transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer;
+    }
+    .sidebar-nav a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+    .sidebar-nav a.active { color: #fff; background: rgba(45,106,79,0.3); border-left-color: #2d6a4f; }
+    .sidebar-nav .icon { font-size: 1rem; width: 20px; text-align: center; }
+    .sidebar-nav .divider { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 20px; }
+    .sidebar-nav a.logout-link { color: #ff6b6b; }
+    .sidebar-nav a.logout-link:hover { background: rgba(255,107,107,0.1); }
+
+    /* ── MAIN ── */
+    .admin-main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
+    .admin-topbar {
+      background: #fff; padding: 14px 28px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid #e8ecf0;
+      position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .topbar-title { font-size: 1.15rem; font-weight: 600; color: #1a1f36; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .topbar-right .notif-btn {
+      background: none; border: none; font-size: 1.2rem; cursor: pointer; position: relative;
+    }
+    .notif-badge {
+      position: absolute; top: -4px; right: -4px; background: #e74c3c;
+      color: #fff; font-size: 0.6rem; width: 16px; height: 16px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .admin-content { padding: 28px; flex: 1; }
+
+    /* ── SECTIONS ── */
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    /* ── STAT CARDS ── */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; margin-bottom: 28px;
+    }
+    .stat-card {
+      background: #fff; border-radius: 12px; padding: 20px 22px;
+      display: flex; align-items: center; gap: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-icon { font-size: 1.8rem; width: 50px; height: 50px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; }
+    .stat-icon.green { background: #d4edda; }
+    .stat-icon.blue  { background: #d1ecf1; }
+    .stat-icon.orange{ background: #fff3cd; }
+    .stat-icon.purple{ background: #e8d5f5; }
+    .stat-info h3 { margin: 0; font-size: 1.6rem; font-weight: 700; color: #1a1f36; }
+    .stat-info p  { margin: 3px 0 0; font-size: 0.78rem; color: #6c757d; }
+
+    /* ── PANEL ── */
+    .panel { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; overflow: hidden; }
+    .panel-header {
+      padding: 16px 22px; border-bottom: 1px solid #f0f2f5;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .panel-header h3 { margin: 0; font-size: 1rem; color: #1a1f36; }
+    .panel-body { padding: 20px 22px; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+    thead th { background: #f8f9fb; padding: 11px 14px; text-align: left; color: #6c757d; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid #f0f2f5; color: #344054; vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fafbfc; }
+
+    /* ── BADGES ── */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.73rem; font-weight: 600; text-transform: capitalize; }
+    .badge-active, .badge-approved { background: #d4edda; color: #155724; }
+    .badge-pending, .badge-submitted { background: #fff3cd; color: #856404; }
+    .badge-suspended, .badge-rejected { background: #f8d7da; color: #721c24; }
+    .badge-under_review { background: #d1ecf1; color: #0c5460; }
+    .badge-admin { background: #e8d5f5; color: #6f42c1; }
+    .badge-member { background: #d1ecf1; color: #0c5460; }
+    .badge-executive { background: #fff3cd; color: #856404; }
+
+    /* ── BUTTONS ── */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; text-decoration: none; }
+    .btn-primary { background: #2d6a4f; color: #fff; }
+    .btn-primary:hover { background: #1b4332; }
+    .btn-outline { background: #fff; color: #2d6a4f; border: 1px solid #2d6a4f; }
+    .btn-outline:hover { background: #2d6a4f; color: #fff; }
+    .btn-danger { background: #fee2e2; color: #dc2626; }
+    .btn-danger:hover { background: #dc2626; color: #fff; }
+    .btn-success { background: #d4edda; color: #155724; }
+    .btn-success:hover { background: #155724; color: #fff; }
+    .btn-warn { background: #fff3cd; color: #856404; }
+    .btn-warn:hover { background: #856404; color: #fff; }
+    .btn-sm { padding: 5px 12px; font-size: 0.78rem; }
+
+    /* ── FORM ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: #344054; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 9px 12px; border: 1px solid #d0d5dd; border-radius: 8px;
+      font-size: 0.88rem; outline: none; transition: border 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2d6a4f; }
+    .form-actions { display: flex; gap: 10px; padding-top: 8px; }
+
+    /* ── ALERT ── */
+    .alert { padding: 11px 16px; border-radius: 8px; margin-bottom: 14px; font-size: 0.88rem; display: none; }
+    .alert.success { background: #d4edda; color: #155724; display: block; }
+    .alert.error   { background: #f8d7da; color: #721c24; display: block; }
+
+    /* ── GALLERY GRID ── */
+    .gallery-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; padding: 20px 22px; }
+    .gallery-admin-item { border-radius: 10px; overflow: hidden; background: #f0f2f5; position: relative; aspect-ratio: 1; }
+    .gallery-admin-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-admin-item .del-btn { position: absolute; top: 6px; right: 6px; background: rgba(220,38,38,0.85); color: #fff; border: none; border-radius: 6px; padding: 3px 8px; font-size: 0.75rem; cursor: pointer; }
+
+    /* ── NOTIFICATION ITEM ── */
+    .notif-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-dot { width: 10px; height: 10px; border-radius: 50%; background: #2d6a4f; flex-shrink: 0; margin-top: 5px; }
+    .notif-dot.read { background: #d0d5dd; }
+    .notif-text p { margin: 0; font-size: 0.88rem; color: #344054; }
+    .notif-text span { font-size: 0.76rem; color: #8b9bb4; }
+
+    /* ── REPORT CARDS ── */
+    .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+    .report-card { background: #fff; border-radius: 12px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .report-card h4 { margin: 0 0 14px; font-size: 0.95rem; color: #1a1f36; }
+    .report-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f0f2f5; font-size: 0.85rem; }
+    .report-row:last-child { border-bottom: none; }
+    .report-row span:last-child { font-weight: 600; color: #2d6a4f; }
+
+    /* ── SETTINGS ── */
+    .settings-section { margin-bottom: 28px; }
+    .settings-section h3 { font-size: 1rem; color: #1a1f36; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #f0f2f5; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align: center; padding: 48px 20px; color: #8b9bb4; }
+    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state p { margin: 0; font-size: 0.9rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .admin-sidebar { width: 200px; }
+      .admin-main { margin-left: 200px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 576px) {
+      .admin-sidebar { display: none; }
+      .admin-main { margin-left: 0; }
+    }
+  </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="/index.html" class="nav-logo">GUYGD</a>
-      <button class="hamburger" aria-label="Menu">&#9776;</button>
-      <div class="nav-links" id="nav-links"></div>
-    </div>
-  </nav>
+<div class="admin-layout">
 
-  <div class="dashboard-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-user">
-        <div class="avatar">👤</div>
+  <!-- ════ SIDEBAR ════ -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <h2>GUYGD</h2>
+      <p>Admin Panel</p>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">👤</div>
+      <div class="sidebar-user-info">
         <h4 id="sidebar-name">Admin</h4>
         <span id="sidebar-role">admin</span>
       </div>
-      <nav class="sidebar-nav">
-        <a href="#" class="active" onclick="showSection('overview')"><span class="icon">📊</span> Overview</a>
-        <a href="#" onclick="showSection('members')"><span class="icon">👥</span> Members</a>
-        <a href="#" onclick="showSection('scholarships')"><span class="icon">🎓</span> Scholarships</a>
-        <a href="#" onclick="showSection('events')"><span class="icon">📅</span> Events</a>
-        <a href="#" onclick="showSection('news')"><span class="icon">📰</span> News</a>
-        <a href="#" onclick="showSection('gallery')"><span class="icon">🖼️</span> Gallery</a>
-        <a href="#" onclick="showSection('donations')"><span class="icon">💰</span> Donations</a>
-        <a href="#" onclick="showSection('messages')"><span class="icon">✉️</span> Messages</a>
-        <a href="#" onclick="logout()" style="margin-top:20px;color:#ff6b6b;"><span class="icon">🚪</span> Logout</a>
-      </nav>
-    </aside>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="active" onclick="showSection('dashboard', this)">
+        <span class="icon">📊</span> Dashboard
+      </a>
+      <a onclick="showSection('applications', this)">
+        <span class="icon">🎓</span> Applications
+      </a>
+      <a onclick="showSection('members', this)">
+        <span class="icon">👥</span> Members
+      </a>
+      <a onclick="showSection('events', this)">
+        <span class="icon">📅</span> Events
+      </a>
+      <a onclick="showSection('news', this)">
+        <span class="icon">📰</span> News
+      </a>
+      <a onclick="showSection('gallery', this)">
+        <span class="icon">🖼️</span> Gallery
+      </a>
+      <a onclick="showSection('messages', this)">
+        <span class="icon">✉️</span> Messages
+      </a>
+      <div class="divider"></div>
+      <a onclick="showSection('notifications', this)">
+        <span class="icon">🔔</span> Notifications
+      </a>
+      <a onclick="showSection('reports', this)">
+        <span class="icon">📈</span> Reports
+      </a>
+      <a onclick="showSection('users', this)">
+        <span class="icon">👤</span> Users
+      </a>
+      <a onclick="showSection('settings', this)">
+        <span class="icon">⚙️</span> Settings
+      </a>
+      <div class="divider"></div>
+      <a class="logout-link" onclick="logout()">
+        <span class="icon">🚪</span> Logout
+      </a>
+    </nav>
+  </aside>
 
-    <!-- Main Content -->
-    <main class="dashboard-main">
+  <!-- ════ MAIN ════ -->
+  <div class="admin-main">
 
-      <!-- Overview -->
-      <div id="section-overview" class="tab-section active">
-        <div class="dashboard-header">
-          <h2>Dashboard Overview</h2>
+    <!-- Top Bar -->
+    <div class="admin-topbar">
+      <span class="topbar-title" id="topbar-title">Dashboard</span>
+      <div class="topbar-right">
+        <button class="notif-btn" onclick="showSection('notifications', null)" title="Notifications">
+          🔔<span class="notif-badge" id="notif-count">0</span>
+        </button>
+        <span style="font-size:0.85rem;color:#6c757d;" id="topbar-user">Admin</span>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- ════ DASHBOARD ════ -->
+      <div id="section-dashboard" class="tab-section active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon green">👥</div>
+            <div class="stat-info"><h3 id="stat-members">-</h3><p>Total Members</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">🎓</div>
+            <div class="stat-info"><h3 id="stat-apps">-</h3><p>Applications</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">📅</div>
+            <div class="stat-info"><h3 id="stat-events">-</h3><p>Events</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple">💰</div>
+            <div class="stat-info"><h3 id="stat-donations">-</h3><p>Donations</p></div>
+          </div>
         </div>
-        <div class="stats-row" id="overview-stats">
-          <div class="mini-stat"><div class="icon">👥</div><div><h3 id="stat-members">-</h3><p>Total Members</p></div></div>
-          <div class="mini-stat"><div class="icon">🎓</div><div><h3 id="stat-scholarships">-</h3><p>Scholarship Apps</p></div></div>
-          <div class="mini-stat"><div class="icon">📅</div><div><h3 id="stat-events">-</h3><p>Events</p></div></div>
-          <div class="mini-stat"><div class="icon">💰</div><div><h3 id="stat-donations">-</h3><p>Donations</p></div></div>
-        </div>
-        <div class="panel">
-          <div class="panel-header"><h3>Recent Members</h3></div>
-          <div class="table-container"><table id="recent-members-table">
-            <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Joined</th></tr></thead>
-            <tbody id="recent-members-body"><tr><td colspan="4">Loading...</td></tr></tbody>
-          </table></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="panel">
+            <div class="panel-header"><h3>Recent Members</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Name</th><th>Status</th><th>Joined</th></tr></thead>
+                <tbody id="recent-members-body"><tr><td colspan="3" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h3>Recent Applications</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Applicant</th><th>Level</th><th>Status</th></tr></thead>
+                <tbody id="recent-apps-body"><tr><td colspan="3" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Members -->
-      <div id="section-members" class="tab-section">
-        <div class="dashboard-header">
-          <h2>Members</h2>
-        </div>
-        <div class="panel">
-          <div class="panel-header"><h3>All Members</h3></div>
-          <div class="table-container"><table>
-            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="members-body"><tr><td colspan="6">Loading...</td></tr></tbody>
-          </table></div>
-        </div>
-      </div>
 
-      <!-- Scholarships -->
-      <div id="section-scholarships" class="tab-section">
-        <div class="dashboard-header">
-          <h2>Scholarship Applications</h2>
-        </div>
+      <!-- ════ APPLICATIONS ════ -->
+      <div id="section-applications" class="tab-section">
         <div class="panel">
-          <div class="panel-header"><h3>All Applications</h3></div>
-          <div class="table-container"><table>
-            <thead><tr><th>Applicant</th><th>School</th><th>Level</th><th>Status</th><th>Applied</th><th>Actions</th></tr></thead>
-            <tbody id="scholarships-body"><tr><td colspan="6">Loading...</td></tr></tbody>
-          </table></div>
-        </div>
-      </div>
-
-      <!-- Events -->
-      <div id="section-events" class="tab-section">
-        <div class="dashboard-header">
-          <h2>Events</h2>
-          <button class="btn btn-primary btn-sm" onclick="showEventForm()">+ Add Event</button>
-        </div>
-        <div class="panel" id="event-form-panel" style="display:none;margin-bottom:20px;">
-          <div class="panel-header"><h3>Add New Event</h3></div>
-          <div class="alert" id="event-alert"></div>
-          <form id="event-form" style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-            <div class="form-group"><label>Title</label><input type="text" id="ev-title" required/></div>
-            <div class="form-group"><label>Date</label><input type="datetime-local" id="ev-date" required/></div>
-            <div class="form-group"><label>Location</label><input type="text" id="ev-location"/></div>
-            <div class="form-group"><label>Category</label>
-              <select id="ev-category">
-                <option value="General">General</option>
-                <option value="Education">Education</option>
-                <option value="Health">Health</option>
-                <option value="Governance">Governance</option>
-                <option value="Culture">Culture</option>
+          <div class="panel-header">
+            <h3>Scholarship Applications</h3>
+            <div style="display:flex;gap:8px;">
+              <select id="app-filter" onchange="filterApplications()" style="padding:6px 10px;border-radius:8px;border:1px solid #d0d5dd;font-size:0.82rem;">
+                <option value="">All Status</option>
+                <option value="submitted">Submitted</option>
+                <option value="under_review">Under Review</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
               </select>
             </div>
-            <div class="form-group" style="grid-column:1/-1;"><label>Description</label><textarea id="ev-desc" rows="3"></textarea></div>
-            <div style="grid-column:1/-1;"><button type="submit" class="btn btn-primary">Save Event</button> <button type="button" class="btn btn-green" onclick="document.getElementById('event-form-panel').style.display='none'">Cancel</button></div>
-          </form>
-        </div>
-        <div class="panel">
-          <div class="panel-header"><h3>All Events</h3></div>
-          <div class="table-container"><table>
-            <thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Category</th><th>Actions</th></tr></thead>
-            <tbody id="events-body"><tr><td colspan="5">Loading...</td></tr></tbody>
-          </table></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Applicant</th><th>School</th><th>Level</th><th>Essay</th><th>Status</th><th>Applied</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="applications-body">
+                <tr><td colspan="7" style="text-align:center;color:#8b9bb4;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      <!-- News -->
-      <div id="section-news" class="tab-section">
-        <div class="dashboard-header">
-          <h2>News</h2>
-          <button class="btn btn-primary btn-sm" onclick="showNewsForm()">+ Add News</button>
+
+      <!-- ════ MEMBERS ════ -->
+      <div id="section-members" class="tab-section">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>All Members</h3>
+            <input type="text" id="member-search" placeholder="Search name or email..." oninput="searchMembers()"
+              style="padding:7px 12px;border-radius:8px;border:1px solid #d0d5dd;font-size:0.82rem;width:220px;"/>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="members-body">
+                <tr><td colspan="7" style="text-align:center;color:#8b9bb4;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
+
+
+      <!-- ════ EVENTS ════ -->
+      <div id="section-events" class="tab-section">
+        <div class="panel" id="event-form-panel" style="display:none;margin-bottom:20px;">
+          <div class="panel-header"><h3 id="event-form-title">Add New Event</h3></div>
+          <div class="panel-body">
+            <div class="alert" id="event-alert"></div>
+            <form id="event-form" class="form-grid">
+              <div class="form-group"><label>Title *</label><input type="text" id="ev-title" required placeholder="Event title"/></div>
+              <div class="form-group"><label>Date & Time *</label><input type="datetime-local" id="ev-date" required/></div>
+              <div class="form-group"><label>Location</label><input type="text" id="ev-location" placeholder="Venue or city"/></div>
+              <div class="form-group"><label>Category</label>
+                <select id="ev-category">
+                  <option value="General">General</option>
+                  <option value="Education">Education</option>
+                  <option value="Health">Health</option>
+                  <option value="Governance">Governance</option>
+                  <option value="Culture">Culture</option>
+                </select>
+              </div>
+              <div class="form-group full"><label>Description</label><textarea id="ev-desc" rows="3" placeholder="Event details..."></textarea></div>
+              <div class="form-group full"><label>Image URL (optional)</label><input type="text" id="ev-image" placeholder="https://..."/></div>
+              <div class="form-actions full">
+                <button type="submit" class="btn btn-primary">💾 Save Event</button>
+                <button type="button" class="btn btn-outline" onclick="hideEventForm()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>All Events</h3>
+            <button class="btn btn-primary btn-sm" onclick="showEventForm()">+ Add Event</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Category</th><th>Actions</th></tr></thead>
+              <tbody id="events-body"><tr><td colspan="5" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ════ NEWS ════ -->
+      <div id="section-news" class="tab-section">
         <div class="panel" id="news-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3>Add News Article</h3></div>
-          <div class="alert" id="news-alert"></div>
-          <form id="news-form">
-            <div class="form-row">
-              <div class="form-group"><label>Title</label><input type="text" id="news-title" required/></div>
+          <div class="panel-body">
+            <div class="alert" id="news-alert"></div>
+            <form id="news-form" class="form-grid">
+              <div class="form-group"><label>Title *</label><input type="text" id="news-title" required placeholder="Article title"/></div>
               <div class="form-group"><label>Category</label><input type="text" id="news-category" placeholder="e.g. Announcement"/></div>
-            </div>
-            <div class="form-group"><label>Summary</label><input type="text" id="news-summary" placeholder="Short summary"/></div>
-            <div class="form-group"><label>Content</label><textarea id="news-content" rows="5" required></textarea></div>
-            <div class="form-group"><label>Image URL (optional)</label><input type="text" id="news-image" placeholder="https://..."/></div>
-            <div style="display:flex;gap:10px;align-items:center;">
-              <button type="submit" class="btn btn-primary">Publish</button>
-              <button type="button" class="btn btn-green" onclick="document.getElementById('news-form-panel').style.display='none'">Cancel</button>
-            </div>
-          </form>
+              <div class="form-group full"><label>Summary</label><input type="text" id="news-summary" placeholder="Short one-line summary"/></div>
+              <div class="form-group full"><label>Content *</label><textarea id="news-content" rows="5" required placeholder="Full article content..."></textarea></div>
+              <div class="form-group full"><label>Image URL (optional)</label><input type="text" id="news-image" placeholder="https://..."/></div>
+              <div class="form-actions full">
+                <button type="submit" class="btn btn-primary">🚀 Publish</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('news-form-panel').style.display='none'">Cancel</button>
+              </div>
+            </form>
+          </div>
         </div>
         <div class="panel">
-          <div class="panel-header"><h3>All Articles</h3></div>
-          <div class="table-container"><table>
-            <thead><tr><th>Title</th><th>Category</th><th>Published</th><th>Date</th><th>Actions</th></tr></thead>
-            <tbody id="news-body"><tr><td colspan="5">Loading...</td></tr></tbody>
-          </table></div>
+          <div class="panel-header">
+            <h3>All Articles</h3>
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('news-form-panel').style.display='block'">+ Add Article</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Category</th><th>Published</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="news-body"><tr><td colspan="5" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      <!-- Gallery -->
+
+      <!-- ════ GALLERY ════ -->
       <div id="section-gallery" class="tab-section">
-        <div class="dashboard-header">
-          <h2>Gallery</h2>
-          <button class="btn btn-primary btn-sm" onclick="document.getElementById('gallery-form-panel').style.display='block'">+ Add Image</button>
-        </div>
         <div class="panel" id="gallery-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3>Upload Image</h3></div>
-          <div class="alert" id="gallery-alert"></div>
-          <form id="gallery-form" enctype="multipart/form-data">
-            <div class="form-row">
-              <div class="form-group"><label>Title</label><input type="text" id="gal-title" required/></div>
+          <div class="panel-body">
+            <div class="alert" id="gallery-alert"></div>
+            <form id="gallery-form" class="form-grid" enctype="multipart/form-data">
+              <div class="form-group"><label>Title *</label><input type="text" id="gal-title" required placeholder="Image title"/></div>
               <div class="form-group"><label>Category</label><input type="text" id="gal-category" placeholder="e.g. Events"/></div>
-            </div>
-            <div class="form-group"><label>Caption</label><input type="text" id="gal-caption"/></div>
-            <div class="form-group"><label>Image File</label><input type="file" id="gal-file" accept="image/*" required/></div>
-            <button type="submit" class="btn btn-primary">Upload</button>
-            <button type="button" class="btn btn-green" onclick="document.getElementById('gallery-form-panel').style.display='none'">Cancel</button>
-          </form>
+              <div class="form-group full"><label>Caption</label><input type="text" id="gal-caption" placeholder="Short description"/></div>
+              <div class="form-group full"><label>Image File *</label><input type="file" id="gal-file" accept="image/*" required/></div>
+              <div class="form-actions full">
+                <button type="submit" class="btn btn-primary">📤 Upload</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('gallery-form-panel').style.display='none'">Cancel</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div class="gallery-grid" id="admin-gallery-grid"><p>Loading...</p></div>
-      </div>
-
-      <!-- Donations -->
-      <div id="section-donations" class="tab-section">
-        <div class="dashboard-header"><h2>Donations</h2></div>
         <div class="panel">
-          <div class="panel-header"><h3>All Donations</h3></div>
-          <div class="table-container"><table>
-            <thead><tr><th>Donor</th><th>Email</th><th>Amount</th><th>Purpose</th><th>Reference</th><th>Date</th></tr></thead>
-            <tbody id="donations-body"><tr><td colspan="6">Loading...</td></tr></tbody>
-          </table></div>
+          <div class="panel-header">
+            <h3>Photo Gallery</h3>
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('gallery-form-panel').style.display='block'">+ Upload Photo</button>
+          </div>
+          <div class="gallery-admin-grid" id="admin-gallery-grid">
+            <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">🖼️</div><p>No images yet.</p></div>
+          </div>
         </div>
       </div>
 
-      <!-- Messages -->
+
+      <!-- ════ MESSAGES ════ -->
       <div id="section-messages" class="tab-section">
-        <div class="dashboard-header"><h2>Contact Messages</h2></div>
         <div class="panel">
-          <div class="panel-header"><h3>All Messages</h3></div>
-          <div class="table-container"><table>
-            <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th></tr></thead>
-            <tbody id="messages-body"><tr><td colspan="5">Loading...</td></tr></tbody>
-          </table></div>
+          <div class="panel-header"><h3>Contact Messages</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th></tr></thead>
+              <tbody id="messages-body"><tr><td colspan="5" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-    </main>
-  </div>
+      <!-- ════ NOTIFICATIONS ════ -->
+      <div id="section-notifications" class="tab-section">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Notifications</h3>
+            <button class="btn btn-outline btn-sm" onclick="markAllRead()">Mark all read</button>
+          </div>
+          <div class="panel-body" id="notifications-list">
+            <div class="empty-state"><div class="empty-icon">🔔</div><p>No notifications yet.</p></div>
+          </div>
+        </div>
+      </div>
 
-  <footer id="footer"></footer>
-  <script src="/src/js/main.js"></script>
-  <script>
-    // Auth guard
-    document.addEventListener('DOMContentLoaded', () => {
-      const user = getUser();
-      if (!user || (user.role !== 'admin' && user.role !== 'executive')) {
-        window.location.href = '/membership.html?login';
-        return;
-      }
-      document.getElementById('sidebar-name').textContent = user.full_name || 'Admin';
-      document.getElementById('sidebar-role').textContent = user.role;
-      loadOverview();
+
+      <!-- ════ REPORTS ════ -->
+      <div id="section-reports" class="tab-section">
+        <div class="report-grid" id="reports-grid">
+          <div class="report-card">
+            <h4>📋 Membership Summary</h4>
+            <div class="report-row"><span>Total Members</span><span id="rpt-total">-</span></div>
+            <div class="report-row"><span>Active</span><span id="rpt-active">-</span></div>
+            <div class="report-row"><span>Pending Approval</span><span id="rpt-pending">-</span></div>
+            <div class="report-row"><span>Suspended</span><span id="rpt-suspended">-</span></div>
+          </div>
+          <div class="report-card">
+            <h4>🎓 Scholarship Summary</h4>
+            <div class="report-row"><span>Total Applications</span><span id="rpt-apps">-</span></div>
+            <div class="report-row"><span>Submitted</span><span id="rpt-submitted">-</span></div>
+            <div class="report-row"><span>Under Review</span><span id="rpt-review">-</span></div>
+            <div class="report-row"><span>Approved</span><span id="rpt-approved">-</span></div>
+            <div class="report-row"><span>Rejected</span><span id="rpt-rejected">-</span></div>
+          </div>
+          <div class="report-card">
+            <h4>💰 Donation Summary</h4>
+            <div class="report-row"><span>Total Donations</span><span id="rpt-don-count">-</span></div>
+            <div class="report-row"><span>Total Amount</span><span id="rpt-don-total">-</span></div>
+          </div>
+          <div class="report-card">
+            <h4>📅 Events Summary</h4>
+            <div class="report-row"><span>Total Events</span><span id="rpt-ev-total">-</span></div>
+            <div class="report-row"><span>Upcoming</span><span id="rpt-ev-upcoming">-</span></div>
+            <div class="report-row"><span>Past Events</span><span id="rpt-ev-past">-</span></div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ════ USERS ════ -->
+      <div id="section-users" class="tab-section">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>User Management</h3>
+            <span style="font-size:0.8rem;color:#8b9bb4;">Manage roles and access levels</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Current Role</th><th>Status</th><th>Joined</th><th>Change Role</th></tr></thead>
+              <tbody id="users-body"><tr><td colspan="6" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ SETTINGS ════ -->
+      <div id="section-settings" class="tab-section">
+        <div class="panel">
+          <div class="panel-header"><h3>Account Settings</h3></div>
+          <div class="panel-body">
+            <div class="settings-section">
+              <h3>Change Password</h3>
+              <div class="alert" id="settings-alert"></div>
+              <form id="settings-form" class="form-grid" style="max-width:500px;">
+                <div class="form-group full"><label>Current Password</label><input type="password" id="set-current-pass" placeholder="Enter current password"/></div>
+                <div class="form-group"><label>New Password</label><input type="password" id="set-new-pass" placeholder="Min 6 characters"/></div>
+                <div class="form-group"><label>Confirm New Password</label><input type="password" id="set-confirm-pass" placeholder="Repeat new password"/></div>
+                <div class="form-actions full">
+                  <button type="submit" class="btn btn-primary">🔒 Update Password</button>
+                </div>
+              </form>
+            </div>
+            <div class="settings-section">
+              <h3>Organization Info</h3>
+              <p style="font-size:0.88rem;color:#6c757d;">
+                <strong>Organization:</strong> Gbeh-lay United Youths for Growth and Development<br/>
+                <strong>Acronym:</strong> GUYGD<br/>
+                <strong>Location:</strong> Gbeh-lay, Liberia<br/>
+                <strong>Platform Version:</strong> 1.0.0
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end admin-content -->
+  </div><!-- end admin-main -->
+</div><!-- end admin-layout -->
+
+
+<script src="/src/js/main.js"></script>
+<script>
+// ── INIT ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const user = getUser();
+  if (!user || (user.role !== 'admin' && user.role !== 'executive')) {
+    window.location.href = '/membership.html';
+    return;
+  }
+  document.getElementById('sidebar-name').textContent = user.full_name || 'Admin';
+  document.getElementById('sidebar-role').textContent = user.role;
+  document.getElementById('topbar-user').textContent = user.full_name || 'Admin';
+  loadDashboard();
+  loadNotifications();
+});
+
+// ── NAVIGATION ────────────────────────────────────────
+const sectionTitles = {
+  dashboard: 'Dashboard', applications: 'Scholarship Applications',
+  members: 'Members', events: 'Events', news: 'News',
+  gallery: 'Gallery', messages: 'Messages', notifications: 'Notifications',
+  reports: 'Reports', users: 'User Management', settings: 'Settings'
+};
+
+function showSection(name, el) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('topbar-title').textContent = sectionTitles[name] || name;
+  const loaders = {
+    dashboard: loadDashboard, applications: loadApplications,
+    members: loadMembers, events: loadEvents, news: loadNews,
+    gallery: loadGallery, messages: loadMessages,
+    notifications: loadNotifications, reports: loadReports, users: loadUsers
+  };
+  if (loaders[name]) loaders[name]();
+}
+
+function logout() {
+  localStorage.removeItem('guygd_token');
+  localStorage.removeItem('guygd_user');
+  window.location.href = '/index.html';
+}
+
+// ── HELPERS ───────────────────────────────────────────
+function badge(status) {
+  return `<span class="badge badge-${status}">${status.replace('_', ' ')}</span>`;
+}
+function fmtDate(d) { return d ? new Date(d).toLocaleDateString() : '-'; }
+function showAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg; el.className = 'alert ' + type;
+  setTimeout(() => { el.className = 'alert'; el.textContent = ''; }, 4000);
+}
+
+
+// ── DASHBOARD ─────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const [members, apps, events, donations] = await Promise.all([
+      apiFetch('/members'), apiFetch('/scholarships'),
+      apiFetch('/events'), apiFetch('/donations')
+    ]);
+    document.getElementById('stat-members').textContent   = members.length;
+    document.getElementById('stat-apps').textContent      = apps.length;
+    document.getElementById('stat-events').textContent    = events.length;
+    document.getElementById('stat-donations').textContent = donations.length;
+
+    document.getElementById('recent-members-body').innerHTML = members.slice(0,5).map(m =>
+      `<tr><td>${m.full_name}</td><td>${badge(m.status)}</td><td>${fmtDate(m.joined_at)}</td></tr>`
+    ).join('') || '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No members yet.</td></tr>';
+
+    document.getElementById('recent-apps-body').innerHTML = apps.slice(0,5).map(a =>
+      `<tr><td>${a.applicant_name}</td><td>${a.level || '-'}</td><td>${badge(a.status)}</td></tr>`
+    ).join('') || '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No applications yet.</td></tr>';
+  } catch(e) { console.error('Dashboard load error:', e); }
+}
+
+// ── APPLICATIONS ──────────────────────────────────────
+let allApplications = [];
+async function loadApplications() {
+  try {
+    allApplications = await apiFetch('/scholarships');
+    renderApplications(allApplications);
+  } catch(e) {
+    document.getElementById('applications-body').innerHTML =
+      '<tr><td colspan="7" style="text-align:center;color:#e74c3c;">Error loading applications.</td></tr>';
+  }
+}
+function renderApplications(list) {
+  document.getElementById('applications-body').innerHTML = list.length ? list.map(s => `
+    <tr>
+      <td><strong>${s.applicant_name}</strong></td>
+      <td>${s.school || '-'}</td>
+      <td>${s.level || '-'}</td>
+      <td>${s.essay ? s.essay.substring(0,40)+'…' : '-'}</td>
+      <td>${badge(s.status)}</td>
+      <td>${fmtDate(s.applied_at)}</td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn btn-sm btn-warn"    onclick="updateApp(${s.id},'under_review')">Review</button>
+        <button class="btn btn-sm btn-success" onclick="updateApp(${s.id},'approved')">Approve</button>
+        <button class="btn btn-sm btn-danger"  onclick="updateApp(${s.id},'rejected')">Reject</button>
+      </td>
+    </tr>`).join('')
+    : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No applications found.</td></tr>';
+}
+function filterApplications() {
+  const val = document.getElementById('app-filter').value;
+  renderApplications(val ? allApplications.filter(a => a.status === val) : allApplications);
+}
+async function updateApp(id, status) {
+  try {
+    await apiFetch(`/scholarships/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    loadApplications(); loadDashboard();
+  } catch(e) { alert('Failed to update application.'); }
+}
+
+
+// ── MEMBERS ───────────────────────────────────────────
+let allMembers = [];
+async function loadMembers() {
+  try {
+    allMembers = await apiFetch('/members');
+    renderMembers(allMembers);
+  } catch(e) {
+    document.getElementById('members-body').innerHTML =
+      '<tr><td colspan="7" style="text-align:center;color:#e74c3c;">Error loading members.</td></tr>';
+  }
+}
+function renderMembers(list) {
+  document.getElementById('members-body').innerHTML = list.length ? list.map(m => `
+    <tr>
+      <td><strong>${m.full_name}</strong></td>
+      <td>${m.email}</td>
+      <td>${m.phone || '-'}</td>
+      <td>${badge(m.role)}</td>
+      <td>${badge(m.status)}</td>
+      <td>${fmtDate(m.joined_at)}</td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">Activate</button>
+        <button class="btn btn-sm btn-danger"  onclick="updateMemberStatus(${m.id},'suspended')">Suspend</button>
+      </td>
+    </tr>`).join('')
+    : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No members found.</td></tr>';
+}
+function searchMembers() {
+  const q = document.getElementById('member-search').value.toLowerCase();
+  renderMembers(allMembers.filter(m =>
+    m.full_name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q)
+  ));
+}
+async function updateMemberStatus(id, status) {
+  try {
+    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    loadMembers(); loadDashboard();
+  } catch(e) { alert('Failed to update member.'); }
+}
+
+// ── EVENTS ────────────────────────────────────────────
+async function loadEvents() {
+  try {
+    const list = await apiFetch('/events');
+    document.getElementById('events-body').innerHTML = list.length ? list.map(e => `
+      <tr>
+        <td><strong>${e.title}</strong></td>
+        <td>${fmtDate(e.event_date)}</td>
+        <td>${e.location || '-'}</td>
+        <td>${badge(e.category || 'General')}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">🗑 Delete</button>
+        </td>
+      </tr>`).join('')
+      : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
+  } catch(e) {
+    document.getElementById('events-body').innerHTML =
+      '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading events.</td></tr>';
+  }
+}
+function showEventForm() { document.getElementById('event-form-panel').style.display = 'block'; }
+function hideEventForm() { document.getElementById('event-form-panel').style.display = 'none'; }
+
+document.getElementById('event-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await apiFetch('/events', { method: 'POST', body: JSON.stringify({
+      title:       document.getElementById('ev-title').value,
+      event_date:  document.getElementById('ev-date').value,
+      location:    document.getElementById('ev-location').value,
+      category:    document.getElementById('ev-category').value,
+      description: document.getElementById('ev-desc').value,
+      image_url:   document.getElementById('ev-image').value,
+    })});
+    showAlert('event-alert', '✅ Event created successfully!', 'success');
+    document.getElementById('event-form').reset();
+    hideEventForm(); loadEvents(); loadDashboard();
+  } catch(err) { showAlert('event-alert', err.message || 'Failed to create event.', 'error'); }
+});
+async function deleteEvent(id) {
+  if (!confirm('Delete this event? This cannot be undone.')) return;
+  try { await apiFetch(`/events/${id}`, { method: 'DELETE' }); loadEvents(); loadDashboard(); }
+  catch(e) { alert('Failed to delete event.'); }
+}
+
+
+// ── NEWS ──────────────────────────────────────────────
+async function loadNews() {
+  try {
+    const list = await apiFetch('/news');
+    document.getElementById('news-body').innerHTML = list.length ? list.map(n => `
+      <tr>
+        <td><strong>${n.title}</strong></td>
+        <td>${n.category || '-'}</td>
+        <td>${n.published ? '<span class="badge badge-active">Published</span>' : '<span class="badge badge-pending">Draft</span>'}</td>
+        <td>${fmtDate(n.created_at)}</td>
+        <td style="display:flex;gap:6px;">
+          <button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">🗑 Delete</button>
+        </td>
+      </tr>`).join('')
+      : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No articles yet.</td></tr>';
+  } catch(e) {
+    document.getElementById('news-body').innerHTML =
+      '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading news.</td></tr>';
+  }
+}
+document.getElementById('news-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await apiFetch('/news', { method: 'POST', body: JSON.stringify({
+      title:     document.getElementById('news-title').value,
+      category:  document.getElementById('news-category').value,
+      summary:   document.getElementById('news-summary').value,
+      content:   document.getElementById('news-content').value,
+      image_url: document.getElementById('news-image').value,
+      published: true,
+    })});
+    showAlert('news-alert', '✅ Article published!', 'success');
+    document.getElementById('news-form').reset();
+    document.getElementById('news-form-panel').style.display = 'none';
+    loadNews();
+  } catch(err) { showAlert('news-alert', err.message || 'Failed to publish.', 'error'); }
+});
+async function deleteNews(id) {
+  if (!confirm('Delete this article?')) return;
+  try { await apiFetch(`/news/${id}`, { method: 'DELETE' }); loadNews(); }
+  catch(e) { alert('Failed to delete article.'); }
+}
+
+// ── GALLERY ───────────────────────────────────────────
+async function loadGallery() {
+  try {
+    const list = await apiFetch('/gallery');
+    const grid = document.getElementById('admin-gallery-grid');
+    grid.innerHTML = list.length ? list.map(img => `
+      <div class="gallery-admin-item">
+        <img src="${img.image_url}" alt="${img.title || 'image'}" onerror="this.src='/assets/images/placeholder.png'"/>
+        <button class="del-btn" onclick="deleteGallery(${img.id})">✕</button>
+      </div>`).join('')
+      : '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">🖼️</div><p>No images yet.</p></div>';
+  } catch(e) {
+    document.getElementById('admin-gallery-grid').innerHTML =
+      '<div class="empty-state" style="grid-column:1/-1;"><p>Error loading gallery.</p></div>';
+  }
+}
+document.getElementById('gallery-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('title',    document.getElementById('gal-title').value);
+  formData.append('category', document.getElementById('gal-category').value);
+  formData.append('caption',  document.getElementById('gal-caption').value);
+  formData.append('image',    document.getElementById('gal-file').files[0]);
+  try {
+    const res = await fetch(`${API}/gallery`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${getToken()}` },
+      body: formData
     });
+    if (!res.ok) throw new Error('Upload failed');
+    showAlert('gallery-alert', '✅ Image uploaded!', 'success');
+    document.getElementById('gallery-form').reset();
+    document.getElementById('gallery-form-panel').style.display = 'none';
+    loadGallery();
+  } catch(err) { showAlert('gallery-alert', 'Upload failed. Check file size or format.', 'error'); }
+});
+async function deleteGallery(id) {
+  if (!confirm('Remove this image?')) return;
+  try { await apiFetch(`/gallery/${id}`, { method: 'DELETE' }); loadGallery(); }
+  catch(e) { alert('Failed to delete image.'); }
+}
 
-    function showSection(name) {
-      document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-      document.getElementById('section-' + name).classList.add('active');
-      document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
-      event.target.closest('a').classList.add('active');
-      const loaders = { members: loadMembers, scholarships: loadScholarships, events: loadEvents, news: loadNews, gallery: loadGallery, donations: loadDonations, messages: loadMessages };
-      if (loaders[name]) loaders[name]();
-    }
 
-    function logout() {
-      localStorage.removeItem('guygd_token');
-      localStorage.removeItem('guygd_user');
-      window.location.href = '/index.html';
-    }
+// ── MESSAGES ──────────────────────────────────────────
+async function loadMessages() {
+  try {
+    const list = await apiFetch('/contact');
+    document.getElementById('messages-body').innerHTML = list.length ? list.map(m => `
+      <tr>
+        <td><strong>${m.sender_name}</strong></td>
+        <td>${m.email}</td>
+        <td>${m.subject || '-'}</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${m.message}">${m.message}</td>
+        <td>${fmtDate(m.received_at)}</td>
+      </tr>`).join('')
+      : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No messages yet.</td></tr>';
+  } catch(e) {
+    document.getElementById('messages-body').innerHTML =
+      '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading messages.</td></tr>';
+  }
+}
 
-    async function loadOverview() {
-      try {
-        const [members, scholarships, events, donations] = await Promise.all([
-          apiFetch('/members'), apiFetch('/scholarships'), apiFetch('/events'), apiFetch('/donations')
-        ]);
-        document.getElementById('stat-members').textContent = members.length;
-        document.getElementById('stat-scholarships').textContent = scholarships.length;
-        document.getElementById('stat-events').textContent = events.length;
-        document.getElementById('stat-donations').textContent = donations.length;
-        document.getElementById('recent-members-body').innerHTML = members.slice(0, 5).map(m => `
-          <tr><td>${m.full_name}</td><td>${m.email}</td><td><span class="status-${m.status}">${m.status}</span></td><td>${new Date(m.joined_at).toLocaleDateString()}</td></tr>`).join('');
-      } catch(e) { console.error(e); }
-    }
+// ── NOTIFICATIONS ─────────────────────────────────────
+let notifications = [];
+async function loadNotifications() {
+  try {
+    const [members, apps, messages] = await Promise.all([
+      apiFetch('/members'), apiFetch('/scholarships'), apiFetch('/contact')
+    ]);
+    notifications = [];
+    const pending = members.filter(m => m.status === 'pending');
+    const newApps = apps.filter(a => a.status === 'submitted');
+    pending.forEach(m => notifications.push({ text: `New member pending approval: ${m.full_name}`, time: m.joined_at, read: false }));
+    newApps.forEach(a => notifications.push({ text: `New scholarship application from ${a.applicant_name}`, time: a.applied_at, read: false }));
+    messages.slice(0,3).forEach(m => notifications.push({ text: `New message from ${m.sender_name}: "${m.subject}"`, time: m.received_at, read: true }));
+    const count = notifications.filter(n => !n.read).length;
+    document.getElementById('notif-count').textContent = count;
+    const list = document.getElementById('notifications-list');
+    list.innerHTML = notifications.length ? notifications.map(n => `
+      <div class="notif-item">
+        <div class="notif-dot ${n.read ? 'read' : ''}"></div>
+        <div class="notif-text"><p>${n.text}</p><span>${fmtDate(n.time)}</span></div>
+      </div>`).join('')
+      : '<div class="empty-state"><div class="empty-icon">🔔</div><p>No notifications.</p></div>';
+  } catch(e) { console.error('Notifications error:', e); }
+}
+function markAllRead() {
+  notifications.forEach(n => n.read = true);
+  document.getElementById('notif-count').textContent = 0;
+  document.querySelectorAll('.notif-dot').forEach(d => d.classList.add('read'));
+}
 
-    async function loadMembers() {
-      try {
-        const members = await apiFetch('/members');
-        document.getElementById('members-body').innerHTML = members.map(m => `
-          <tr>
-            <td>${m.full_name}</td><td>${m.email}</td><td>${m.phone || '-'}</td>
-            <td>${m.role}</td><td><span class="status-${m.status}">${m.status}</span></td>
-            <td>
-              <button class="btn btn-sm btn-green" onclick="updateMember(${m.id}, 'active')">Activate</button>
-              <button class="btn btn-sm btn-danger" onclick="updateMember(${m.id}, 'suspended')">Suspend</button>
-            </td>
-          </tr>`).join('');
-      } catch(e) { document.getElementById('members-body').innerHTML = '<tr><td colspan="6">Error loading members.</td></tr>'; }
-    }
+// ── REPORTS ───────────────────────────────────────────
+async function loadReports() {
+  try {
+    const [members, apps, events, donations] = await Promise.all([
+      apiFetch('/members'), apiFetch('/scholarships'),
+      apiFetch('/events'), apiFetch('/donations')
+    ]);
+    document.getElementById('rpt-total').textContent     = members.length;
+    document.getElementById('rpt-active').textContent    = members.filter(m => m.status === 'active').length;
+    document.getElementById('rpt-pending').textContent   = members.filter(m => m.status === 'pending').length;
+    document.getElementById('rpt-suspended').textContent = members.filter(m => m.status === 'suspended').length;
+    document.getElementById('rpt-apps').textContent      = apps.length;
+    document.getElementById('rpt-submitted').textContent = apps.filter(a => a.status === 'submitted').length;
+    document.getElementById('rpt-review').textContent    = apps.filter(a => a.status === 'under_review').length;
+    document.getElementById('rpt-approved').textContent  = apps.filter(a => a.status === 'approved').length;
+    document.getElementById('rpt-rejected').textContent  = apps.filter(a => a.status === 'rejected').length;
+    const total = donations.reduce((sum, d) => sum + parseFloat(d.amount || 0), 0);
+    document.getElementById('rpt-don-count').textContent = donations.length;
+    document.getElementById('rpt-don-total').textContent = '$' + total.toFixed(2);
+    const now = new Date();
+    document.getElementById('rpt-ev-total').textContent    = events.length;
+    document.getElementById('rpt-ev-upcoming').textContent = events.filter(e => new Date(e.event_date) >= now).length;
+    document.getElementById('rpt-ev-past').textContent     = events.filter(e => new Date(e.event_date) < now).length;
+  } catch(e) { console.error('Reports error:', e); }
+}
 
-    async function updateMember(id, status) {
-      try {
-        await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
-        loadMembers();
-      } catch(e) { alert('Failed to update member.'); }
-    }
+// ── USERS ─────────────────────────────────────────────
+async function loadUsers() {
+  try {
+    const list = await apiFetch('/members');
+    document.getElementById('users-body').innerHTML = list.length ? list.map(m => `
+      <tr>
+        <td><strong>${m.full_name}</strong></td>
+        <td>${m.email}</td>
+        <td>${badge(m.role)}</td>
+        <td>${badge(m.status)}</td>
+        <td>${fmtDate(m.joined_at)}</td>
+        <td>
+          <select onchange="changeRole(${m.id}, this.value)" style="padding:5px 8px;border-radius:6px;border:1px solid #d0d5dd;font-size:0.82rem;">
+            <option value="member"    ${m.role==='member'    ? 'selected':''}>Member</option>
+            <option value="admin"     ${m.role==='admin'     ? 'selected':''}>Admin</option>
+            <option value="executive" ${m.role==='executive' ? 'selected':''}>Executive</option>
+          </select>
+        </td>
+      </tr>`).join('')
+      : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No users found.</td></tr>';
+  } catch(e) {
+    document.getElementById('users-body').innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading users.</td></tr>';
+  }
+}
+async function changeRole(id, role) {
+  try {
+    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ role }) });
+  } catch(e) { alert('Failed to update role.'); }
+}
 
-    async function loadScholarships() {
-      try {
-        const list = await apiFetch('/scholarships');
-        document.getElementById('scholarships-body').innerHTML = list.map(s => `
-          <tr>
-            <td>${s.applicant_name}</td><td>${s.school || '-'}</td><td>${s.level || '-'}</td>
-            <td><span class="status-${s.status}">${s.status}</span></td>
-            <td>${new Date(s.applied_at).toLocaleDateString()}</td>
-            <td>
-              <button class="btn btn-sm btn-green" onclick="updateScholarship(${s.id}, 'approved')">Approve</button>
-              <button class="btn btn-sm btn-danger" onclick="updateScholarship(${s.id}, 'rejected')">Reject</button>
-            </td>
-          </tr>`).join('');
-      } catch(e) { document.getElementById('scholarships-body').innerHTML = '<tr><td colspan="6">Error loading.</td></tr>'; }
-    }
-
-    async function updateScholarship(id, status) {
-      try {
-        await apiFetch(`/scholarships/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
-        loadScholarships();
-      } catch(e) { alert('Failed to update.'); }
-    }
-
-    async function loadEvents() {
-      try {
-        const list = await apiFetch('/events');
-        document.getElementById('events-body').innerHTML = list.map(e => `
-          <tr>
-            <td>${e.title}</td><td>${new Date(e.event_date).toLocaleDateString()}</td>
-            <td>${e.location || '-'}</td><td>${e.category || '-'}</td>
-            <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">Delete</button></td>
-          </tr>`).join('');
-      } catch(e) { document.getElementById('events-body').innerHTML = '<tr><td colspan="5">Error loading.</td></tr>'; }
-    }
-
-    function showEventForm() { document.getElementById('event-form-panel').style.display = 'block'; }
-
-    document.getElementById('event-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        await apiFetch('/events', { method: 'POST', body: JSON.stringify({
-          title: document.getElementById('ev-title').value,
-          event_date: document.getElementById('ev-date').value,
-          location: document.getElementById('ev-location').value,
-          category: document.getElementById('ev-category').value,
-          description: document.getElementById('ev-desc').value,
-        })});
-        showAlert('event-alert', 'Event created!', 'success');
-        document.getElementById('event-form').reset();
-        loadEvents();
-      } catch(err) { showAlert('event-alert', err.message, 'error'); }
-    });
-
-    async function deleteEvent(id) {
-      if (!confirm('Delete this event?')) return;
-      try { await apiFetch(`/events/${id}`, { method: 'DELETE' }); loadEvents(); }
-      catch(e) { alert('Failed to delete.'); }
-    }
-
-    async function loadNews() {
-      try {
-        const list = await apiFetch('/news');
-        document.getElementById('news-body').innerHTML = list.map(n => `
-          <tr>
-            <td>${n.title}</td><td>${n.category || '-'}</td>
-            <td>${n.published ? '✅' : '❌'}</td>
-            <td>${new Date(n.created_at).toLocaleDateString()}</td>
-            <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">Delete</button></td>
-          </tr>`).join('');
-      } catch(e) { document.getElementById('news-body').innerHTML = '<tr><td colspan="5">Error loading.</td></tr>'; }
-    }
-
-    function showNewsForm() { document.getElementById('news-form-panel').style.display = 'block'; }
-
-    document.getElementById('news-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        await apiFetch('/news', { method: 'POST', body: JSON.stringify({
-          title: document.getElementById('news-title').value,
-          category: document.getElementById('news-category').value,
-          summary: document.getElementById('news-summary').value,
-          content: document.getElementById('news-content').value,
-          image_url: document.getElementById('news-image').value,
-          published: true,
-        })});
-        showAlert('news-alert', 'Article published!', 'success');
-        document.getElementById('news-form').reset();
-        loadNews();
-      } catch(err) { showAlert('news-alert', err.message, 'error'); }
-    });
-
-    async function deleteNews(id) {
-      if (!confirm('Delete this article?')) return;
-      try { await apiFetch(`/news/${id}`, { method: 'DELETE' }); loadNews(); }
-      catch(e) { alert('Failed to delete.'); }
-    }
-
-    async function loadGallery() {
-      try {
-        const list = await apiFetch('/gallery');
-        const g = document.getElementById('admin-gallery-grid');
-        if (!list.length) { g.innerHTML = '<p>No images yet.</p>'; return; }
-        g.innerHTML = list.map(img => `
-          <div class="gallery-item">
-            <img src="${img.image_url}" alt="${img.title || ''}"/>
-            <div class="gallery-overlay">${img.title || ''}</div>
-          </div>`).join('');
-      } catch(e) { document.getElementById('admin-gallery-grid').innerHTML = '<p>Error loading gallery.</p>'; }
-    }
-
-    document.getElementById('gallery-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append('title', document.getElementById('gal-title').value);
-      formData.append('category', document.getElementById('gal-category').value);
-      formData.append('caption', document.getElementById('gal-caption').value);
-      formData.append('image', document.getElementById('gal-file').files[0]);
-      try {
-        await fetch(`${API}/gallery`, { method: 'POST', headers: { Authorization: `Bearer ${getToken()}` }, body: formData });
-        showAlert('gallery-alert', 'Image uploaded!', 'success');
-        document.getElementById('gallery-form').reset();
-        loadGallery();
-      } catch(err) { showAlert('gallery-alert', 'Upload failed.', 'error'); }
-    });
-
-    async function loadDonations() {
-      try {
-        const list = await apiFetch('/donations');
-        document.getElementById('donations-body').innerHTML = list.map(d => `
-          <tr><td>${d.donor_name}</td><td>${d.email}</td><td>$${d.amount}</td><td>${d.purpose || '-'}</td><td>${d.transaction_ref}</td><td>${new Date(d.donated_at).toLocaleDateString()}</td></tr>`).join('');
-      } catch(e) { document.getElementById('donations-body').innerHTML = '<tr><td colspan="6">Error loading.</td></tr>'; }
-    }
-
-    async function loadMessages() {
-      try {
-        const list = await apiFetch('/contact');
-        document.getElementById('messages-body').innerHTML = list.map(m => `
-          <tr><td>${m.sender_name}</td><td>${m.email}</td><td>${m.subject}</td><td>${m.message.substring(0,60)}...</td><td>${new Date(m.received_at).toLocaleDateString()}</td></tr>`).join('');
-      } catch(e) { document.getElementById('messages-body').innerHTML = '<tr><td colspan="5">Error loading.</td></tr>'; }
-    }
-  </script>
+// ── SETTINGS ──────────────────────────────────────────
+document.getElementById('settings-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const np = document.getElementById('set-new-pass').value;
+  const cp = document.getElementById('set-confirm-pass').value;
+  if (np !== cp) { showAlert('settings-alert', 'New passwords do not match.', 'error'); return; }
+  if (np.length < 6) { showAlert('settings-alert', 'Password must be at least 6 characters.', 'error'); return; }
+  try {
+    await apiFetch('/members/password', { method: 'PUT', body: JSON.stringify({
+      currentPassword: document.getElementById('set-current-pass').value,
+      newPassword: np
+    })});
+    showAlert('settings-alert', '✅ Password updated successfully!', 'success');
+    document.getElementById('settings-form').reset();
+  } catch(err) { showAlert('settings-alert', err.message || 'Failed to update password.', 'error'); }
+});
+</script>
 </body>
 </html>
