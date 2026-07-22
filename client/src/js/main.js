@@ -32,11 +32,12 @@ function renderNavbar() {
   const links = `
     <a href="/index.html">Home</a>
     <a href="/about.html">About</a>
-    <a href="/programs.html">Programs</a>
-    <a href="/scholarships.html">Scholarships</a>
-    <a href="/news.html">News</a>
+    <a href="/leadership.html">Leadership</a>
+    <a href="/programs.html">Projects</a>
     <a href="/events.html">Events</a>
+    <a href="/news.html">News</a>
     <a href="/gallery.html">Gallery</a>
+    <a href="/campaign.html">Campaign</a>
     <a href="/donate.html">Donate</a>
     <a href="/contact.html">Contact</a>
     ${user
@@ -70,16 +71,16 @@ function renderFooter() {
       <div class="footer-col">
         <h4>Quick Links</h4>
         <a href="/about.html">About Us</a>
-        <a href="/programs.html">Programs</a>
-        <a href="/scholarships.html">Scholarships</a>
+        <a href="/leadership.html">Leadership</a>
+        <a href="/programs.html">Projects</a>
         <a href="/membership.html">Membership</a>
       </div>
       <div class="footer-col">
         <h4>Resources</h4>
-        <a href="/news.html">News</a>
         <a href="/events.html">Events</a>
+        <a href="/news.html">News</a>
         <a href="/gallery.html">Gallery</a>
-        <a href="/donate.html">Donate</a>
+        <a href="/campaign.html">Campaign</a>
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
