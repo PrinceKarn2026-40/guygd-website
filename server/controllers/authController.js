@@ -36,12 +36,13 @@ exports.login = async (req, res) => {
     if (member.status !== 'active') return res.status(403).json({ message: 'Account not yet approved. Please wait for admin approval.' });
     const valid = await bcrypt.compare(password, member.password_hash);
     if (!valid) return res.status(401).json({ message: 'Invalid credentials' });
+    await db.query('UPDATE members SET last_login = NOW(), updated_at = NOW() WHERE id = $1', [member.id]);
     const token = jwt.sign(
       { id: member.id, role: member.role, full_name: member.full_name },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
-    res.json({ token, user: { id: member.id, full_name: member.full_name, email: member.email, role: member.role, status: member.status } });
+    res.json({ token, user: { id: member.id, full_name: member.full_name, email: member.email, role: member.role, status: member.status, last_login: member.last_login } });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

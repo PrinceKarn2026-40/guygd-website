@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="/src/css/main.css"/>
   <link rel="stylesheet" href="/src/css/dashboard.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css"/>
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css"/>
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css"/>
   <style>
     body { margin: 0; background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
     .admin-layout { display: flex; min-height: 100vh; }
@@ -177,6 +181,42 @@
     .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
     .empty-state p { margin: 0; font-size: 0.9rem; }
 
+    /* ── DATATABLES OVERRIDES ── */
+    .dataTables_wrapper .dataTables_filter input {
+      border: 1px solid #d0d5dd; border-radius: 8px; padding: 6px 12px;
+      font-size: 0.85rem; outline: none; margin-left: 6px;
+    }
+    .dataTables_wrapper .dataTables_filter input:focus { border-color: #2d6a4f; }
+    .dataTables_wrapper .dataTables_length select {
+      border: 1px solid #d0d5dd; border-radius: 8px; padding: 5px 8px;
+      font-size: 0.85rem; outline: none;
+    }
+    .dataTables_wrapper .dataTables_info { font-size: 0.82rem; color: #6c757d; padding-top: 10px; }
+    .dataTables_wrapper .dataTables_paginate { padding-top: 10px; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      border-radius: 6px !important; font-size: 0.82rem !important;
+      padding: 4px 10px !important; border: none !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+      background: #2d6a4f !important; color: #fff !important; border: none !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: #f0f2f5 !important; color: #1a1f36 !important;
+    }
+    .dt-buttons { margin-bottom: 12px; }
+    .dt-buttons .btn { margin-right: 6px; font-size: 0.8rem; padding: 6px 14px; }
+    .dataTables_wrapper .dt-buttons .dt-button {
+      background: #f0f2f5; border: 1px solid #d0d5dd; border-radius: 8px;
+      padding: 6px 14px; font-size: 0.8rem; cursor: pointer; color: #344054;
+      transition: all 0.2s;
+    }
+    .dataTables_wrapper .dt-buttons .dt-button:hover { background: #2d6a4f; color: #fff; border-color: #2d6a4f; }
+    table.dataTable thead th { cursor: pointer; user-select: none; }
+    table.dataTable thead th.sorting_asc::after  { content: ' ▲'; font-size: 0.65rem; color: #2d6a4f; }
+    table.dataTable thead th.sorting_desc::after { content: ' ▼'; font-size: 0.65rem; color: #2d6a4f; }
+    .dataTables_wrapper { padding: 0 22px 18px; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .admin-sidebar { width: 200px; }
@@ -224,6 +264,9 @@
       </a>
       <a onclick="showSection('gallery', this)">
         <span class="icon">🖼️</span> Gallery
+      </a>
+      <a onclick="showSection('donations', this)">
+        <span class="icon">💰</span> Donations
       </a>
       <a onclick="showSection('messages', this)">
         <span class="icon">✉️</span> Messages
@@ -288,18 +331,18 @@
           <div class="panel">
             <div class="panel-header"><h3>Recent Members</h3></div>
             <div class="table-wrap">
-              <table>
+              <table id="dt-recent-members" class="admin-dt" style="width:100%">
                 <thead><tr><th>Name</th><th>Status</th><th>Joined</th></tr></thead>
-                <tbody id="recent-members-body"><tr><td colspan="3" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+                <tbody id="recent-members-body"></tbody>
               </table>
             </div>
           </div>
           <div class="panel">
             <div class="panel-header"><h3>Recent Applications</h3></div>
             <div class="table-wrap">
-              <table>
+              <table id="dt-recent-apps" class="admin-dt" style="width:100%">
                 <thead><tr><th>Applicant</th><th>Level</th><th>Status</th></tr></thead>
-                <tbody id="recent-apps-body"><tr><td colspan="3" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+                <tbody id="recent-apps-body"></tbody>
               </table>
             </div>
           </div>
@@ -323,13 +366,11 @@
             </div>
           </div>
           <div class="table-wrap">
-            <table>
+            <table id="dt-applications" class="admin-dt" style="width:100%">
               <thead>
                 <tr><th>Applicant</th><th>School</th><th>Level</th><th>Essay</th><th>Status</th><th>Applied</th><th>Actions</th></tr>
               </thead>
-              <tbody id="applications-body">
-                <tr><td colspan="7" style="text-align:center;color:#8b9bb4;">Loading...</td></tr>
-              </tbody>
+              <tbody id="applications-body"></tbody>
             </table>
           </div>
         </div>
@@ -345,13 +386,11 @@
               style="padding:7px 12px;border-radius:8px;border:1px solid #d0d5dd;font-size:0.82rem;width:220px;"/>
           </div>
           <div class="table-wrap">
-            <table>
+            <table id="dt-members" class="admin-dt" style="width:100%">
               <thead>
                 <tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr>
               </thead>
-              <tbody id="members-body">
-                <tr><td colspan="7" style="text-align:center;color:#8b9bb4;">Loading...</td></tr>
-              </tbody>
+              <tbody id="members-body"></tbody>
             </table>
           </div>
         </div>
@@ -392,9 +431,9 @@
             <button class="btn btn-primary btn-sm" onclick="showEventForm()">+ Add Event</button>
           </div>
           <div class="table-wrap">
-            <table>
+            <table id="dt-events" class="admin-dt" style="width:100%">
               <thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Category</th><th>Actions</th></tr></thead>
-              <tbody id="events-body"><tr><td colspan="5" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+              <tbody id="events-body"></tbody>
             </table>
           </div>
         </div>
@@ -426,9 +465,9 @@
             <button class="btn btn-primary btn-sm" onclick="document.getElementById('news-form-panel').style.display='block'">+ Add Article</button>
           </div>
           <div class="table-wrap">
-            <table>
+            <table id="dt-news" class="admin-dt" style="width:100%">
               <thead><tr><th>Title</th><th>Category</th><th>Published</th><th>Date</th><th>Actions</th></tr></thead>
-              <tbody id="news-body"><tr><td colspan="5" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+              <tbody id="news-body"></tbody>
             </table>
           </div>
         </div>
@@ -465,14 +504,29 @@
       </div>
 
 
+      <!-- ════ DONATIONS ════ -->
+      <div id="section-donations" class="tab-section">
+        <div class="panel">
+          <div class="panel-header"><h3>Donation Records</h3></div>
+          <div class="table-wrap">
+            <table id="dt-donations" class="admin-dt" style="width:100%">
+              <thead>
+                <tr><th>Donor</th><th>Email</th><th>Amount</th><th>Purpose</th><th>Reference</th><th>Date</th></tr>
+              </thead>
+              <tbody id="donations-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- ════ MESSAGES ════ -->
       <div id="section-messages" class="tab-section">
         <div class="panel">
           <div class="panel-header"><h3>Contact Messages</h3></div>
           <div class="table-wrap">
-            <table>
+            <table id="dt-messages" class="admin-dt" style="width:100%">
               <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th></tr></thead>
-              <tbody id="messages-body"><tr><td colspan="5" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+              <tbody id="messages-body"></tbody>
             </table>
           </div>
         </div>
@@ -533,9 +587,9 @@
             <span style="font-size:0.8rem;color:#8b9bb4;">Manage roles and access levels</span>
           </div>
           <div class="table-wrap">
-            <table>
+            <table id="dt-users" class="admin-dt" style="width:100%">
               <thead><tr><th>Name</th><th>Email</th><th>Current Role</th><th>Status</th><th>Joined</th><th>Change Role</th></tr></thead>
-              <tbody id="users-body"><tr><td colspan="6" style="text-align:center;color:#8b9bb4;">Loading...</td></tr></tbody>
+              <tbody id="users-body"></tbody>
             </table>
           </div>
         </div>
@@ -576,8 +630,45 @@
 </div><!-- end admin-layout -->
 
 
+<!-- jQuery + DataTables + Buttons -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="/src/js/main.js"></script>
 <script>
+// ── DATATABLES HELPER ────────────────────────────────
+// Destroy existing instance before reinitialising to avoid "already initialised" errors
+function dtInit(id, opts) {
+  if ($.fn.DataTable.isDataTable('#' + id)) {
+    $('#' + id).DataTable().destroy();
+  }
+  return $('#' + id).DataTable(Object.assign({
+    responsive: true,
+    pageLength: 10,
+    lengthMenu: [5, 10, 25, 50],
+    dom: '<"dt-top"Bf>rt<"dt-bottom"lip>',
+    buttons: [
+      { extend: 'excelHtml5', text: '⬇ Excel', className: 'dt-btn' },
+      { extend: 'csvHtml5',   text: '⬇ CSV',   className: 'dt-btn' },
+      { extend: 'print',      text: '🖨 Print',  className: 'dt-btn' }
+    ],
+    language: {
+      search: '',
+      searchPlaceholder: 'Search...',
+      emptyTable: 'No data available',
+      zeroRecords: 'No matching records found',
+      info: 'Showing _START_–_END_ of _TOTAL_ entries',
+      infoEmpty: 'No entries',
+      lengthMenu: 'Show _MENU_ entries'
+    }
+  }, opts || {}));
+}
+
 // ── INIT ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const user = getUser();
@@ -596,8 +687,9 @@ document.addEventListener('DOMContentLoaded', () => {
 const sectionTitles = {
   dashboard: 'Dashboard', applications: 'Scholarship Applications',
   members: 'Members', events: 'Events', news: 'News',
-  gallery: 'Gallery', messages: 'Messages', notifications: 'Notifications',
-  reports: 'Reports', users: 'User Management', settings: 'Settings'
+  gallery: 'Gallery', donations: 'Donations', messages: 'Messages',
+  notifications: 'Notifications', reports: 'Reports',
+  users: 'User Management', settings: 'Settings'
 };
 
 function showSection(name, el) {
@@ -609,7 +701,7 @@ function showSection(name, el) {
   const loaders = {
     dashboard: loadDashboard, applications: loadApplications,
     members: loadMembers, events: loadEvents, news: loadNews,
-    gallery: loadGallery, messages: loadMessages,
+    gallery: loadGallery, donations: loadDonations, messages: loadMessages,
     notifications: loadNotifications, reports: loadReports, users: loadUsers
   };
   if (loaders[name]) loaders[name]();
@@ -648,11 +740,13 @@ async function loadDashboard() {
 
     document.getElementById('recent-members-body').innerHTML = members.slice(0,5).map(m =>
       `<tr><td>${m.full_name}</td><td>${badge(m.status)}</td><td>${fmtDate(m.joined_at)}</td></tr>`
-    ).join('') || '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No members yet.</td></tr>';
-
+    ).join('');
     document.getElementById('recent-apps-body').innerHTML = apps.slice(0,5).map(a =>
       `<tr><td>${a.applicant_name}</td><td>${a.level || '-'}</td><td>${badge(a.status)}</td></tr>`
-    ).join('') || '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No applications yet.</td></tr>';
+    ).join('');
+
+    dtInit('dt-recent-members', { paging: false, searching: false, info: false, ordering: false, dom: 't', buttons: [] });
+    dtInit('dt-recent-apps',    { paging: false, searching: false, info: false, ordering: false, dom: 't', buttons: [] });
   } catch(e) { console.error('Dashboard load error:', e); }
 }
 
@@ -668,21 +762,21 @@ async function loadApplications() {
   }
 }
 function renderApplications(list) {
-  document.getElementById('applications-body').innerHTML = list.length ? list.map(s => `
+  document.getElementById('applications-body').innerHTML = list.map(s => `
     <tr>
       <td><strong>${s.applicant_name}</strong></td>
       <td>${s.school || '-'}</td>
       <td>${s.level || '-'}</td>
-      <td>${s.essay ? s.essay.substring(0,40)+'…' : '-'}</td>
+      <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.essay ? s.essay.substring(0,40)+'…' : '-'}</td>
       <td>${badge(s.status)}</td>
       <td>${fmtDate(s.applied_at)}</td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+      <td>
         <button class="btn btn-sm btn-warn"    onclick="updateApp(${s.id},'under_review')">Review</button>
         <button class="btn btn-sm btn-success" onclick="updateApp(${s.id},'approved')">Approve</button>
         <button class="btn btn-sm btn-danger"  onclick="updateApp(${s.id},'rejected')">Reject</button>
       </td>
-    </tr>`).join('')
-    : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No applications found.</td></tr>';
+    </tr>`).join('');
+  dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: [3, 6] }] });
 }
 function filterApplications() {
   const val = document.getElementById('app-filter').value;
@@ -708,7 +802,7 @@ async function loadMembers() {
   }
 }
 function renderMembers(list) {
-  document.getElementById('members-body').innerHTML = list.length ? list.map(m => `
+  document.getElementById('members-body').innerHTML = list.map(m => `
     <tr>
       <td><strong>${m.full_name}</strong></td>
       <td>${m.email}</td>
@@ -716,12 +810,12 @@ function renderMembers(list) {
       <td>${badge(m.role)}</td>
       <td>${badge(m.status)}</td>
       <td>${fmtDate(m.joined_at)}</td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+      <td>
         <button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">Activate</button>
         <button class="btn btn-sm btn-danger"  onclick="updateMemberStatus(${m.id},'suspended')">Suspend</button>
       </td>
-    </tr>`).join('')
-    : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No members found.</td></tr>';
+    </tr>`).join('');
+  dtInit('dt-members', { columnDefs: [{ orderable: false, targets: 6 }] });
 }
 function searchMembers() {
   const q = document.getElementById('member-search').value.toLowerCase();

@@ -9,8 +9,10 @@ CREATE TABLE IF NOT EXISTS members (
   gender VARCHAR(10) CHECK (gender IN ('Male', 'Female', 'Other')),
   date_of_birth DATE,
   address TEXT,
-  role VARCHAR(20) DEFAULT 'member' CHECK (role IN ('member', 'admin', 'executive')),
-  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'suspended')),
+  role VARCHAR(20) DEFAULT 'member' CHECK (role IN ('member', 'admin', 'executive', 'super_admin')),
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'suspended', 'inactive')),
+  last_login TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
