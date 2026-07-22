@@ -119,6 +119,16 @@
     </div>
   </section>
 
+  <section class="section bg-light">
+    <div class="container">
+      <h2 class="section-title"><span style="color:#2e7d32;">Memories</span> &mdash; <span style="color:#000;">Photo Gallery</span></h2>
+      <div class="cards-grid" id="home-gallery" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));"><p>Loading...</p></div>
+      <div style="text-align:center;margin-top:1.5rem;">
+        <a href="/gallery.html" class="btn btn-primary">View Full Gallery</a>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container cta-box">
       <h2>Ready to Make a Difference?</h2>
@@ -161,6 +171,16 @@
             <a href="/events.html" class="btn btn-sm btn-green">Learn More</a>
           </div>`).join('');
       } catch { document.getElementById('upcoming-events').innerHTML = '<p>Could not load events.</p>'; }
+      try {
+        const photos = await apiFetch('/gallery?limit=6');
+        const gc = document.getElementById('home-gallery');
+        if (!photos.length) { gc.innerHTML = '<p>No photos yet.</p>'; }
+        else gc.innerHTML = photos.map(p => `
+          <div class="card" style="padding:0;overflow:hidden;">
+            <img src="${p.image_url}" alt="${p.caption||'Gallery'}" style="width:100%;height:180px;object-fit:cover;"/>
+            ${p.caption ? `<p style="padding:0.6rem;margin:0;font-size:0.9rem;">${p.caption}</p>` : ''}
+          </div>`).join('');
+      } catch { document.getElementById('home-gallery').innerHTML = '<p>Could not load gallery.</p>'; }
       try {
         const news = await apiFetch('/news?limit=3');
         const c = document.getElementById('latest-news');
