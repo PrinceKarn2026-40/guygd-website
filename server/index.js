@@ -9,6 +9,7 @@ app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, '../client/public/assets/images/uploads')));
+app.use('/images', express.static(path.join(__dirname, '../client/public/assets/images')));
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/members', require('./routes/members'));
