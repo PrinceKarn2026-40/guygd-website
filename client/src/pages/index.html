@@ -99,6 +99,16 @@
     </div>
   </section>
 
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title"><span style="color:#2e7d32;">What's Coming</span> &mdash; <span style="color:#000;">Upcoming Events</span></h2>
+      <div class="cards-grid" id="upcoming-events"><p>Loading...</p></div>
+      <div style="text-align:center;margin-top:1.5rem;">
+        <a href="/events.html" class="btn btn-primary">View All Events</a>
+      </div>
+    </div>
+  </section>
+
   <section class="section bg-light">
     <div class="container">
       <h2 class="section-title">Latest News</h2>
@@ -138,6 +148,19 @@
       animateCount('stat-scholarships', 45);
       animateCount('stat-events', 80);
       animateCount('stat-communities', 12);
+      try {
+        const events = await apiFetch('/events?limit=3');
+        const ec = document.getElementById('upcoming-events');
+        if (!events.length) { ec.innerHTML = '<p>No upcoming events yet.</p>'; }
+        else ec.innerHTML = events.map(e => `
+          <div class="card">
+            <div class="card-icon">&#128197;</div>
+            <h3>${e.title}</h3>
+            <p class="card-meta">${new Date(e.date).toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'})}</p>
+            <p>${e.location || ''}</p>
+            <a href="/events.html" class="btn btn-sm btn-green">Learn More</a>
+          </div>`).join('');
+      } catch { document.getElementById('upcoming-events').innerHTML = '<p>Could not load events.</p>'; }
       try {
         const news = await apiFetch('/news?limit=3');
         const c = document.getElementById('latest-news');
