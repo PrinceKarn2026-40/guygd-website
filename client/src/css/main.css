@@ -404,14 +404,15 @@ tr:hover td { background: var(--light); }
   left: 0;
   right: 0;
   background: var(--green);
-  z-index: 2000;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.2);
-  padding: 6px 0 env(safe-area-inset-bottom, 6px);
+  z-index: 9999;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.25);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .mobile-bottom-nav .mbn-items {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  padding: 6px 0;
 }
 .mobile-bottom-nav a {
   display: flex;
@@ -419,20 +420,21 @@ tr:hover td { background: var(--light); }
   align-items: center;
   gap: 2px;
   color: rgba(255,255,255,0.75);
-  font-size: 0.62rem;
-  padding: 4px 6px;
+  font-size: 0.6rem;
+  padding: 4px 2px;
   border-radius: 8px;
   transition: var(--transition);
   text-decoration: none;
-  min-width: 44px;
+  min-width: 48px;
+  text-align: center;
 }
-.mobile-bottom-nav a .mbn-icon { font-size: 1.3rem; line-height: 1; }
+.mobile-bottom-nav a .mbn-icon { font-size: 1.4rem; line-height: 1; display: block; }
 .mobile-bottom-nav a.active,
 .mobile-bottom-nav a:hover { color: var(--gold); }
 
 @media (max-width: 768px) {
   .mobile-bottom-nav { display: block; }
-  body { padding-bottom: 70px; }
+  body { padding-bottom: 65px; }
 }
 
 /* ── GALLERY GRID ── */
