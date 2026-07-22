@@ -6,27 +6,122 @@
   <title>GUYGD – Home</title>
   <link rel="stylesheet" href="/src/css/main.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
+  <style>
+    /* ── HERO OVERLAY ── */
+    .hero {
+      background-image:
+        linear-gradient(to bottom, rgba(5,46,22,0.82) 0%, rgba(5,46,22,0.65) 60%, rgba(5,46,22,0.9) 100%),
+        url('/images/hero-banner.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* ── WHAT WE DO ── */
+    .what-we-do {
+      background-image:
+        linear-gradient(rgba(5,46,22,0.93), rgba(5,46,22,0.93)),
+        url('/images/community.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .what-we-do .section-title { color: #fff; }
+    .what-we-do .section-title span { color: var(--gold); }
+    .what-we-do .section-subtitle { color: rgba(255,255,255,0.65); }
+    .what-we-do .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(8px); }
+    .what-we-do .card h3 { color: #fff; }
+    .what-we-do .card p { color: rgba(255,255,255,0.7); }
+    .what-we-do .card li { color: rgba(255,255,255,0.7) !important; }
+    .what-we-do .card-icon { filter: none; }
+
+    /* ── TEAM SECTION ── */
+    .team-section { background: var(--g50); }
+
+    /* ── EVENTS / NEWS ── */
+    .events-section { background: var(--white); }
+    .news-section { background: var(--g50); }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--g900) 0%, var(--g800) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.1) 0%, transparent 60%);
+    }
+    .cta-section .cta-box h2 { color: #fff; }
+    .cta-section .cta-box p { color: rgba(255,255,255,0.65); }
+
+    /* ── GALLERY SECTION ── */
+    .gallery-section { background: var(--white); }
+    .gallery-thumb {
+      border-radius: var(--radius);
+      overflow: hidden;
+      aspect-ratio: 1;
+      position: relative;
+    }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+    .gallery-thumb:hover img { transform: scale(1.06); }
+    .gallery-thumb-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(transparent 50%, rgba(5,46,22,0.8));
+      opacity: 0; transition: var(--transition);
+      display: flex; align-items: flex-end; padding: 12px;
+    }
+    .gallery-thumb:hover .gallery-thumb-overlay { opacity: 1; }
+    .gallery-thumb-overlay span { color: #fff; font-size: 0.82rem; font-weight: 500; }
+
+    /* ── MOTTO BANNER ── */
+    .motto-banner {
+      background: var(--gold);
+      padding: 18px 5%;
+      text-align: center;
+    }
+    .motto-banner p {
+      color: var(--g900);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="nav-container">
       <a href="/index.html" class="nav-logo">GUYGD</a>
-      <button class="hamburger" aria-label="Menu">&#9776;</button>
+      <button class="hamburger" aria-label="Menu" onclick="this.nextElementSibling.classList.toggle('open')">&#9776;</button>
       <div class="nav-links" id="nav-links"></div>
     </div>
   </nav>
 
-  <section class="hero" style="background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('/images/hero-banner.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+  <!-- MOTTO BANNER -->
+  <div class="motto-banner">
+    <p>✦ Voice of the Voiceless — Est. May 14, 2023 ✦</p>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
     <div class="hero-content">
-      <h1>Gbeh-lay United Youths for <span>Growth &amp; Development</span></h1>
-      <p>Gbeh-lay United Youths for Growth and Development — empowering the next generation through education, leadership, and community service.</p>
+      <div class="hero-badge">🌿 Gbeh-lay, Liberia</div>
+      <h1>Gbeh-lay United Youths for<br/><span>Growth &amp; Development</span></h1>
+      <p>Empowering the next generation through education, leadership, and community service — building a stronger Gbeh-lay together.</p>
       <div class="hero-btns">
-        <a href="/membership.html" class="btn btn-primary">Join Us</a>
+        <a href="/membership.html" class="btn btn-primary">🚀 Join Us Today</a>
         <a href="/about.html" class="btn btn-outline">Learn More</a>
       </div>
     </div>
+    <div class="hero-scroll">▼ Scroll</div>
   </section>
 
+  <!-- STATS -->
   <div class="stats-row">
     <div class="stat"><span class="stat-num" id="stat-members">0+</span><span>Members</span></div>
     <div class="stat"><span class="stat-num" id="stat-scholarships">0+</span><span>Scholarships Awarded</span></div>
@@ -34,15 +129,17 @@
     <div class="stat"><span class="stat-num" id="stat-communities">0+</span><span>Communities Reached</span></div>
   </div>
 
-  <section class="section" style="background-image: linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.88)), url('/images/community.jpg'); background-size: cover; background-position: center;">
+  <!-- WHAT WE DO -->
+  <section class="section what-we-do">
     <div class="container">
-      <h2 class="section-title"><span style="color:#2e7d32;">What We Do</span> — <span style="color:#000;">Mission, Vision &amp; Values</span></h2>
+      <h2 class="section-title"><span>What We Do</span></h2>
+      <p class="section-subtitle">Our mission, vision, and values driving change in Gbeh-lay</p>
       <div class="cards-grid">
-<div class="card">
+        <div class="card">
           <div class="card-icon">🌱</div>
           <h3>Community Programs</h3>
           <p>From clean-up drives to skill-building workshops, we invest in our community every day.</p>
-          <a href="/programs.html" class="btn btn-sm btn-green">Learn More</a>
+          <a href="/programs.html" class="btn btn-sm btn-primary">Learn More</a>
         </div>
         <div class="card">
           <div class="card-icon">🎯</div>
@@ -57,7 +154,7 @@
         <div class="card">
           <div class="card-icon">💎</div>
           <h3>Our Values</h3>
-          <ul style="text-align:left;padding-left:1.2rem;margin:0;">
+          <ul style="padding-left:1.2rem;list-style:disc;">
             <li>Unity &amp; Solidarity</li>
             <li>Integrity &amp; Accountability</li>
             <li>Education &amp; Excellence</li>
@@ -68,69 +165,90 @@
     </div>
   </section>
 
-  <section class="section">
+  <!-- LEADERSHIP TEAM -->
+  <section class="section team-section">
     <div class="container">
-      <h2 class="section-title"><span style="color:#2e7d32;">Our Team</span> &mdash; <span style="color:#000;">Executive Leadership</span></h2>
-      <div class="cards-grid" id="home-team" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));"><p>Loading...</p></div>
-      <div style="text-align:center;margin-top:1.5rem;">
-        <a href="/leadership.html" class="btn btn-primary">Meet the Full Team</a>
+      <h2 class="section-title">Executive <span>Leadership</span></h2>
+      <p class="section-subtitle">The dedicated leaders driving GUYGD's mission forward</p>
+      <div class="section-divider"></div>
+      <div class="cards-grid" id="home-team" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+        <p style="color:var(--gray);text-align:center;grid-column:1/-1;">Loading team...</p>
+      </div>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="/leadership.html" class="btn btn-green">Meet the Full Team →</a>
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <!-- UPCOMING EVENTS -->
+  <section class="section events-section">
     <div class="container">
-      <h2 class="section-title"><span style="color:#2e7d32;">What's Coming</span> &mdash; <span style="color:#000;">Upcoming Events</span></h2>
-      <div class="cards-grid" id="upcoming-events"><p>Loading...</p></div>
-      <div style="text-align:center;margin-top:1.5rem;">
-        <a href="/events.html" class="btn btn-primary">View All Events</a>
+      <h2 class="section-title">Upcoming <span>Events</span></h2>
+      <p class="section-subtitle">Stay connected with what's happening in our community</p>
+      <div class="section-divider"></div>
+      <div class="cards-grid" id="upcoming-events">
+        <p style="color:var(--gray);text-align:center;grid-column:1/-1;">Loading events...</p>
+      </div>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="/events.html" class="btn btn-green">View All Events →</a>
       </div>
     </div>
   </section>
 
-  <section class="section bg-light">
+  <!-- LATEST NEWS -->
+  <section class="section news-section">
     <div class="container">
-      <h2 class="section-title">Latest News</h2>
-      <div class="cards-grid" id="latest-news"><p>Loading...</p></div>
-      <div style="text-align:center;margin-top:1.5rem;">
-        <a href="/news.html" class="btn btn-primary">View All News</a>
+      <h2 class="section-title">Latest <span>News</span></h2>
+      <p class="section-subtitle">Announcements, updates, and stories from GUYGD</p>
+      <div class="section-divider"></div>
+      <div class="cards-grid" id="latest-news">
+        <p style="color:var(--gray);text-align:center;grid-column:1/-1;">Loading news...</p>
+      </div>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="/news.html" class="btn btn-green">View All News →</a>
       </div>
     </div>
   </section>
 
-  <section class="section bg-light">
+  <!-- GALLERY -->
+  <section class="section gallery-section">
     <div class="container">
-      <h2 class="section-title"><span style="color:#2e7d32;">Memories</span> &mdash; <span style="color:#000;">Photo Gallery</span></h2>
-      <div class="cards-grid" id="home-gallery" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));"><p>Loading...</p></div>
-      <div style="text-align:center;margin-top:1.5rem;">
-        <a href="/gallery.html" class="btn btn-primary">View Full Gallery</a>
+      <h2 class="section-title">Photo <span>Gallery</span></h2>
+      <p class="section-subtitle">Memories from our events and community activities</p>
+      <div class="section-divider"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;" id="home-gallery">
+        <p style="color:var(--gray);text-align:center;grid-column:1/-1;">Loading gallery...</p>
+      </div>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="/gallery.html" class="btn btn-green">View Full Gallery →</a>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container cta-box">
+  <!-- CTA -->
+  <section class="section cta-section">
+    <div class="container cta-box" style="position:relative;z-index:1;">
       <h2>Ready to Make a Difference?</h2>
       <p>Support our mission by donating or becoming a member today.</p>
       <div class="hero-btns">
-        <a href="/donate.html" class="btn btn-primary">Donate Now</a>
-        <a href="/membership.html" class="btn btn-outline" style="color:var(--dark);border-color:var(--dark);">Become a Member</a>
+        <a href="/donate.html" class="btn btn-primary">💚 Donate Now</a>
+        <a href="/membership.html" class="btn btn-outline">Become a Member</a>
       </div>
     </div>
   </section>
 
   <footer id="footer"></footer>
 
-  <!-- Mobile Bottom Nav fallback -->
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
     <div class="mbn-items">
-      <a href="/index.html"><span class="mbn-icon">&#127968;</span>Home</a>
-      <a href="/events.html"><span class="mbn-icon">&#128197;</span>Events</a>
-      <a href="/news.html"><span class="mbn-icon">&#128240;</span>News</a>
-      <a href="/gallery.html"><span class="mbn-icon">&#128444;</span>Gallery</a>
-      <a href="/membership.html" id="mbn-join"><span class="mbn-icon">&#9995;</span>Join Us</a>
+      <a href="/index.html" class="active"><span class="mbn-icon">🏠</span>Home</a>
+      <a href="/events.html"><span class="mbn-icon">📅</span>Events</a>
+      <a href="/news.html"><span class="mbn-icon">📰</span>News</a>
+      <a href="/gallery.html"><span class="mbn-icon">🖼️</span>Gallery</a>
+      <a href="/membership.html"><span class="mbn-icon">✋</span>Join</a>
     </div>
   </nav>
+
   <script src="/src/js/main.js"></script>
   <script>
     function animateCount(id, target) {
@@ -143,62 +261,71 @@
         if (count >= target) clearInterval(timer);
       }, 30);
     }
+
     document.addEventListener('DOMContentLoaded', async () => {
       animateCount('stat-members', 200);
       animateCount('stat-scholarships', 45);
       animateCount('stat-events', 80);
       animateCount('stat-communities', 12);
+
+      // Team
       try {
         const team = await apiFetch('/team');
         const tc = document.getElementById('home-team');
-        if (!team.length) { tc.innerHTML = '<p style="color:#888;">Team info coming soon.</p>'; }
-        else tc.innerHTML = team.map(m => `
-          <div class="card" style="text-align:center;">
+        if (!team.length) { tc.innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Team info coming soon.</p>'; }
+        else tc.innerHTML = team.slice(0,4).map(m => `
+          <div class="card" style="text-align:center;padding:24px 20px;">
             ${m.photo
-              ? `<img src="${m.photo}" alt="${m.name}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;display:block;"/>`
-              : `<div style="width:80px;height:80px;border-radius:50%;background:#2e7d32;color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">&#128100;</div>`}
-            <h3 style="margin:0.3rem 0 0.1rem;">${m.name}</h3>
-            <p style="color:#2e7d32;font-weight:600;margin:0;">${m.position}</p>
-            ${m.bio ? `<p style="font-size:0.82rem;color:#666;margin-top:0.4rem;">${m.bio}</p>` : ''}
+              ? `<img src="${m.photo}" alt="${m.name}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;border:3px solid var(--g100);"/>`
+              : `<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--g600),var(--g800));color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">👤</div>`}
+            <h3 style="margin:0 0 4px;font-size:0.95rem;">${m.name}</h3>
+            <span style="color:var(--g600);font-size:0.78rem;font-weight:600;">${m.position}</span>
           </div>`).join('');
-      } catch { document.getElementById('home-team').innerHTML = '<p>Could not load team.</p>'; }
+      } catch { document.getElementById('home-team').innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Could not load team.</p>'; }
+
+      // Events
       try {
-        const events = await apiFetch('/events?limit=3');
+        const events = await apiFetch('/events');
         const ec = document.getElementById('upcoming-events');
-        if (!events.length) { ec.innerHTML = '<p>No upcoming events yet.</p>'; }
-        else ec.innerHTML = events.map(e => `
+        const upcoming = events.filter(e => new Date(e.event_date || e.date) >= new Date()).slice(0,3);
+        if (!upcoming.length) { ec.innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">No upcoming events yet.</p>'; }
+        else ec.innerHTML = upcoming.map(e => `
           <div class="card">
-            <div class="card-icon">&#128197;</div>
+            <div class="card-icon">📅</div>
             <h3>${e.title}</h3>
-            <p class="card-meta">${new Date(e.date).toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'})}</p>
-            <p>${e.location || ''}</p>
+            <p class="card-meta">📅 ${new Date(e.event_date || e.date).toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'})}</p>
+            ${e.location ? `<p class="card-meta">📍 ${e.location}</p>` : ''}
+            <p>${e.description ? e.description.substring(0,90)+'...' : ''}</p>
             <a href="/events.html" class="btn btn-sm btn-green">Learn More</a>
           </div>`).join('');
-      } catch { document.getElementById('upcoming-events').innerHTML = '<p>Could not load events.</p>'; }
+      } catch { document.getElementById('upcoming-events').innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Could not load events.</p>'; }
+
+      // News
       try {
-        const photos = await apiFetch('/gallery?limit=6');
-        const gc = document.getElementById('home-gallery');
-        if (!photos.length) { gc.innerHTML = '<p>No photos yet.</p>'; }
-        else gc.innerHTML = photos.map(p => `
-          <div class="card" style="padding:0;overflow:hidden;">
-            <img src="${p.image_url}" alt="${p.caption||'Gallery'}" style="width:100%;height:180px;object-fit:cover;"/>
-            ${p.caption ? `<p style="padding:0.6rem;margin:0;font-size:0.9rem;">${p.caption}</p>` : ''}
-          </div>`).join('');
-      } catch { document.getElementById('home-gallery').innerHTML = '<p>Could not load gallery.</p>'; }
-      try {
-        const news = await apiFetch('/news?limit=3');
+        const news = await apiFetch('/news');
         const c = document.getElementById('latest-news');
-        if (!news.length) { c.innerHTML = '<p>No news yet.</p>'; return; }
-        c.innerHTML = news.map(n => `
+        if (!news.length) { c.innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">No news yet.</p>'; return; }
+        c.innerHTML = news.slice(0,3).map(n => `
           <div class="card">
-            ${n.image ? `<img src="${n.image}" alt="${n.title}" class="card-img"/>` : ''}
-            <div class="card-icon">📰</div>
+            ${n.image_url ? `<img src="${n.image_url}" alt="${n.title}" class="card-img"/>` : '<div class="card-icon">📰</div>'}
             <h3>${n.title}</h3>
-            <p class="card-meta">${new Date(n.created_at).toLocaleDateString()}</p>
-            <p>${(n.summary || n.content.substring(0, 100))}...</p>
+            <p class="card-meta">📅 ${new Date(n.created_at).toLocaleDateString()}</p>
+            <p>${(n.summary || (n.content||'').substring(0,100))}...</p>
             <a href="/news.html" class="btn btn-sm btn-green">Read More</a>
           </div>`).join('');
-      } catch { document.getElementById('latest-news').innerHTML = '<p>Could not load news.</p>'; }
+      } catch { document.getElementById('latest-news').innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Could not load news.</p>'; }
+
+      // Gallery
+      try {
+        const photos = await apiFetch('/gallery');
+        const gc = document.getElementById('home-gallery');
+        if (!photos.length) { gc.innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">No photos yet.</p>'; }
+        else gc.innerHTML = photos.slice(0,6).map(p => `
+          <div class="gallery-thumb">
+            <img src="${p.image_url}" alt="${p.caption||'Gallery'}" loading="lazy"/>
+            <div class="gallery-thumb-overlay"><span>${p.caption||p.title||''}</span></div>
+          </div>`).join('');
+      } catch { document.getElementById('home-gallery').innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Could not load gallery.</p>'; }
     });
   </script>
 </body>

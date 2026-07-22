@@ -5,188 +5,296 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GUYGD – Join Us</title>
   <link rel="stylesheet" href="/src/css/main.css"/>
-  <link rel="stylesheet" href="/src/css/responsive.css"/>
   <style>
-    body { background: linear-gradient(135deg, #0d2e10 0%, #1b5e20 50%, #0d2e10 100%); min-height: 100vh; }
-    .auth-wrapper { min-height: 100vh; display: flex; flex-direction: column; }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #052e16 0%, #14532d 40%, #15803d 70%, #166534 100%);
+      background-attachment: fixed;
+    }
+
+    /* animated blobs */
+    body::before, body::after {
+      content:''; position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+    }
+    body::before {
+      width:600px; height:600px; top:-200px; right:-200px;
+      background: radial-gradient(circle, rgba(34,197,94,0.18) 0%, transparent 70%);
+      animation: blob1 8s ease-in-out infinite;
+    }
+    body::after {
+      width:500px; height:500px; bottom:-150px; left:-150px;
+      background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+      animation: blob2 10s ease-in-out infinite;
+    }
+    @keyframes blob1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-40px,40px) scale(1.1)} }
+    @keyframes blob2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,-30px) scale(1.08)} }
+
+    /* ── TOPBAR ── */
     .auth-topbar {
-      padding: 18px 5%;
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(0,0,0,0.25); backdrop-filter: blur(8px);
+      position: fixed; top:0; left:0; right:0; z-index:200;
+      padding: 12px 5%;
+      display: flex; align-items:center; justify-content:space-between;
+      background: rgba(5,46,22,0.7);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    .auth-brand { color: #fff; font-weight: 800; font-size: 1.4rem; letter-spacing: 2px; display: flex; align-items: center; gap: 8px; }
-    .auth-brand span { color: #f9a825; }
-    .auth-topbar-links a { color: rgba(255,255,255,0.75); font-size: 0.88rem; margin-left: 20px; transition: color 0.2s; }
-    .auth-topbar-links a:hover { color: #f9a825; }
+    .auth-brand {
+      color:#fff; font-weight:800; font-size:1.25rem; letter-spacing:2px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .auth-brand em { color:#f59e0b; font-style:normal; }
+    .auth-topbar a {
+      color:rgba(255,255,255,0.7); font-size:0.83rem; margin-left:18px;
+      transition:color 0.2s;
+    }
+    .auth-topbar a:hover { color:#f59e0b; }
 
-    .auth-body {
-      flex: 1; display: flex; align-items: flex-start; justify-content: center;
-      padding: 40px 20px 60px;
-    }
-    .auth-card {
-      background: rgba(255,255,255,0.97);
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-      width: 100%; max-width: 860px;
-      overflow: hidden;
-    }
-    .auth-card-header {
-      background: linear-gradient(135deg, #1b5e20, #2e7d32);
-      padding: 32px 40px 28px;
-      text-align: center;
-      position: relative;
-    }
-    .auth-card-header::after {
-      content: '';
-      position: absolute; bottom: -1px; left: 0; right: 0;
-      height: 24px;
-      background: rgba(255,255,255,0.97);
-      border-radius: 24px 24px 0 0;
-    }
-    .auth-card-header h2 { color: #fff; font-size: 1.6rem; font-weight: 800; margin-bottom: 6px; }
-    .auth-card-header p { color: rgba(255,255,255,0.8); font-size: 0.9rem; }
-    .auth-logo-circle {
-      width: 72px; height: 72px; border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      border: 3px solid rgba(255,255,255,0.4);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; margin: 0 auto 16px;
+    /* ── PAGE LAYOUT ── */
+    .auth-page {
+      position:relative; z-index:1;
+      min-height:100vh; padding-top:60px;
+      display:grid; grid-template-columns:1fr 1fr;
     }
 
+    /* ── LEFT PANEL ── */
+    .auth-left {
+      display:flex; flex-direction:column; justify-content:center;
+      padding: 60px 56px;
+      position:sticky; top:60px; height:calc(100vh - 60px);
+    }
+    .left-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3);
+      color:#f59e0b; font-size:0.75rem; font-weight:700; letter-spacing:1.5px;
+      text-transform:uppercase; padding:7px 16px; border-radius:50px;
+      margin-bottom:28px; width:fit-content;
+    }
+    .auth-left h1 {
+      color:#fff; font-size:2.2rem; font-weight:900; line-height:1.2;
+      margin-bottom:18px;
+    }
+    .auth-left h1 span { color:#4ade80; }
+    .auth-left > p {
+      color:rgba(255,255,255,0.65); font-size:0.93rem; line-height:1.75;
+      margin-bottom:36px; max-width:360px;
+    }
+    .feature-list { display:flex; flex-direction:column; gap:14px; margin-bottom:40px; }
+    .feature-item {
+      display:flex; align-items:center; gap:14px;
+    }
+    .feature-icon {
+      width:40px; height:40px; border-radius:12px;
+      background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; flex-shrink:0;
+    }
+    .feature-item span { color:rgba(255,255,255,0.82); font-size:0.88rem; }
+    .left-motto {
+      padding:16px 22px;
+      background:rgba(245,158,11,0.12);
+      border:1px solid rgba(245,158,11,0.25);
+      border-radius:14px;
+    }
+    .left-motto p {
+      color:#fbbf24; font-weight:700; font-size:0.82rem;
+      letter-spacing:1.5px; text-transform:uppercase; margin:0;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .auth-right {
+      background:rgba(255,255,255,0.04);
+      backdrop-filter:blur(2px);
+      overflow-y:auto;
+      padding:40px 48px 80px;
+      display:flex; flex-direction:column;
+    }
+
+    /* ── GLASS CARD ── */
+    .glass-card {
+      background:rgba(255,255,255,0.95);
+      border-radius:24px;
+      padding:36px 40px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.2);
+    }
+
+    /* ── TABS ── */
     .auth-tabs {
-      display: flex; border-bottom: 2px solid #e8f5e9;
-      padding: 0 40px; background: rgba(255,255,255,0.97);
-      position: relative; z-index: 1;
+      display:flex; background:#f0fdf4; border-radius:14px;
+      padding:5px; margin-bottom:30px;
+      border:1px solid #bbf7d0;
     }
     .auth-tab {
-      padding: 16px 24px; font-size: 0.92rem; font-weight: 600;
-      color: #607d6b; cursor: pointer; border: none; background: none;
-      border-bottom: 3px solid transparent; margin-bottom: -2px;
-      transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+      flex:1; padding:11px 14px; font-size:0.86rem; font-weight:600;
+      color:#6b7280; cursor:pointer; border:none; background:none;
+      border-radius:10px; transition:all 0.25s;
+      display:flex; align-items:center; justify-content:center; gap:6px;
     }
-    .auth-tab.active { color: #2e7d32; border-bottom-color: #2e7d32; }
-    .auth-tab:hover { color: #2e7d32; }
+    .auth-tab.active {
+      background:linear-gradient(135deg,#15803d,#052e16);
+      color:#fff; box-shadow:0 4px 14px rgba(21,128,61,0.35);
+    }
 
-    .auth-body-inner { padding: 32px 40px 40px; }
+    /* ── FORM HEADER ── */
+    .form-header { text-align:center; margin-bottom:26px; }
+    .form-header .fh-icon { font-size:3rem; margin-bottom:8px; }
+    .form-header h2 { font-size:1.6rem; font-weight:900; color:#052e16; margin-bottom:4px; }
+    .form-header p { color:#6b7280; font-size:0.87rem; }
 
-    /* Form sections */
-    .form-section { margin-bottom: 28px; }
+    /* ── SECTION DIVIDER ── */
     .form-section-title {
-      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 1.2px; color: #2e7d32;
-      border-bottom: 2px solid #e8f5e9; padding-bottom: 8px; margin-bottom: 18px;
-      display: flex; align-items: center; gap: 6px;
+      font-size:0.68rem; font-weight:800; text-transform:uppercase;
+      letter-spacing:1.8px; color:#15803d;
+      border-bottom:2px solid #dcfce7; padding-bottom:8px;
+      margin:24px 0 16px; display:flex; align-items:center; gap:6px;
     }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .form-grid .full { grid-column: 1 / -1; }
-    .form-group { display: flex; flex-direction: column; gap: 5px; }
-    .form-group label { font-size: 0.8rem; font-weight: 600; color: #344054; }
-    .form-group label .req { color: #e53935; margin-left: 2px; }
+
+    /* ── FORM GRID ── */
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .form-grid .full { grid-column:1/-1; }
+    .form-group { display:flex; flex-direction:column; gap:5px; }
+    .form-group label { font-size:0.78rem; font-weight:700; color:#1a1f36; }
+    .form-group label .req { color:#ef4444; }
     .form-group input, .form-group select, .form-group textarea {
-      padding: 10px 13px; border: 1.5px solid #c8e6c9; border-radius: 10px;
-      font-size: 0.88rem; outline: none; transition: all 0.2s; background: #fff; color: #0d1b0f;
+      padding:10px 14px; border:1.5px solid #d1fae5; border-radius:10px;
+      font-size:0.87rem; outline:none; transition:all 0.2s;
+      background:#fafffe; color:#1a1f36;
     }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color: #2e7d32; box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+      border-color:#16a34a; box-shadow:0 0 0 3px rgba(22,163,74,0.12);
+      background:#fff;
     }
-    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-group textarea { resize:vertical; min-height:90px; }
 
-    /* Photo upload */
-    .photo-wrap { text-align: center; margin-bottom: 8px; }
-    .photo-preview {
-      width: 88px; height: 88px; border-radius: 50%; object-fit: cover;
-      border: 3px solid #2e7d32; display: none; margin: 0 auto 10px;
-      box-shadow: 0 4px 12px rgba(46,125,50,0.25);
+    /* ── PHOTO ── */
+    .photo-wrap { text-align:center; margin-bottom:6px; }
+    .photo-circle {
+      width:88px; height:88px; border-radius:50%;
+      background:linear-gradient(135deg,#dcfce7,#bbf7d0);
+      border:3px dashed #16a34a;
+      display:flex; align-items:center; justify-content:center;
+      font-size:2.2rem; margin:0 auto 10px; cursor:pointer;
+      transition:all 0.25s;
     }
-    .photo-placeholder {
-      width: 88px; height: 88px; border-radius: 50%;
-      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-      border: 3px dashed #2e7d32;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; margin: 0 auto 10px; cursor: pointer;
+    .photo-circle:hover { background:#dcfce7; transform:scale(1.06); }
+    .photo-preview-img {
+      width:88px; height:88px; border-radius:50%; object-fit:cover;
+      border:3px solid #16a34a; display:none; margin:0 auto 10px;
+      box-shadow:0 4px 16px rgba(22,163,74,0.3);
     }
 
-    /* Submit */
+    /* ── SUBMIT BTN ── */
     .submit-btn {
-      width: 100%; padding: 14px; font-size: 1rem; border-radius: 12px;
-      background: linear-gradient(135deg, #43a047, #2e7d32);
-      color: #fff; border: none; font-weight: 700; cursor: pointer;
-      box-shadow: 0 6px 20px rgba(46,125,50,0.35);
-      transition: all 0.25s; margin-top: 8px;
+      width:100%; padding:14px; font-size:0.97rem; font-weight:700;
+      border-radius:12px; border:none; cursor:pointer; margin-top:10px;
+      background:linear-gradient(135deg,#16a34a,#052e16);
+      color:#fff; letter-spacing:0.3px;
+      box-shadow:0 6px 24px rgba(22,163,74,0.4);
+      transition:all 0.25s;
+      display:flex; align-items:center; justify-content:center; gap:8px;
     }
-    .submit-btn:hover { background: linear-gradient(135deg, #2e7d32, #1b5e20); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(46,125,50,0.45); }
+    .submit-btn:hover {
+      background:linear-gradient(135deg,#15803d,#14532d);
+      transform:translateY(-2px);
+      box-shadow:0 10px 32px rgba(22,163,74,0.5);
+    }
+    .submit-btn:active { transform:translateY(0); }
 
-    .auth-footer-text { text-align: center; margin-top: 16px; font-size: 0.86rem; color: #607d6b; }
-    .auth-footer-text a { color: #2e7d32; font-weight: 600; }
-
-    /* Login card */
-    .login-card { max-width: 460px; margin: 0 auto; }
-    .login-icon { font-size: 3rem; text-align: center; margin-bottom: 8px; }
-    .login-title { text-align: center; font-size: 1.5rem; font-weight: 800; color: #1b5e20; margin-bottom: 4px; }
-    .login-sub { text-align: center; color: #607d6b; font-size: 0.88rem; margin-bottom: 28px; }
-
+    /* ── ALERT ── */
     .alert-box {
-      padding: 12px 16px; border-radius: 10px; margin-bottom: 16px;
-      font-size: 0.86rem; font-weight: 500; display: none;
+      padding:12px 16px; border-radius:10px; font-size:0.86rem;
+      font-weight:500; display:none; margin-bottom:16px;
     }
-    .alert-box.success { background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; display: block; }
-    .alert-box.error   { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; display: block; }
+    .alert-box.success { background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; display:block; }
+    .alert-box.error   { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; display:block; }
 
-    @media (max-width: 640px) {
-      .auth-card-header { padding: 24px 20px 22px; }
-      .auth-tabs { padding: 0 16px; }
-      .auth-tab { padding: 14px 14px; font-size: 0.82rem; }
-      .auth-body-inner { padding: 24px 18px 32px; }
-      .form-grid { grid-template-columns: 1fr; }
-      .form-grid .full { grid-column: 1; }
+    .switch-link {
+      text-align:center; margin-top:16px; font-size:0.84rem; color:#6b7280;
+    }
+    .switch-link a { color:#16a34a; font-weight:700; cursor:pointer; }
+    .switch-link a:hover { color:#15803d; text-decoration:underline; }
+
+    /* ── LOGIN SPECIFIC ── */
+    .login-divider {
+      display:flex; align-items:center; gap:12px;
+      margin:20px 0; color:#9ca3af; font-size:0.78rem;
+    }
+    .login-divider::before, .login-divider::after {
+      content:''; flex:1; height:1px; background:#e5e7eb;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:960px) {
+      .auth-page { grid-template-columns:1fr; }
+      .auth-left { display:none; }
+      .auth-right { padding:32px 20px 80px; }
+      .glass-card { padding:28px 22px; }
+    }
+    @media (max-width:480px) {
+      .form-grid { grid-template-columns:1fr; }
+      .form-grid .full { grid-column:1; }
     }
   </style>
 </head>
 <body>
-<div class="auth-wrapper">
 
-  <!-- Top bar -->
+  <!-- TOPBAR -->
   <div class="auth-topbar">
-    <div class="auth-brand">🌿 <span>GUYGD</span></div>
-    <div class="auth-topbar-links">
-      <a href="/index.html">← Back to Home</a>
+    <div class="auth-brand">🌿 <em>GUYGD</em></div>
+    <div>
+      <a href="/index.html">← Home</a>
       <a href="/about.html">About</a>
+      <a href="/programs.html">Programs</a>
     </div>
   </div>
 
-  <div class="auth-body">
-    <div class="auth-card">
+  <div class="auth-page">
 
-      <!-- Header -->
-      <div class="auth-card-header">
-        <div class="auth-logo-circle">🌿</div>
-        <h2>Gbeh-lay United Youths</h2>
-        <p>Voice of the Voiceless — Est. May 14, 2023</p>
+    <!-- LEFT -->
+    <div class="auth-left">
+      <div class="left-badge">🌿 Est. May 14, 2023</div>
+      <h1>Gbeh-lay United<br/>Youths for<br/><span>Growth &amp; Development</span></h1>
+      <p>Join a growing community of young leaders committed to education, civic responsibility, and sustainable development in Gbeh-lay, Liberia.</p>
+      <div class="feature-list">
+        <div class="feature-item"><div class="feature-icon">🎓</div><span>Access exclusive scholarship opportunities</span></div>
+        <div class="feature-item"><div class="feature-icon">📅</div><span>Participate in community events</span></div>
+        <div class="feature-item"><div class="feature-icon">🤝</div><span>Connect with fellow youth leaders</span></div>
+        <div class="feature-item"><div class="feature-icon">📢</div><span>Be the voice of the voiceless</span></div>
+        <div class="feature-item"><div class="feature-icon">🏆</div><span>Leadership &amp; capacity building programs</span></div>
       </div>
+      <div class="left-motto"><p>✦ Voice of the Voiceless — Gbeh-lay, Liberia ✦</p></div>
+    </div>
 
-      <!-- Tabs -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-register" onclick="showTab('register')">📝 Apply for Membership</button>
-        <button class="auth-tab" id="tab-login" onclick="showTab('login')">🔐 Member Login</button>
-      </div>
+    <!-- RIGHT -->
+    <div class="auth-right">
+      <div class="glass-card">
 
-      <!-- ── REGISTER ── -->
-      <div id="register-section" class="auth-body-inner">
-        <div class="alert-box" id="register-alert"></div>
-        <form id="register-form">
+        <!-- TABS -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-register" onclick="showTab('register')">📝 Apply for Membership</button>
+          <button class="auth-tab" id="tab-login" onclick="showTab('login')">🔐 Member Login</button>
+        </div>
 
-          <div class="form-section">
+        <!-- ══ REGISTER ══ -->
+        <div id="register-section">
+          <div class="form-header">
+            <div class="fh-icon">🌿</div>
+            <h2>Create Your Account</h2>
+            <p>Fill in the details below to apply for GUYGD membership</p>
+          </div>
+          <div class="alert-box" id="register-alert"></div>
+          <form id="register-form">
+
             <div class="form-section-title">📷 Profile Photo</div>
             <div class="photo-wrap">
-              <img id="photo-preview" class="photo-preview" src="" alt="Preview"/>
-              <div class="photo-placeholder" id="photo-placeholder" onclick="document.getElementById('reg-photo').click()">📷</div>
+              <img id="photo-preview" class="photo-preview-img" src="" alt="Preview"/>
+              <div class="photo-circle" id="photo-placeholder" onclick="document.getElementById('reg-photo').click()">📷</div>
               <input type="file" id="reg-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)"/>
-              <p style="font-size:0.78rem;color:#607d6b;margin-top:4px;">Click to upload (optional)</p>
+              <p style="font-size:0.74rem;color:#9ca3af;margin-top:2px;">Click to upload (optional)</p>
             </div>
-          </div>
 
-          <div class="form-section">
             <div class="form-section-title">👤 Personal Information</div>
             <div class="form-grid">
               <div class="form-group"><label>First Name <span class="req">*</span></label><input type="text" id="reg-firstname" placeholder="First name" required/></div>
@@ -194,9 +302,7 @@
               <div class="form-group"><label>Gender <span class="req">*</span></label>
                 <select id="reg-gender" required>
                   <option value="">Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
+                  <option>Male</option><option>Female</option><option>Other</option>
                 </select>
               </div>
               <div class="form-group"><label>Date of Birth <span class="req">*</span></label><input type="date" id="reg-dob" required/></div>
@@ -205,19 +311,12 @@
               <div class="form-group full"><label>Education Level</label>
                 <select id="reg-education">
                   <option value="">Select level</option>
-                  <option value="Primary">Primary</option>
-                  <option value="Junior High">Junior High</option>
-                  <option value="Senior High">Senior High</option>
-                  <option value="Vocational">Vocational / Technical</option>
-                  <option value="Undergraduate">Undergraduate</option>
-                  <option value="Postgraduate">Postgraduate</option>
-                  <option value="Other">Other</option>
+                  <option>Primary</option><option>Junior High</option><option>Senior High</option>
+                  <option>Vocational</option><option>Undergraduate</option><option>Postgraduate</option>
                 </select>
               </div>
             </div>
-          </div>
 
-          <div class="form-section">
             <div class="form-section-title">📞 Contact Information</div>
             <div class="form-grid">
               <div class="form-group"><label>Phone <span class="req">*</span></label><input type="tel" id="reg-phone" placeholder="+231 xxx xxx xxx" required/></div>
@@ -236,159 +335,151 @@
               <div class="form-group"><label>District</label><input type="text" id="reg-district" placeholder="Your district"/></div>
               <div class="form-group"><label>Town / City</label><input type="text" id="reg-town" placeholder="Your town"/></div>
             </div>
-          </div>
 
-          <div class="form-section">
             <div class="form-section-title">🆘 Emergency Contact</div>
             <div class="form-grid">
               <div class="form-group"><label>Contact Name</label><input type="text" id="reg-emergency-name" placeholder="Full name"/></div>
               <div class="form-group"><label>Contact Phone</label><input type="tel" id="reg-emergency-phone" placeholder="+231 xxx xxx xxx"/></div>
             </div>
-          </div>
 
-          <div class="form-section">
             <div class="form-section-title">💬 Reason for Joining</div>
             <div class="form-group">
               <label>Why do you want to join GUYGD? <span class="req">*</span></label>
               <textarea id="reg-reason" rows="4" placeholder="Tell us why you want to be a member..." required></textarea>
             </div>
-          </div>
 
-          <div class="form-section">
             <div class="form-section-title">🔒 Account Security</div>
             <div class="form-grid">
               <div class="form-group"><label>Password <span class="req">*</span></label><input type="password" id="reg-password" placeholder="Min 6 characters" required/></div>
               <div class="form-group"><label>Confirm Password <span class="req">*</span></label><input type="password" id="reg-confirm" placeholder="Repeat password" required/></div>
             </div>
+
+            <button type="submit" class="submit-btn">🚀 Submit Membership Application</button>
+            <p class="switch-link">Already a member? <a onclick="showTab('login')">Login here</a></p>
+          </form>
+        </div>
+
+        <!-- ══ LOGIN ══ -->
+        <div id="login-section" style="display:none;">
+          <div class="form-header">
+            <div class="fh-icon">🔐</div>
+            <h2>Welcome Back</h2>
+            <p>Login to access your GUYGD member dashboard</p>
           </div>
-
-          <button type="submit" class="submit-btn">🚀 Submit Membership Application</button>
-          <p class="auth-footer-text">Already a member? <a href="#" onclick="showTab('login')">Login here</a></p>
-        </form>
-      </div>
-
-      <!-- ── LOGIN ── -->
-      <div id="login-section" class="auth-body-inner" style="display:none;">
-        <div class="login-card">
-          <div class="login-icon">🔐</div>
-          <div class="login-title">Welcome Back</div>
-          <div class="login-sub">Login to access your GUYGD member dashboard</div>
           <div class="alert-box" id="login-alert"></div>
           <form id="login-form">
             <div class="form-group" style="margin-bottom:16px;">
               <label>Email Address <span class="req">*</span></label>
               <input type="email" id="login-email" placeholder="your@email.com" required/>
             </div>
-            <div class="form-group" style="margin-bottom:24px;">
+            <div class="form-group" style="margin-bottom:10px;">
               <label>Password <span class="req">*</span></label>
               <input type="password" id="login-password" placeholder="Your password" required/>
             </div>
+            <div style="text-align:right;margin-bottom:22px;">
+              <a href="#" style="font-size:0.82rem;color:#16a34a;font-weight:600;">Forgot password?</a>
+            </div>
             <button type="submit" class="submit-btn">🔓 Login to Dashboard</button>
-            <p class="auth-footer-text">Don't have an account? <a href="#" onclick="showTab('register')">Apply for membership</a></p>
+            <div class="login-divider">or</div>
+            <p class="switch-link">Don't have an account? <a onclick="showTab('register')">Apply for membership</a></p>
           </form>
         </div>
-      </div>
 
-    </div>
-  </div>
-</div>
+      </div><!-- end glass-card -->
+    </div><!-- end auth-right -->
+  </div><!-- end auth-page -->
 
-<script src="/src/js/main.js"></script>
-<script>
-  function showTab(tab) {
-    document.getElementById('register-section').style.display = tab === 'register' ? 'block' : 'none';
-    document.getElementById('login-section').style.display    = tab === 'login'    ? 'block' : 'none';
-    document.getElementById('tab-register').className = 'auth-tab' + (tab === 'register' ? ' active' : '');
-    document.getElementById('tab-login').className    = 'auth-tab' + (tab === 'login'    ? ' active' : '');
-  }
-
-  function previewPhoto(input) {
-    const preview = document.getElementById('photo-preview');
-    const placeholder = document.getElementById('photo-placeholder');
-    if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        preview.src = e.target.result;
-        preview.style.display = 'block';
-        placeholder.style.display = 'none';
-      };
-      reader.readAsDataURL(input.files[0]);
+  <script src="/src/js/main.js"></script>
+  <script>
+    function showTab(tab) {
+      document.getElementById('register-section').style.display = tab==='register' ? 'block' : 'none';
+      document.getElementById('login-section').style.display    = tab==='login'    ? 'block' : 'none';
+      document.getElementById('tab-register').className = 'auth-tab' + (tab==='register' ? ' active' : '');
+      document.getElementById('tab-login').className    = 'auth-tab' + (tab==='login'    ? ' active' : '');
     }
-  }
 
-  function showAlert(id, msg, type) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = msg;
-    el.className = 'alert-box ' + type;
-    setTimeout(() => { el.className = 'alert-box'; el.textContent = ''; }, 5000);
-  }
+    function previewPhoto(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.getElementById('photo-preview');
+          img.src = e.target.result;
+          img.style.display = 'block';
+          document.getElementById('photo-placeholder').style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.search.includes('login')) showTab('login');
-    if (getUser()) {
+    function showAlert(id, msg, type) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg; el.className = 'alert-box ' + type;
+      setTimeout(() => { el.className = 'alert-box'; el.textContent = ''; }, 5000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.location.search.includes('login')) showTab('login');
       const u = getUser();
-      window.location.href = ['admin','executive','super_admin'].includes(u.role) ? '/dashboard/admin.html' : '/dashboard/member.html';
-    }
-  });
+      if (u) {
+        window.location.href = ['admin','executive'].includes(u.role)
+          ? '/dashboard/admin.html' : '/dashboard/member.html';
+      }
+    });
 
-  document.getElementById('register-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const password = document.getElementById('reg-password').value;
-    const confirm  = document.getElementById('reg-confirm').value;
-    if (password !== confirm) { showAlert('register-alert', 'Passwords do not match.', 'error'); return; }
-    if (password.length < 6)  { showAlert('register-alert', 'Password must be at least 6 characters.', 'error'); return; }
-    const first = document.getElementById('reg-firstname').value.trim();
-    const last  = document.getElementById('reg-lastname').value.trim();
-    try {
-      const data = await apiFetch('/auth/register', {
-        method: 'POST',
-        body: JSON.stringify({
-          first_name: first, last_name: last, full_name: `${first} ${last}`,
-          email: document.getElementById('reg-email').value,
-          phone: document.getElementById('reg-phone').value,
-          gender: document.getElementById('reg-gender').value,
-          date_of_birth: document.getElementById('reg-dob').value,
-          address: document.getElementById('reg-address').value,
-          county: document.getElementById('reg-county').value,
-          district: document.getElementById('reg-district').value,
-          town: document.getElementById('reg-town').value,
-          occupation: document.getElementById('reg-occupation').value,
-          education_level: document.getElementById('reg-education').value,
-          nationality: document.getElementById('reg-nationality').value,
-          emergency_contact_name: document.getElementById('reg-emergency-name').value,
-          emergency_contact_phone: document.getElementById('reg-emergency-phone').value,
-          reason_for_joining: document.getElementById('reg-reason').value,
-          password,
-        }),
-      });
-      localStorage.setItem('guygd_token', data.token);
-      localStorage.setItem('guygd_user', JSON.stringify(data.user));
-      showAlert('register-alert', '✅ Application submitted! Redirecting...', 'success');
-      setTimeout(() => {
-        window.location.href = ['admin','executive','super_admin'].includes(data.user.role) ? '/dashboard/admin.html' : '/dashboard/member.html';
-      }, 1500);
-    } catch (err) { showAlert('register-alert', err.message, 'error'); }
-  });
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pw = document.getElementById('reg-password').value;
+      const cf = document.getElementById('reg-confirm').value;
+      if (pw !== cf)   { showAlert('register-alert','Passwords do not match.','error'); return; }
+      if (pw.length<6) { showAlert('register-alert','Password must be at least 6 characters.','error'); return; }
+      const first = document.getElementById('reg-firstname').value.trim();
+      const last  = document.getElementById('reg-lastname').value.trim();
+      const btn = e.target.querySelector('.submit-btn');
+      btn.disabled = true; btn.textContent = '⏳ Submitting...';
+      try {
+        const data = await apiFetch('/auth/register', { method:'POST', body: JSON.stringify({
+          full_name:`${first} ${last}`, email:document.getElementById('reg-email').value,
+          phone:document.getElementById('reg-phone').value,
+          gender:document.getElementById('reg-gender').value,
+          date_of_birth:document.getElementById('reg-dob').value,
+          address:document.getElementById('reg-address').value,
+          password:pw,
+        })});
+        localStorage.setItem('guygd_token', data.token);
+        localStorage.setItem('guygd_user', JSON.stringify(data.user));
+        showAlert('register-alert','✅ Application submitted! Redirecting...','success');
+        setTimeout(() => {
+          window.location.href = ['admin','executive'].includes(data.user.role)
+            ? '/dashboard/admin.html' : '/dashboard/member.html';
+        }, 1500);
+      } catch(err) {
+        showAlert('register-alert', err.message || 'Registration failed.', 'error');
+        btn.disabled = false; btn.innerHTML = '🚀 Submit Membership Application';
+      }
+    });
 
-  document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    try {
-      const data = await apiFetch('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          email: document.getElementById('login-email').value,
-          password: document.getElementById('login-password').value,
-        }),
-      });
-      localStorage.setItem('guygd_token', data.token);
-      localStorage.setItem('guygd_user', JSON.stringify(data.user));
-      showAlert('login-alert', '✅ Login successful! Redirecting...', 'success');
-      setTimeout(() => {
-        window.location.href = ['admin','executive','super_admin'].includes(data.user.role) ? '/dashboard/admin.html' : '/dashboard/member.html';
-      }, 1500);
-    } catch (err) { showAlert('login-alert', err.message, 'error'); }
-  });
-</script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('.submit-btn');
+      btn.disabled = true; btn.textContent = '⏳ Logging in...';
+      try {
+        const data = await apiFetch('/auth/login', { method:'POST', body: JSON.stringify({
+          email:document.getElementById('login-email').value,
+          password:document.getElementById('login-password').value,
+        })});
+        localStorage.setItem('guygd_token', data.token);
+        localStorage.setItem('guygd_user', JSON.stringify(data.user));
+        showAlert('login-alert','✅ Login successful! Redirecting...','success');
+        setTimeout(() => {
+          window.location.href = ['admin','executive'].includes(data.user.role)
+            ? '/dashboard/admin.html' : '/dashboard/member.html';
+        }, 1200);
+      } catch(err) {
+        showAlert('login-alert', err.message || 'Login failed. Check your credentials.', 'error');
+        btn.disabled = false; btn.innerHTML = '🔓 Login to Dashboard';
+      }
+    });
+  </script>
 </body>
 </html>

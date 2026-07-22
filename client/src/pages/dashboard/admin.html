@@ -298,6 +298,9 @@
       <a onclick="showSection('users', this)">
         <span class="icon">👤</span> Users
       </a>
+      <a onclick="showSection('config', this)">
+        <span class="icon">🛠️</span> System Config
+      </a>
       <a onclick="showSection('settings', this)">
         <span class="icon">⚙️</span> Settings
       </a>
@@ -649,6 +652,179 @@
         </div>
       </div>
 
+      <!-- ════ SYSTEM CONFIG ════ -->
+      <div id="section-config" class="tab-section">
+
+        <!-- Config sub-tabs -->
+        <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" id="cfg-tab-email" onclick="showConfigTab('email')">✉️ Email Templates</button>
+          <button class="btn btn-outline btn-sm" id="cfg-tab-idcard" onclick="showConfigTab('idcard')">🪪 ID Card Templates</button>
+        </div>
+
+        <!-- ── EMAIL TEMPLATES ── -->
+        <div id="cfg-email" class="cfg-panel">
+          <div class="panel" style="margin-bottom:20px;">
+            <div class="panel-header">
+              <h3>✉️ Email Templates</h3>
+              <button class="btn btn-primary btn-sm" onclick="showEmailForm()">+ New Template</button>
+            </div>
+
+            <!-- Form -->
+            <div id="email-tpl-form" style="display:none;padding:20px 22px;border-bottom:1px solid #f0f2f5;">
+              <div class="alert" id="email-tpl-alert"></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Template Name *</label>
+                  <input type="text" id="etpl-name" placeholder="e.g. Welcome Email" required/>
+                </div>
+                <div class="form-group">
+                  <label>Trigger / Type</label>
+                  <select id="etpl-type">
+                    <option value="welcome">Welcome / Registration</option>
+                    <option value="approval">Membership Approved</option>
+                    <option value="rejection">Membership Rejected</option>
+                    <option value="scholarship">Scholarship Result</option>
+                    <option value="event">Event Reminder</option>
+                    <option value="password_reset">Password Reset</option>
+                    <option value="custom">Custom / Manual</option>
+                  </select>
+                </div>
+                <div class="form-group full">
+                  <label>Subject *</label>
+                  <input type="text" id="etpl-subject" placeholder="Email subject line" required/>
+                </div>
+                <div class="form-group full">
+                  <label>Body *
+                    <span style="font-size:0.72rem;color:#8b9bb4;font-weight:400;margin-left:8px;">
+                      Available variables: <code>{{name}}</code> <code>{{email}}</code> <code>{{date}}</code> <code>{{org}}</code> <code>{{status}}</code>
+                    </span>
+                  </label>
+                  <textarea id="etpl-body" rows="8" placeholder="Dear {{name}},&#10;&#10;Your message here...&#10;&#10;Regards,&#10;GUYGD Team" required></textarea>
+                </div>
+              </div>
+              <div class="form-actions" style="padding-top:12px;">
+                <button class="btn btn-primary" onclick="saveEmailTemplate()">💾 Save Template</button>
+                <button class="btn btn-outline" onclick="document.getElementById('email-tpl-form').style.display='none'">Cancel</button>
+              </div>
+            </div>
+
+            <!-- Template list -->
+            <div class="table-wrap">
+              <table style="width:100%;">
+                <thead><tr><th>Name</th><th>Type</th><th>Subject</th><th>Last Updated</th><th>Actions</th></tr></thead>
+                <tbody id="email-tpl-list">
+                  <tr><td colspan="5" style="text-align:center;color:#8b9bb4;padding:32px;">No templates yet. Click "+ New Template" to create one.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Preview modal -->
+          <div id="email-preview-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:none;align-items:center;justify-content:center;">
+            <div style="background:#fff;border-radius:14px;width:90%;max-width:620px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+              <div style="padding:18px 22px;border-bottom:1px solid #f0f2f5;display:flex;justify-content:space-between;align-items:center;">
+                <h3 style="margin:0;font-size:1rem;">📧 Email Preview</h3>
+                <button onclick="closeEmailPreview()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#6c757d;">✕</button>
+              </div>
+              <div style="padding:22px;">
+                <div style="background:#f8f9fb;border-radius:8px;padding:12px 16px;margin-bottom:16px;">
+                  <strong style="font-size:0.82rem;color:#6c757d;">SUBJECT:</strong>
+                  <p id="preview-subject" style="margin:4px 0 0;font-weight:600;"></p>
+                </div>
+                <div style="border:1px solid #e8ecf0;border-radius:8px;padding:20px;font-size:0.9rem;line-height:1.7;white-space:pre-wrap;" id="preview-body"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ID CARD TEMPLATES ── -->
+        <div id="cfg-idcard" class="cfg-panel" style="display:none;">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>🪪 ID Card Templates</h3>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-outline btn-sm" onclick="previewIDCard()">👁 Preview</button>
+                <button class="btn btn-primary btn-sm" onclick="saveIDCardTemplate()">💾 Save Template</button>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="alert" id="idcard-alert"></div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
+
+                <!-- Left: settings -->
+                <div>
+                  <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2d6a4f;border-bottom:2px solid #f0f2f5;padding-bottom:8px;margin-bottom:16px;">🎨 Card Design</p>
+                  <div class="form-group" style="margin-bottom:14px;">
+                    <label>Card Background Color</label>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                      <input type="color" id="idc-bg-color" value="#1a6b3c" style="width:48px;height:36px;border:1px solid #d0d5dd;border-radius:6px;cursor:pointer;"/>
+                      <input type="text" id="idc-bg-color-hex" value="#1a6b3c" style="flex:1;" oninput="document.getElementById('idc-bg-color').value=this.value"/>
+                    </div>
+                  </div>
+                  <div class="form-group" style="margin-bottom:14px;">
+                    <label>Text Color</label>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                      <input type="color" id="idc-text-color" value="#ffffff" style="width:48px;height:36px;border:1px solid #d0d5dd;border-radius:6px;cursor:pointer;"/>
+                      <input type="text" id="idc-text-color-hex" value="#ffffff" style="flex:1;" oninput="document.getElementById('idc-text-color').value=this.value"/>
+                    </div>
+                  </div>
+                  <div class="form-group" style="margin-bottom:14px;">
+                    <label>Accent / Badge Color</label>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                      <input type="color" id="idc-accent-color" value="#d4a017" style="width:48px;height:36px;border:1px solid #d0d5dd;border-radius:6px;cursor:pointer;"/>
+                      <input type="text" id="idc-accent-color-hex" value="#d4a017" style="flex:1;" oninput="document.getElementById('idc-accent-color').value=this.value"/>
+                    </div>
+                  </div>
+
+                  <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2d6a4f;border-bottom:2px solid #f0f2f5;padding-bottom:8px;margin:20px 0 16px;">📝 Card Fields</p>
+                  <div class="form-group" style="margin-bottom:14px;">
+                    <label>Organization Name</label>
+                    <input type="text" id="idc-org" value="Gbeh-lay United Youths for Growth and Development"/>
+                  </div>
+                  <div class="form-group" style="margin-bottom:14px;">
+                    <label>Organization Acronym</label>
+                    <input type="text" id="idc-acronym" value="GUYGD"/>
+                  </div>
+                  <div class="form-group" style="margin-bottom:14px;">
+                    <label>Card Footer Text</label>
+                    <input type="text" id="idc-footer" value="Voice of the Voiceless — Est. May 14, 2023"/>
+                  </div>
+                  <div class="form-group" style="margin-bottom:14px;">
+                    <label>Show Fields on Card</label>
+                    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-photo" checked/> Member Photo</label>
+                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-id" checked/> Member ID</label>
+                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-role" checked/> Role / Position</label>
+                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-expiry" checked/> Expiry Date</label>
+                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-phone"/> Phone Number</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Card Validity (months)</label>
+                    <input type="number" id="idc-validity" value="12" min="1" max="60"/>
+                  </div>
+                </div>
+
+                <!-- Right: live preview -->
+                <div>
+                  <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2d6a4f;border-bottom:2px solid #f0f2f5;padding-bottom:8px;margin-bottom:16px;">👁 Live Preview</p>
+                  <div id="id-card-preview" style="
+                    width:100%;max-width:340px;border-radius:16px;overflow:hidden;
+                    box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:'Segoe UI',sans-serif;
+                  ">
+                    <!-- Card rendered by JS -->
+                  </div>
+                  <p style="font-size:0.76rem;color:#8b9bb4;margin-top:10px;text-align:center;">Preview uses sample data. Actual cards use member data.</p>
+                  <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%;" onclick="printIDCard()">🖨️ Print Sample Card</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
       <!-- ════ SETTINGS ════ -->
       <div id="section-settings" class="tab-section">
         <div class="panel">
@@ -749,7 +925,7 @@ const sectionTitles = {
   members: 'Members', events: 'Events', news: 'News',
   gallery: 'Gallery', team: 'Our Team', donations: 'Donations', messages: 'Messages',
   notifications: 'Notifications', reports: 'Reports',
-  users: 'User Management', settings: 'Settings'
+  users: 'User Management', config: 'System Configuration', settings: 'Settings'
 };
 
 function showSection(name, el) {
@@ -762,7 +938,7 @@ function showSection(name, el) {
     dashboard: loadDashboard, applications: loadApplications,
     members: loadMembers, events: loadEvents, news: loadNews,
     gallery: loadGallery, team: loadTeam, donations: loadDonations, messages: loadMessages,
-    notifications: loadNotifications, reports: loadReports, users: loadUsers
+    notifications: loadNotifications, reports: loadReports, users: loadUsers, config: loadConfig
   };
   if (loaders[name]) loaders[name]();
 }
@@ -1174,6 +1350,200 @@ async function deleteTeam(id) {
   if (!confirm('Remove this team member?')) return;
   try { await apiFetch(`/team/${id}`, { method: 'DELETE' }); loadTeam(); }
   catch(e) { alert('Failed to remove.'); }
+}
+
+// ── SYSTEM CONFIG ─────────────────────────────────────
+let emailTemplates = JSON.parse(localStorage.getItem('guygd_email_tpls') || '[]');
+let idCardConfig   = JSON.parse(localStorage.getItem('guygd_idcard_cfg') || 'null') || {
+  bgColor:'#1a6b3c', textColor:'#ffffff', accentColor:'#d4a017',
+  org:'Gbeh-lay United Youths for Growth and Development',
+  acronym:'GUYGD', footer:'Voice of the Voiceless — Est. May 14, 2023',
+  showPhoto:true, showId:true, showRole:true, showExpiry:true, showPhone:false, validity:12
+};
+
+function loadConfig() {
+  showConfigTab('email');
+  renderEmailTemplates();
+  loadIDCardConfig();
+  renderIDCardPreview();
+}
+
+function showConfigTab(tab) {
+  document.getElementById('cfg-email').style.display  = tab === 'email'  ? 'block' : 'none';
+  document.getElementById('cfg-idcard').style.display = tab === 'idcard' ? 'block' : 'none';
+  document.getElementById('cfg-tab-email').className  = 'btn btn-sm ' + (tab === 'email'  ? 'btn-primary' : 'btn-outline');
+  document.getElementById('cfg-tab-idcard').className = 'btn btn-sm ' + (tab === 'idcard' ? 'btn-primary' : 'btn-outline');
+}
+
+// ── EMAIL TEMPLATES ──
+function showEmailForm(tpl) {
+  document.getElementById('email-tpl-form').style.display = 'block';
+  if (tpl) {
+    document.getElementById('etpl-name').value    = tpl.name;
+    document.getElementById('etpl-type').value    = tpl.type;
+    document.getElementById('etpl-subject').value = tpl.subject;
+    document.getElementById('etpl-body').value    = tpl.body;
+    document.getElementById('etpl-name').dataset.editId = tpl.id;
+  } else {
+    document.getElementById('etpl-name').value    = '';
+    document.getElementById('etpl-type').value    = 'welcome';
+    document.getElementById('etpl-subject').value = '';
+    document.getElementById('etpl-body').value    = '';
+    delete document.getElementById('etpl-name').dataset.editId;
+  }
+}
+
+function saveEmailTemplate() {
+  const name    = document.getElementById('etpl-name').value.trim();
+  const type    = document.getElementById('etpl-type').value;
+  const subject = document.getElementById('etpl-subject').value.trim();
+  const body    = document.getElementById('etpl-body').value.trim();
+  if (!name || !subject || !body) { showAlert('email-tpl-alert','All fields are required.','error'); return; }
+  const editId = document.getElementById('etpl-name').dataset.editId;
+  if (editId) {
+    const idx = emailTemplates.findIndex(t => t.id == editId);
+    if (idx > -1) emailTemplates[idx] = { ...emailTemplates[idx], name, type, subject, body, updated: new Date().toISOString() };
+  } else {
+    emailTemplates.push({ id: Date.now(), name, type, subject, body, updated: new Date().toISOString() });
+  }
+  localStorage.setItem('guygd_email_tpls', JSON.stringify(emailTemplates));
+  showAlert('email-tpl-alert','✅ Template saved!','success');
+  document.getElementById('email-tpl-form').style.display = 'none';
+  renderEmailTemplates();
+}
+
+function renderEmailTemplates() {
+  const tbody = document.getElementById('email-tpl-list');
+  if (!emailTemplates.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;padding:32px;">No templates yet. Click "+ New Template" to create one.</td></tr>';
+    return;
+  }
+  const typeLabels = { welcome:'Welcome',approval:'Approval',rejection:'Rejection',scholarship:'Scholarship',event:'Event',password_reset:'Password Reset',custom:'Custom' };
+  tbody.innerHTML = emailTemplates.map(t => `
+    <tr>
+      <td><strong>${t.name}</strong></td>
+      <td><span class="badge badge-member">${typeLabels[t.type]||t.type}</span></td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.subject}</td>
+      <td>${t.updated ? new Date(t.updated).toLocaleDateString() : '-'}</td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn btn-sm btn-outline" onclick="previewEmailTemplate(${t.id})">👁 Preview</button>
+        <button class="btn btn-sm btn-warn"    onclick='showEmailForm(${JSON.stringify(t).replace(/'/g,"&#39;")})'>✏️ Edit</button>
+        <button class="btn btn-sm btn-danger"  onclick="deleteEmailTemplate(${t.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+}
+
+function deleteEmailTemplate(id) {
+  if (!confirm('Delete this template?')) return;
+  emailTemplates = emailTemplates.filter(t => t.id !== id);
+  localStorage.setItem('guygd_email_tpls', JSON.stringify(emailTemplates));
+  renderEmailTemplates();
+}
+
+function previewEmailTemplate(id) {
+  const t = emailTemplates.find(t => t.id === id);
+  if (!t) return;
+  const sample = { name:'James Doe', email:'james@example.com', date: new Date().toLocaleDateString(), org:'GUYGD', status:'Active' };
+  const filled = (str) => str.replace(/\{\{(\w+)\}\}/g, (_, k) => sample[k] || `{{${k}}}`);
+  document.getElementById('preview-subject').textContent = filled(t.subject);
+  document.getElementById('preview-body').textContent    = filled(t.body);
+  const modal = document.getElementById('email-preview-modal');
+  modal.style.display = 'flex';
+}
+
+function closeEmailPreview() {
+  document.getElementById('email-preview-modal').style.display = 'none';
+}
+
+// ── ID CARD CONFIG ──
+function loadIDCardConfig() {
+  document.getElementById('idc-bg-color').value       = idCardConfig.bgColor;
+  document.getElementById('idc-bg-color-hex').value   = idCardConfig.bgColor;
+  document.getElementById('idc-text-color').value     = idCardConfig.textColor;
+  document.getElementById('idc-text-color-hex').value = idCardConfig.textColor;
+  document.getElementById('idc-accent-color').value     = idCardConfig.accentColor;
+  document.getElementById('idc-accent-color-hex').value = idCardConfig.accentColor;
+  document.getElementById('idc-org').value      = idCardConfig.org;
+  document.getElementById('idc-acronym').value  = idCardConfig.acronym;
+  document.getElementById('idc-footer').value   = idCardConfig.footer;
+  document.getElementById('idc-validity').value = idCardConfig.validity;
+  document.getElementById('idc-show-photo').checked  = idCardConfig.showPhoto;
+  document.getElementById('idc-show-id').checked     = idCardConfig.showId;
+  document.getElementById('idc-show-role').checked   = idCardConfig.showRole;
+  document.getElementById('idc-show-expiry').checked = idCardConfig.showExpiry;
+  document.getElementById('idc-show-phone').checked  = idCardConfig.showPhone;
+  // sync color pickers
+  ['idc-bg-color','idc-text-color','idc-accent-color'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function() {
+      document.getElementById(id+'-hex').value = this.value;
+      renderIDCardPreview();
+    });
+  });
+  document.querySelectorAll('#cfg-idcard input, #cfg-idcard select').forEach(el => {
+    el.addEventListener('input', renderIDCardPreview);
+    el.addEventListener('change', renderIDCardPreview);
+  });
+}
+
+function getIDCardFormValues() {
+  return {
+    bgColor:     document.getElementById('idc-bg-color').value,
+    textColor:   document.getElementById('idc-text-color').value,
+    accentColor: document.getElementById('idc-accent-color').value,
+    org:         document.getElementById('idc-org').value,
+    acronym:     document.getElementById('idc-acronym').value,
+    footer:      document.getElementById('idc-footer').value,
+    validity:    parseInt(document.getElementById('idc-validity').value) || 12,
+    showPhoto:   document.getElementById('idc-show-photo').checked,
+    showId:      document.getElementById('idc-show-id').checked,
+    showRole:    document.getElementById('idc-show-role').checked,
+    showExpiry:  document.getElementById('idc-show-expiry').checked,
+    showPhone:   document.getElementById('idc-show-phone').checked,
+  };
+}
+
+function renderIDCardPreview() {
+  const c = getIDCardFormValues();
+  const expiry = new Date(); expiry.setMonth(expiry.getMonth() + c.validity);
+  document.getElementById('id-card-preview').innerHTML = `
+    <div style="background:${c.bgColor};color:${c.textColor};padding:0;font-family:'Segoe UI',sans-serif;">
+      <!-- Header -->
+      <div style="background:rgba(0,0,0,0.25);padding:14px 18px;display:flex;align-items:center;gap:12px;">
+        <div style="width:38px;height:38px;border-radius:50%;background:${c.accentColor};display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:#000;flex-shrink:0;">${c.acronym.charAt(0)}</div>
+        <div>
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:1px;opacity:0.8;">${c.acronym}</div>
+          <div style="font-size:0.58rem;opacity:0.65;line-height:1.3;">${c.org}</div>
+        </div>
+      </div>
+      <!-- Body -->
+      <div style="padding:16px 18px;display:flex;gap:14px;align-items:flex-start;">
+        ${c.showPhoto ? `<div style="width:64px;height:64px;border-radius:10px;background:rgba(255,255,255,0.15);border:2px solid ${c.accentColor};display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">👤</div>` : ''}
+        <div style="flex:1;">
+          <div style="font-size:1rem;font-weight:800;margin-bottom:2px;">James K. Doe</div>
+          <div style="font-size:0.72rem;background:${c.accentColor};color:#000;display:inline-block;padding:2px 10px;border-radius:20px;font-weight:700;margin-bottom:8px;">Member</div>
+          ${c.showId     ? `<div style="font-size:0.7rem;opacity:0.75;">ID: <strong>GUYGD-2024-001</strong></div>` : ''}
+          ${c.showPhone  ? `<div style="font-size:0.7rem;opacity:0.75;">📞 +231 770 000 000</div>` : ''}
+          ${c.showExpiry ? `<div style="font-size:0.7rem;opacity:0.75;">Expires: <strong>${expiry.toLocaleDateString()}</strong></div>` : ''}
+        </div>
+      </div>
+      <!-- Footer -->
+      <div style="background:rgba(0,0,0,0.2);padding:8px 18px;font-size:0.6rem;text-align:center;opacity:0.75;">${c.footer}</div>
+    </div>`;
+}
+
+function saveIDCardTemplate() {
+  idCardConfig = getIDCardFormValues();
+  localStorage.setItem('guygd_idcard_cfg', JSON.stringify(idCardConfig));
+  showAlert('idcard-alert','✅ ID Card template saved!','success');
+}
+
+function previewIDCard() { renderIDCardPreview(); }
+
+function printIDCard() {
+  const card = document.getElementById('id-card-preview').innerHTML;
+  const w = window.open('','_blank','width=400,height=300');
+  w.document.write(`<html><head><title>ID Card</title><style>body{margin:0;display:flex;justify-content:center;padding:20px;background:#f0f0f0;}@media print{body{background:#fff;}}</style></head><body>${card}</body></html>`);
+  w.document.close(); w.focus(); setTimeout(() => w.print(), 400);
 }
 
 // ── SETTINGS ──────────────────────────────────────────
