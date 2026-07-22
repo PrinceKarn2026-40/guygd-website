@@ -4,44 +4,74 @@
 }
 
 @media (max-width: 768px) {
+  /* Navbar */
   .nav-links {
     display: none;
     flex-direction: column;
     position: absolute;
-    top: 74px;
+    top: 60px;
     left: 0;
     right: 0;
     background: var(--green);
-    padding: 20px 5%;
+    padding: 15px 5%;
     gap: 5px;
+    z-index: 999;
   }
   .nav-links.open { display: flex; }
   .hamburger { display: flex; }
 
-  .hero h1 { font-size: 2rem; }
-  .hero p { font-size: 1rem; }
+  /* Hero */
+  .hero {
+    padding: 60px 5% 50px !important;
+    min-height: 320px;
+    background-color: var(--green) !important;
+  }
+  .hero h1 { font-size: 1.6rem !important; }
+  .hero p  { font-size: 0.95rem !important; }
+  .hero-btns { flex-direction: column; align-items: center; gap: 10px; }
+  .hero-content { position: relative; z-index: 2; }
 
-  .stats { grid-template-columns: repeat(2, 1fr); }
+  /* Stats */
+  .stats-row { grid-template-columns: 1fr 1fr; padding: 30px 5%; }
+  .stat-num  { font-size: 1.8rem; }
+
+  /* Sections */
+  .section { padding: 40px 4% !important; }
+  .section-title { font-size: 1.4rem !important; }
+
+  /* Cards */
+  .cards-grid { grid-template-columns: 1fr !important; gap: 16px; }
+  .card { padding: 18px; }
+
+  /* Forms */
   .form-row { grid-template-columns: 1fr; }
+
+  /* Footer */
   .footer-grid { grid-template-columns: 1fr; gap: 25px; }
   .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
 
+  /* Dashboard */
   .dashboard-layout { grid-template-columns: 1fr; }
   .sidebar { display: none; }
   .sidebar.open { display: block; }
-}
 
-@media (max-width: 768px) {
+  /* Two col */
   .two-col { grid-template-columns: 1fr; }
   .program-block { grid-template-columns: 1fr; }
   .program-block.reverse { direction: ltr; }
+
+  /* CTA */
+  .cta-box h2 { font-size: 1.4rem; }
+  .cta-box { padding: 40px 15px; }
 }
 
 @media (max-width: 480px) {
   .stats { grid-template-columns: 1fr; }
   .stats-row { grid-template-columns: 1fr 1fr; }
-  .hero h1 { font-size: 1.6rem; }
+  .hero h1 { font-size: 1.4rem !important; }
   .hero-btns { flex-direction: column; align-items: center; }
   .form-container { padding: 25px 20px; }
-  section { padding: 50px 4%; }
+  .section { padding: 35px 4% !important; }
+  .section-title { font-size: 1.2rem !important; }
+  .cards-grid { grid-template-columns: 1fr !important; }
 }
