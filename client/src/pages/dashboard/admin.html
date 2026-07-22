@@ -264,9 +264,6 @@
       <a class="active" onclick="showSection('dashboard', this)">
         <span class="icon">📊</span> Dashboard
       </a>
-      <a onclick="showSection('applications', this)">
-        <span class="icon">🎓</span> Applications
-      </a>
       <a onclick="showSection('members', this)">
         <span class="icon">👥</span> Members
       </a>
@@ -342,10 +339,6 @@
             <div class="stat-info"><h3 id="stat-members">-</h3><p>Total Members</p></div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon blue">🎓</div>
-            <div class="stat-info"><h3 id="stat-apps">-</h3><p>Applications</p></div>
-          </div>
-          <div class="stat-card">
             <div class="stat-icon orange">📅</div>
             <div class="stat-info"><h3 id="stat-events">-</h3><p>Events</p></div>
           </div>
@@ -364,47 +357,10 @@
               </table>
             </div>
           </div>
-          <div class="panel">
-            <div class="panel-header"><h3>Recent Applications</h3></div>
-            <div class="table-wrap">
-              <table id="dt-recent-apps" class="admin-dt" style="width:100%">
-                <thead><tr><th>Applicant</th><th>Level</th><th>Status</th></tr></thead>
-                <tbody id="recent-apps-body"></tbody>
-              </table>
-            </div>
-          </div>
+          
         </div>
       </div>
 
-
-      <!-- ════ APPLICATIONS ════ -->
-      <div id="section-applications" class="tab-section">
-        <div class="panel">
-          <div class="panel-header">
-            <h3>Scholarship Applications</h3>
-            <div style="display:flex;gap:8px;">
-              <select id="app-filter" onchange="filterApplications()" style="padding:6px 10px;border-radius:8px;border:1px solid #d0d5dd;font-size:0.82rem;">
-                <option value="">All Status</option>
-                <option value="submitted">Submitted</option>
-                <option value="under_review">Under Review</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table id="dt-applications" class="admin-dt" style="width:100%">
-              <thead>
-                <tr><th>Applicant</th><th>School</th><th>Level</th><th>Essay</th><th>Status</th><th>Applied</th><th>Actions</th></tr>
-              </thead>
-              <tbody id="applications-body"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- ════ MEMBERS ════ -->
       <div id="section-members" class="tab-section">
         <div class="panel">
           <div class="panel-header">
@@ -931,7 +887,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── NAVIGATION ────────────────────────────────────────
 const sectionTitles = {
-  dashboard: 'Dashboard', applications: 'Scholarship Applications',
+  dashboard: 'Dashboard',
   members: 'Members', events: 'Events', news: 'News',
   gallery: 'Gallery', team: 'Our Team', donations: 'Donations', messages: 'Messages',
   notifications: 'Notifications', reports: 'Reports',
@@ -945,7 +901,7 @@ function showSection(name, el) {
   if (el) el.classList.add('active');
   document.getElementById('topbar-title').textContent = sectionTitles[name] || name;
   const loaders = {
-    dashboard: loadDashboard, applications: loadApplications,
+    dashboard: loadDashboard,
     members: loadMembers, events: loadEvents, news: loadNews,
     gallery: loadGallery, team: loadTeam, donations: loadDonations, messages: loadMessages,
     notifications: loadNotifications, reports: loadReports, users: loadUsers, config: loadConfig
@@ -975,64 +931,19 @@ function showAlert(id, msg, type) {
 // ── DASHBOARD ─────────────────────────────────────────
 async function loadDashboard() {
   try {
-    const [members, apps, events, donations] = await Promise.all([
-      apiFetch('/members'), apiFetch('/scholarships'),
-      apiFetch('/events'), apiFetch('/donations')
+    const [members, events, donations] = await Promise.all([
+      apiFetch('/members'),       apiFetch('/events'), apiFetch('/donations')
     ]);
     document.getElementById('stat-members').textContent   = members.length;
-    document.getElementById('stat-apps').textContent      = apps.length;
     document.getElementById('stat-events').textContent    = events.length;
     document.getElementById('stat-donations').textContent = donations.length;
 
     document.getElementById('recent-members-body').innerHTML = members.slice(0,5).map(m =>
       `<tr><td>${m.full_name}</td><td>${badge(m.status)}</td><td>${fmtDate(m.joined_at)}</td></tr>`
     ).join('');
-    document.getElementById('recent-apps-body').innerHTML = apps.slice(0,5).map(a =>
-      `<tr><td>${a.applicant_name}</td><td>${a.level || '-'}</td><td>${badge(a.status)}</td></tr>`
-    ).join('');
 
     dtInit('dt-recent-members', { paging: false, searching: false, info: false, ordering: false, dom: 't', buttons: [] });
-    dtInit('dt-recent-apps',    { paging: false, searching: false, info: false, ordering: false, dom: 't', buttons: [] });
   } catch(e) { console.error('Dashboard load error:', e); }
-}
-
-// ── APPLICATIONS ──────────────────────────────────────
-let allApplications = [];
-async function loadApplications() {
-  try {
-    allApplications = await apiFetch('/scholarships');
-    renderApplications(allApplications);
-  } catch(e) {
-    document.getElementById('applications-body').innerHTML =
-      '<tr><td colspan="7" style="text-align:center;color:#e74c3c;">Error loading applications.</td></tr>';
-  }
-}
-function renderApplications(list) {
-  document.getElementById('applications-body').innerHTML = list.map(s => `
-    <tr>
-      <td><strong>${s.applicant_name}</strong></td>
-      <td>${s.school || '-'}</td>
-      <td>${s.level || '-'}</td>
-      <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.essay ? s.essay.substring(0,40)+'…' : '-'}</td>
-      <td>${badge(s.status)}</td>
-      <td>${fmtDate(s.applied_at)}</td>
-      <td>
-        <button class="btn btn-sm btn-warn"    onclick="updateApp(${s.id},'under_review')">Review</button>
-        <button class="btn btn-sm btn-success" onclick="updateApp(${s.id},'approved')">Approve</button>
-        <button class="btn btn-sm btn-danger"  onclick="updateApp(${s.id},'rejected')">Reject</button>
-      </td>
-    </tr>`).join('');
-  dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: [3, 6] }] });
-}
-function filterApplications() {
-  const val = document.getElementById('app-filter').value;
-  renderApplications(val ? allApplications.filter(a => a.status === val) : allApplications);
-}
-async function updateApp(id, status) {
-  try {
-    await apiFetch(`/scholarships/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
-    loadApplications(); loadDashboard();
-  } catch(e) { alert('Failed to update application.'); }
 }
 
 
@@ -1263,86 +1174,13 @@ async function loadMessages() {
 let notifications = [];
 async function loadNotifications() {
   try {
-    const [members, apps, messages] = await Promise.all([
-      apiFetch('/members'), apiFetch('/scholarships'), apiFetch('/contact')
+    const [members, messages] = await Promise.all([
+      apiFetch('/members'), apiFetch('/contact')
     ]);
     notifications = [];
     const pending = members.filter(m => m.status === 'pending');
     const newApps = apps.filter(a => a.status === 'submitted');
     pending.forEach(m => notifications.push({ text: `New member pending approval: ${m.full_name}`, time: m.joined_at, read: false }));
-    newApps.forEach(a => notifications.push({ text: `New scholarship application from ${a.applicant_name}`, time: a.applied_at, read: false }));
-    messages.slice(0,3).forEach(m => notifications.push({ text: `New message from ${m.sender_name}: "${m.subject}"`, time: m.received_at, read: true }));
-    const count = notifications.filter(n => !n.read).length;
-    document.getElementById('notif-count').textContent = count;
-    const list = document.getElementById('notifications-list');
-    list.innerHTML = notifications.length ? notifications.map(n => `
-      <div class="notif-item">
-        <div class="notif-dot ${n.read ? 'read' : ''}"></div>
-        <div class="notif-text"><p>${n.text}</p><span>${fmtDate(n.time)}</span></div>
-      </div>`).join('')
-      : '<div class="empty-state"><div class="empty-icon">🔔</div><p>No notifications.</p></div>';
-  } catch(e) { console.error('Notifications error:', e); }
-}
-function markAllRead() {
-  notifications.forEach(n => n.read = true);
-  document.getElementById('notif-count').textContent = 0;
-  document.querySelectorAll('.notif-dot').forEach(d => d.classList.add('read'));
-}
-
-// ── REPORTS ───────────────────────────────────────────
-async function loadReports() {
-  try {
-    const [members, apps, events, donations] = await Promise.all([
-      apiFetch('/members'), apiFetch('/scholarships'),
-      apiFetch('/events'), apiFetch('/donations')
-    ]);
-    document.getElementById('rpt-total').textContent     = members.length;
-    document.getElementById('rpt-active').textContent    = members.filter(m => m.status === 'active').length;
-    document.getElementById('rpt-pending').textContent   = members.filter(m => m.status === 'pending').length;
-    document.getElementById('rpt-suspended').textContent = members.filter(m => m.status === 'suspended').length;
-    document.getElementById('rpt-apps').textContent      = apps.length;
-    document.getElementById('rpt-submitted').textContent = apps.filter(a => a.status === 'submitted').length;
-    document.getElementById('rpt-review').textContent    = apps.filter(a => a.status === 'under_review').length;
-    document.getElementById('rpt-approved').textContent  = apps.filter(a => a.status === 'approved').length;
-    document.getElementById('rpt-rejected').textContent  = apps.filter(a => a.status === 'rejected').length;
-    const total = donations.reduce((sum, d) => sum + parseFloat(d.amount || 0), 0);
-    document.getElementById('rpt-don-count').textContent = donations.length;
-    document.getElementById('rpt-don-total').textContent = '$' + total.toFixed(2);
-    const now = new Date();
-    document.getElementById('rpt-ev-total').textContent    = events.length;
-    document.getElementById('rpt-ev-upcoming').textContent = events.filter(e => new Date(e.event_date) >= now).length;
-    document.getElementById('rpt-ev-past').textContent     = events.filter(e => new Date(e.event_date) < now).length;
-  } catch(e) { console.error('Reports error:', e); }
-}
-
-// ── USERS ─────────────────────────────────────────────
-async function loadUsers() {
-  try {
-    const list = await apiFetch('/members');
-    document.getElementById('users-body').innerHTML = list.length ? list.map(m => `
-      <tr>
-        <td><strong>${m.full_name}</strong></td>
-        <td>${m.email}</td>
-        <td>${badge(m.role)}</td>
-        <td>${badge(m.status)}</td>
-        <td>${fmtDate(m.joined_at)}</td>
-        <td>
-          <select onchange="changeRole(${m.id}, this.value)" style="padding:5px 8px;border-radius:6px;border:1px solid #d0d5dd;font-size:0.82rem;">
-            <option value="member"    ${m.role==='member'    ? 'selected':''}>Member</option>
-            <option value="admin"     ${m.role==='admin'     ? 'selected':''}>Admin</option>
-            <option value="executive" ${m.role==='executive' ? 'selected':''}>Executive</option>
-          </select>
-        </td>
-      </tr>`).join('')
-      : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No users found.</td></tr>';
-  } catch(e) {
-    document.getElementById('users-body').innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading users.</td></tr>';
-  }
-}
-async function changeRole(id, role) {
-  try {
-    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ role }) });
   } catch(e) { alert('Failed to update role.'); }
 }
 
