@@ -21,11 +21,12 @@ exports.getAll = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-  const { title, content, summary, category, image_url, published } = req.body;
+  const { title, content, summary, category, published } = req.body;
+  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
   try {
     await db.query(
       'INSERT INTO news (title, content, summary, category, image_url, author_id, published) VALUES ($1,$2,$3,$4,$5,$6,$7)',
-      [title, content, summary || null, category || null, image_url || null, req.user.id, published || false]
+      [title, content, summary || null, category || null, image_url, req.user.id, published || false]
     );
     res.status(201).json({ message: 'Article created' });
   } catch (err) {

@@ -11,10 +11,11 @@ exports.getAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   const { title, description, location, event_date, category } = req.body;
+  const image_url = req.file ? `/uploads/${req.file.filename}` : (req.body.image_url || null);
   try {
     await db.query(
-      'INSERT INTO events (title, description, location, event_date, category, created_by) VALUES ($1,$2,$3,$4,$5,$6)',
-      [title, description, location, event_date, category, req.user.id]
+      'INSERT INTO events (title, description, location, event_date, category, image_url, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7)',
+      [title, description, location, event_date, category, image_url, req.user.id]
     );
     res.status(201).json({ message: 'Event created' });
   } catch (err) {
@@ -24,10 +25,11 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   const { title, description, location, event_date, category } = req.body;
+  const image_url = req.file ? `/uploads/${req.file.filename}` : (req.body.image_url || null);
   try {
     await db.query(
-      'UPDATE events SET title=$1, description=$2, location=$3, event_date=$4, category=$5 WHERE id=$6',
-      [title, description, location, event_date, category, req.params.id]
+      'UPDATE events SET title=$1, description=$2, location=$3, event_date=$4, category=$5, image_url=$6 WHERE id=$7',
+      [title, description, location, event_date, category, image_url, req.params.id]
     );
     res.json({ message: 'Event updated' });
   } catch (err) {

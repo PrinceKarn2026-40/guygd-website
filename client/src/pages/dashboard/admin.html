@@ -444,7 +444,12 @@
                 </select>
               </div>
               <div class="form-group full"><label>Description</label><textarea id="ev-desc" rows="3" placeholder="Event details..."></textarea></div>
-              <div class="form-group full"><label>Image URL (optional)</label><input type="text" id="ev-image" placeholder="https://..."/></div>
+              <div class="form-group full">
+                <label>Event Photo</label>
+                <input type="file" id="ev-image-file" accept="image/*" style="padding:6px;"/>
+                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG — max 10MB)</p>
+                <div id="ev-image-preview" style="display:none;margin-top:8px;"><img id="ev-img-thumb" style="max-height:120px;border-radius:8px;border:1px solid #e0e0e0;"/></div>
+              </div>
               <div class="form-actions full">
                 <button type="submit" class="btn btn-primary">💾 Save Event</button>
                 <button type="button" class="btn btn-outline" onclick="hideEventForm()">Cancel</button>
@@ -478,7 +483,12 @@
               <div class="form-group"><label>Category</label><input type="text" id="news-category" placeholder="e.g. Announcement"/></div>
               <div class="form-group full"><label>Summary</label><input type="text" id="news-summary" placeholder="Short one-line summary"/></div>
               <div class="form-group full"><label>Content *</label><textarea id="news-content" rows="5" required placeholder="Full article content..."></textarea></div>
-              <div class="form-group full"><label>Image URL (optional)</label><input type="text" id="news-image" placeholder="https://..."/></div>
+              <div class="form-group full">
+                <label>Article Photo</label>
+                <input type="file" id="news-image-file" accept="image/*" style="padding:6px;"/>
+                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG — max 10MB)</p>
+                <div id="news-image-preview" style="display:none;margin-top:8px;"><img id="news-img-thumb" style="max-height:120px;border-radius:8px;border:1px solid #e0e0e0;"/></div>
+              </div>
               <div class="form-actions full">
                 <button type="submit" class="btn btn-primary">🚀 Publish</button>
                 <button type="button" class="btn btn-outline" onclick="document.getElementById('news-form-panel').style.display='none'">Cancel</button>
@@ -1091,19 +1101,35 @@ function hideEventForm() { document.getElementById('event-form-panel').style.dis
 
 document.getElementById('event-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+  const formData = new FormData();
+  formData.append('title',       document.getElementById('ev-title').value);
+  formData.append('event_date',  document.getElementById('ev-date').value);
+  formData.append('location',    document.getElementById('ev-location').value);
+  formData.append('category',    document.getElementById('ev-category').value);
+  formData.append('description', document.getElementById('ev-desc').value);
+  const imgFile = document.getElementById('ev-image-file').files[0];
+  if (imgFile) formData.append('image', imgFile);
   try {
-    await apiFetch('/events', { method: 'POST', body: JSON.stringify({
-      title:       document.getElementById('ev-title').value,
-      event_date:  document.getElementById('ev-date').value,
-      location:    document.getElementById('ev-location').value,
-      category:    document.getElementById('ev-category').value,
-      description: document.getElementById('ev-desc').value,
-      image_url:   document.getElementById('ev-image').value,
-    })});
+    const res = await fetch(`${API}/events`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${getToken()}` },
+      body: formData
+    });
+    if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed'); }
     showAlert('event-alert', '✅ Event created successfully!', 'success');
     document.getElementById('event-form').reset();
+    document.getElementById('ev-image-preview').style.display = 'none';
     hideEventForm(); loadEvents(); loadDashboard();
   } catch(err) { showAlert('event-alert', err.message || 'Failed to create event.', 'error'); }
+});
+document.getElementById('ev-image-file').addEventListener('change', function() {
+  const file = this.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('ev-img-thumb').src = e.target.result;
+    document.getElementById('ev-image-preview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
 });
 async function deleteEvent(id) {
   if (!confirm('Delete this event? This cannot be undone.')) return;
@@ -1134,20 +1160,36 @@ async function loadNews() {
 }
 document.getElementById('news-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+  const formData = new FormData();
+  formData.append('title',     document.getElementById('news-title').value);
+  formData.append('category',  document.getElementById('news-category').value);
+  formData.append('summary',   document.getElementById('news-summary').value);
+  formData.append('content',   document.getElementById('news-content').value);
+  formData.append('published', 'true');
+  const imgFile = document.getElementById('news-image-file').files[0];
+  if (imgFile) formData.append('image', imgFile);
   try {
-    await apiFetch('/news', { method: 'POST', body: JSON.stringify({
-      title:     document.getElementById('news-title').value,
-      category:  document.getElementById('news-category').value,
-      summary:   document.getElementById('news-summary').value,
-      content:   document.getElementById('news-content').value,
-      image_url: document.getElementById('news-image').value,
-      published: true,
-    })});
+    const res = await fetch(`${API}/news`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${getToken()}` },
+      body: formData
+    });
+    if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed'); }
     showAlert('news-alert', '✅ Article published!', 'success');
     document.getElementById('news-form').reset();
+    document.getElementById('news-image-preview').style.display = 'none';
     document.getElementById('news-form-panel').style.display = 'none';
     loadNews();
   } catch(err) { showAlert('news-alert', err.message || 'Failed to publish.', 'error'); }
+});
+document.getElementById('news-image-file').addEventListener('change', function() {
+  const file = this.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('news-img-thumb').src = e.target.result;
+    document.getElementById('news-image-preview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
 });
 async function deleteNews(id) {
   if (!confirm('Delete this article?')) return;
