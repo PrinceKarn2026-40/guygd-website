@@ -67,6 +67,20 @@
       color: #fff; font-size: 0.6rem; width: 16px; height: 16px;
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
     }
+    .topbar-user-info {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 12px; border-radius: 10px; background: #f8f9fb;
+      border: 1px solid #e8ecf0; cursor: default;
+    }
+    .topbar-avatar {
+      width: 34px; height: 34px; border-radius: 50%; background: #2d6a4f;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: #fff; flex-shrink: 0;
+    }
+    .topbar-user-details { display: flex; flex-direction: column; }
+    .topbar-user-details .t-name { font-size: 0.85rem; font-weight: 600; color: #1a1f36; line-height: 1.2; }
+    .topbar-user-details .t-role { font-size: 0.72rem; color: #2d6a4f; font-weight: 500; text-transform: capitalize; }
+    .topbar-user-details .t-login { font-size: 0.7rem; color: #8b9bb4; }
     .admin-content { padding: 28px; flex: 1; }
 
     /* ── SECTIONS ── */
@@ -301,7 +315,14 @@
         <button class="notif-btn" onclick="showSection('notifications', null)" title="Notifications">
           🔔<span class="notif-badge" id="notif-count">0</span>
         </button>
-        <span style="font-size:0.85rem;color:#6c757d;" id="topbar-user">Admin</span>
+        <div class="topbar-user-info">
+          <div class="topbar-avatar" id="topbar-avatar">👤</div>
+          <div class="topbar-user-details">
+            <span class="t-name" id="topbar-user">Admin</span>
+            <span class="t-role" id="topbar-role">super_admin</span>
+            <span class="t-login" id="topbar-last-login">Last login: —</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -678,7 +699,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.getElementById('sidebar-name').textContent = user.full_name || 'Admin';
   document.getElementById('sidebar-role').textContent = user.role;
-  document.getElementById('topbar-user').textContent = user.full_name || 'Admin';
+  document.getElementById('topbar-user').textContent  = user.full_name || 'Admin';
+  document.getElementById('topbar-role').textContent  = user.role.replace('_', ' ');
+  const initials = (user.full_name || 'A').split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('topbar-avatar').textContent = initials;
+  document.getElementById('topbar-last-login').textContent = user.last_login
+    ? 'Last login: ' + new Date(user.last_login).toLocaleString()
+    : 'First login';
   loadDashboard();
   loadNotifications();
 });
