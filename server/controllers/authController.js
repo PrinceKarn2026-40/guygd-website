@@ -3,16 +3,35 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/db');
 
 exports.register = async (req, res) => {
-  const { full_name, email, password, phone, gender, date_of_birth, address } = req.body;
-  if (!full_name || !email || !password)
+  const {
+    first_name, last_name, full_name, email, password, phone, gender,
+    date_of_birth, address, county, district, town, occupation,
+    education_level, nationality, emergency_contact_name,
+    emergency_contact_phone, reason_for_joining
+  } = req.body;
+  const name = full_name || `${first_name || ''} ${last_name || ''}`.trim();
+  if (!name || !email || !password)
     return res.status(400).json({ message: 'Name, email, and password are required' });
   try {
     const existing = await db.query('SELECT id FROM members WHERE email = $1', [email]);
     if (existing.rows.length) return res.status(409).json({ message: 'Email already registered' });
     const password_hash = await bcrypt.hash(password, 10);
     const result = await db.query(
-      'INSERT INTO members (full_name, email, password_hash, phone, gender, date_of_birth, address) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id, full_name, email, role, status',
-      [full_name, email, password_hash, phone || null, gender || null, date_of_birth || null, address || null]
+      `INSERT INTO members (
+        first_name, last_name, full_name, email, password_hash, phone, gender,
+        date_of_birth, address, county, district, town, occupation,
+        education_level, nationality, emergency_contact_name,
+        emergency_contact_phone, reason_for_joining
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
+      RETURNING id, full_name, email, role, status`,
+      [
+        first_name || null, last_name || null, name, email, password_hash,
+        phone || null, gender || null, date_of_birth || null, address || null,
+        county || null, district || null, town || null, occupation || null,
+        education_level || null, nationality || 'Liberian',
+        emergency_contact_name || null, emergency_contact_phone || null,
+        reason_for_joining || null
+      ]
     );
     const member = result.rows[0];
     const token = jwt.sign(

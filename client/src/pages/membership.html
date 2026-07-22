@@ -6,6 +6,56 @@
   <title>GUYGD – Membership</title>
   <link rel="stylesheet" href="/src/css/main.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
+  <style>
+    .mem-container { max-width: 860px; margin: 0 auto; padding: 0 20px 60px; }
+    .mem-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 35px; }
+    .mem-card { background: #fff; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 36px 40px; }
+    .mem-card h3 { color: var(--green); text-align: center; margin-bottom: 6px; font-size: 1.3rem; }
+    .mem-card .sub { text-align: center; color: var(--gray); font-size: 0.88rem; margin-bottom: 28px; }
+    .form-section { margin-bottom: 28px; }
+    .form-section-title {
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--green); border-bottom: 2px solid var(--green);
+      padding-bottom: 6px; margin-bottom: 18px;
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: #344054; }
+    .form-group label .req { color: #e74c3c; margin-left: 2px; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 13px; border: 1px solid #d0d5dd; border-radius: 8px;
+      font-size: 0.88rem; outline: none; transition: border 0.2s; background: #fff;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--green); box-shadow: 0 0 0 3px rgba(45,106,79,0.08);
+    }
+    .photo-preview {
+      width: 90px; height: 90px; border-radius: 50%; object-fit: cover;
+      border: 3px solid var(--green); display: none; margin: 0 auto 10px;
+    }
+    .photo-wrap { text-align: center; }
+    .submit-btn { width: 100%; margin-top: 10px; padding: 13px; font-size: 1rem; border-radius: 10px; }
+    .login-link { text-align: center; margin-top: 16px; font-size: 0.88rem; color: var(--gray); }
+    .login-link a { color: var(--green); font-weight: 600; }
+    .step-indicator {
+      display: flex; justify-content: center; gap: 8px; margin-bottom: 28px;
+    }
+    .step { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #8b9bb4; }
+    .step .dot {
+      width: 28px; height: 28px; border-radius: 50%; background: #e8ecf0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: #8b9bb4;
+    }
+    .step.active .dot { background: var(--green); color: #fff; }
+    .step.active { color: var(--green); font-weight: 600; }
+    .step-line { width: 40px; height: 2px; background: #e8ecf0; margin-top: -2px; }
+    @media(max-width:600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .full { grid-column: 1; }
+      .mem-card { padding: 24px 18px; }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -22,89 +72,195 @@
   </div>
 
   <section class="section">
-    <div class="container">
+    <div class="mem-container">
+
       <!-- Tabs -->
-      <div style="display:flex;justify-content:center;gap:10px;margin-bottom:35px;">
-        <button class="btn btn-primary" id="tab-register" onclick="showTab('register')">Register</button>
-        <button class="btn btn-green" id="tab-login" onclick="showTab('login')">Login</button>
+      <div class="mem-tabs">
+        <button class="btn btn-primary" id="tab-register" onclick="showTab('register')">📝 Apply for Membership</button>
+        <button class="btn btn-outline" id="tab-login" onclick="showTab('login')">🔐 Login</button>
       </div>
 
-      <!-- Register Form -->
-      <div id="register-section" class="form-container">
-        <h3 style="margin-bottom:20px;color:var(--green);text-align:center;">Create Your Account</h3>
+      <!-- ── REGISTER FORM ── -->
+      <div id="register-section" class="mem-card">
+        <h3>Membership Application Form</h3>
+        <p class="sub">Fill in all required fields marked with <span style="color:#e74c3c;">*</span>. Your application will be reviewed by the admin.</p>
+
         <div class="alert" id="register-alert"></div>
-        <form id="register-form">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="reg-name" placeholder="Your full name" required/>
-            </div>
-            <div class="form-group">
-              <label>Email Address</label>
-              <input type="email" id="reg-email" placeholder="your@email.com" required/>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Phone Number</label>
-              <input type="tel" id="reg-phone" placeholder="+231 xxx xxx xxx"/>
-            </div>
-            <div class="form-group">
-              <label>Gender</label>
-              <select id="reg-gender">
-                <option value="">Select gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
+
+        <form id="register-form" enctype="multipart/form-data">
+
+          <!-- Profile Photo -->
+          <div class="form-section">
+            <div class="form-section-title">Profile Photo</div>
+            <div class="photo-wrap">
+              <img id="photo-preview" class="photo-preview" src="" alt="Preview"/>
+              <div class="form-group" style="max-width:300px;margin:0 auto;">
+                <label>Upload Photo (optional)</label>
+                <input type="file" id="reg-photo" accept="image/*" onchange="previewPhoto(this)"/>
+              </div>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Date of Birth</label>
-              <input type="date" id="reg-dob"/>
-            </div>
-            <div class="form-group">
-              <label>Address</label>
-              <input type="text" id="reg-address" placeholder="Your address"/>
+
+          <!-- Personal Info -->
+          <div class="form-section">
+            <div class="form-section-title">Personal Information</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>First Name <span class="req">*</span></label>
+                <input type="text" id="reg-firstname" placeholder="First name" required/>
+              </div>
+              <div class="form-group">
+                <label>Last Name <span class="req">*</span></label>
+                <input type="text" id="reg-lastname" placeholder="Last name" required/>
+              </div>
+              <div class="form-group">
+                <label>Gender <span class="req">*</span></label>
+                <select id="reg-gender" required>
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Date of Birth <span class="req">*</span></label>
+                <input type="date" id="reg-dob" required/>
+              </div>
+              <div class="form-group">
+                <label>Nationality</label>
+                <input type="text" id="reg-nationality" placeholder="e.g. Liberian" value="Liberian"/>
+              </div>
+              <div class="form-group">
+                <label>Occupation</label>
+                <input type="text" id="reg-occupation" placeholder="e.g. Student, Teacher"/>
+              </div>
+              <div class="form-group full">
+                <label>Education Level</label>
+                <select id="reg-education">
+                  <option value="">Select level</option>
+                  <option value="Primary">Primary</option>
+                  <option value="Junior High">Junior High</option>
+                  <option value="Senior High">Senior High</option>
+                  <option value="Vocational">Vocational / Technical</option>
+                  <option value="Undergraduate">Undergraduate</option>
+                  <option value="Postgraduate">Postgraduate</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="reg-password" placeholder="Min 6 characters" required/>
-            </div>
-            <div class="form-group">
-              <label>Confirm Password</label>
-              <input type="password" id="reg-confirm" placeholder="Repeat password" required/>
+
+          <!-- Contact Info -->
+          <div class="form-section">
+            <div class="form-section-title">Contact Information</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Phone Number <span class="req">*</span></label>
+                <input type="tel" id="reg-phone" placeholder="+231 xxx xxx xxx" required/>
+              </div>
+              <div class="form-group">
+                <label>Email Address <span class="req">*</span></label>
+                <input type="email" id="reg-email" placeholder="your@email.com" required/>
+              </div>
+              <div class="form-group full">
+                <label>Address</label>
+                <input type="text" id="reg-address" placeholder="Street / Community address"/>
+              </div>
+              <div class="form-group">
+                <label>County</label>
+                <select id="reg-county">
+                  <option value="">Select county</option>
+                  <option value="Bong">Bong</option>
+                  <option value="Bomi">Bomi</option>
+                  <option value="Grand Bassa">Grand Bassa</option>
+                  <option value="Grand Cape Mount">Grand Cape Mount</option>
+                  <option value="Grand Gedeh">Grand Gedeh</option>
+                  <option value="Grand Kru">Grand Kru</option>
+                  <option value="Gbarpolu">Gbarpolu</option>
+                  <option value="Lofa">Lofa</option>
+                  <option value="Margibi">Margibi</option>
+                  <option value="Maryland">Maryland</option>
+                  <option value="Montserrado">Montserrado</option>
+                  <option value="Nimba">Nimba</option>
+                  <option value="River Cess">River Cess</option>
+                  <option value="River Gee">River Gee</option>
+                  <option value="Sinoe">Sinoe</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>District</label>
+                <input type="text" id="reg-district" placeholder="Your district"/>
+              </div>
+              <div class="form-group">
+                <label>Town / City</label>
+                <input type="text" id="reg-town" placeholder="Your town or city"/>
+              </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:10px;">Create Account</button>
-          <p style="text-align:center;margin-top:15px;font-size:0.9rem;color:var(--gray);">
-            Already have an account? <a href="#" onclick="showTab('login')" style="color:var(--green);">Login here</a>
-          </p>
+
+          <!-- Emergency Contact -->
+          <div class="form-section">
+            <div class="form-section-title">Emergency Contact</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Contact Name</label>
+                <input type="text" id="reg-emergency-name" placeholder="Full name"/>
+              </div>
+              <div class="form-group">
+                <label>Contact Phone</label>
+                <input type="tel" id="reg-emergency-phone" placeholder="+231 xxx xxx xxx"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reason for Joining -->
+          <div class="form-section">
+            <div class="form-section-title">Reason for Joining</div>
+            <div class="form-group">
+              <label>Why do you want to join GUYGD? <span class="req">*</span></label>
+              <textarea id="reg-reason" rows="4" placeholder="Tell us why you want to be a member of GUYGD..." required></textarea>
+            </div>
+          </div>
+
+          <!-- Account Security -->
+          <div class="form-section">
+            <div class="form-section-title">Account Security</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Password <span class="req">*</span></label>
+                <input type="password" id="reg-password" placeholder="Min 6 characters" required/>
+              </div>
+              <div class="form-group">
+                <label>Confirm Password <span class="req">*</span></label>
+                <input type="password" id="reg-confirm" placeholder="Repeat password" required/>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary submit-btn">🚀 Submit Application</button>
+          <p class="login-link">Already have an account? <a href="#" onclick="showTab('login')">Login here</a></p>
         </form>
       </div>
 
-      <!-- Login Form -->
-      <div id="login-section" class="form-container" style="display:none;">
-        <h3 style="margin-bottom:20px;color:var(--green);text-align:center;">Welcome Back</h3>
+      <!-- ── LOGIN FORM ── -->
+      <div id="login-section" class="mem-card" style="display:none;max-width:480px;margin:0 auto;">
+        <h3>Welcome Back</h3>
+        <p class="sub">Login to access your member dashboard.</p>
         <div class="alert" id="login-alert"></div>
         <form id="login-form">
-          <div class="form-group">
-            <label>Email Address</label>
+          <div class="form-group" style="margin-bottom:16px;">
+            <label>Email Address <span class="req">*</span></label>
             <input type="email" id="login-email" placeholder="your@email.com" required/>
           </div>
-          <div class="form-group">
-            <label>Password</label>
+          <div class="form-group" style="margin-bottom:16px;">
+            <label>Password <span class="req">*</span></label>
             <input type="password" id="login-password" placeholder="Your password" required/>
           </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:10px;">Login</button>
-          <p style="text-align:center;margin-top:15px;font-size:0.9rem;color:var(--gray);">
-            Don't have an account? <a href="#" onclick="showTab('register')" style="color:var(--green);">Register here</a>
-          </p>
+          <button type="submit" class="btn btn-primary submit-btn">Login</button>
+          <p class="login-link">Don't have an account? <a href="#" onclick="showTab('register')">Apply here</a></p>
         </form>
       </div>
+
     </div>
   </section>
 
@@ -113,12 +269,20 @@
   <script>
     function showTab(tab) {
       document.getElementById('register-section').style.display = tab === 'register' ? 'block' : 'none';
-      document.getElementById('login-section').style.display = tab === 'login' ? 'block' : 'none';
-      document.getElementById('tab-register').className = tab === 'register' ? 'btn btn-primary' : 'btn btn-green';
-      document.getElementById('tab-login').className = tab === 'login' ? 'btn btn-primary' : 'btn btn-green';
+      document.getElementById('login-section').style.display    = tab === 'login'    ? 'block' : 'none';
+      document.getElementById('tab-register').className = tab === 'register' ? 'btn btn-primary' : 'btn btn-outline';
+      document.getElementById('tab-login').className    = tab === 'login'    ? 'btn btn-primary' : 'btn btn-outline';
     }
 
-    // Check URL param
+    function previewPhoto(input) {
+      const preview = document.getElementById('photo-preview');
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       if (window.location.search.includes('login')) showTab('login');
       if (getUser()) {
@@ -132,24 +296,38 @@
     document.getElementById('register-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const password = document.getElementById('reg-password').value;
-      const confirm = document.getElementById('reg-confirm').value;
+      const confirm  = document.getElementById('reg-confirm').value;
       if (password !== confirm) { showAlert('register-alert', 'Passwords do not match.', 'error'); return; }
+      if (password.length < 6)  { showAlert('register-alert', 'Password must be at least 6 characters.', 'error'); return; }
+      const first = document.getElementById('reg-firstname').value.trim();
+      const last  = document.getElementById('reg-lastname').value.trim();
       try {
         const data = await apiFetch('/auth/register', {
           method: 'POST',
           body: JSON.stringify({
-            full_name: document.getElementById('reg-name').value,
-            email: document.getElementById('reg-email').value,
-            phone: document.getElementById('reg-phone').value,
-            gender: document.getElementById('reg-gender').value,
-            date_of_birth: document.getElementById('reg-dob').value,
-            address: document.getElementById('reg-address').value,
+            first_name:              first,
+            last_name:               last,
+            full_name:               `${first} ${last}`,
+            email:                   document.getElementById('reg-email').value,
+            phone:                   document.getElementById('reg-phone').value,
+            gender:                  document.getElementById('reg-gender').value,
+            date_of_birth:           document.getElementById('reg-dob').value,
+            address:                 document.getElementById('reg-address').value,
+            county:                  document.getElementById('reg-county').value,
+            district:                document.getElementById('reg-district').value,
+            town:                    document.getElementById('reg-town').value,
+            occupation:              document.getElementById('reg-occupation').value,
+            education_level:         document.getElementById('reg-education').value,
+            nationality:             document.getElementById('reg-nationality').value,
+            emergency_contact_name:  document.getElementById('reg-emergency-name').value,
+            emergency_contact_phone: document.getElementById('reg-emergency-phone').value,
+            reason_for_joining:      document.getElementById('reg-reason').value,
             password,
           }),
         });
         localStorage.setItem('guygd_token', data.token);
         localStorage.setItem('guygd_user', JSON.stringify(data.user));
-        showAlert('register-alert', 'Account created! Redirecting...', 'success');
+        showAlert('register-alert', '✅ Application submitted! Redirecting...', 'success');
         setTimeout(() => {
           const isAdmin = ['admin', 'executive', 'super_admin'].includes(data.user.role);
           window.location.href = isAdmin ? '/dashboard/admin.html' : '/dashboard/member.html';
@@ -164,13 +342,13 @@
         const data = await apiFetch('/auth/login', {
           method: 'POST',
           body: JSON.stringify({
-            email: document.getElementById('login-email').value,
+            email:    document.getElementById('login-email').value,
             password: document.getElementById('login-password').value,
           }),
         });
         localStorage.setItem('guygd_token', data.token);
         localStorage.setItem('guygd_user', JSON.stringify(data.user));
-        showAlert('login-alert', 'Login successful! Redirecting...', 'success');
+        showAlert('login-alert', '✅ Login successful! Redirecting...', 'success');
         setTimeout(() => {
           const isAdmin = ['admin', 'executive', 'super_admin'].includes(data.user.role);
           window.location.href = isAdmin ? '/dashboard/admin.html' : '/dashboard/member.html';
