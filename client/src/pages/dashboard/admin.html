@@ -967,9 +967,11 @@ function renderMembers(list) {
       <td>${badge(m.role)}</td>
       <td>${badge(m.status)}</td>
       <td>${fmtDate(m.joined_at)}</td>
-      <td>
-        <button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">Activate</button>
-        <button class="btn btn-sm btn-danger"  onclick="updateMemberStatus(${m.id},'suspended')">Suspend</button>
+      <td style="display:flex;gap:4px;flex-wrap:wrap;">
+        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewMember(${m.id})">👁 View</button>
+        <button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">✅ Approve</button>
+        <button class="btn btn-sm btn-danger"  onclick="updateMemberStatus(${m.id},'suspended')">❌ Reject</button>
+        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}')">🗑 Delete</button>
       </td>
     </tr>`).join('');
   dtInit('dt-members', { columnDefs: [{ orderable: false, targets: 6 }] });
@@ -986,6 +988,36 @@ async function updateMemberStatus(id, status) {
     loadMembers(); loadDashboard();
   } catch(e) { alert('Failed to update member.'); }
 }
+async function deleteMember(id, name) {
+  if (!confirm(`Delete member "${name}"? This cannot be undone.`)) return;
+  try {
+    await apiFetch(`/members/${id}`, { method: 'DELETE' });
+    loadMembers(); loadDashboard();
+  } catch(e) { alert('Failed to delete member.'); }
+}
+function viewMember(id) {
+  const m = allMembers.find(x => x.id === id);
+  if (!m) return;
+  const modal = document.getElementById('member-modal');
+  document.getElementById('modal-member-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;font-size:0.9rem;">
+      <div><strong>Full Name</strong><p>${m.full_name}</p></div>
+      <div><strong>Email</strong><p>${m.email}</p></div>
+      <div><strong>Phone</strong><p>${m.phone || '-'}</p></div>
+      <div><strong>Role</strong><p>${m.role}</p></div>
+      <div><strong>Status</strong><p>${m.status}</p></div>
+      <div><strong>Joined</strong><p>${fmtDate(m.joined_at)}</p></div>
+      ${m.address ? `<div style="grid-column:1/-1"><strong>Address</strong><p>${m.address}</p></div>` : ''}
+      ${m.bio ? `<div style="grid-column:1/-1"><strong>Bio</strong><p>${m.bio}</p></div>` : ''}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button class="btn btn-success" onclick="updateMemberStatus(${m.id},'active');closeMemberModal()">✅ Approve</button>
+      <button class="btn btn-danger"  onclick="updateMemberStatus(${m.id},'suspended');closeMemberModal()">❌ Reject</button>
+      <button class="btn" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}');closeMemberModal()">🗑 Delete</button>
+    </div>`;
+  modal.style.display = 'flex';
+}
+function closeMemberModal() { document.getElementById('member-modal').style.display = 'none'; }
 
 // ── EVENTS ────────────────────────────────────────────
 async function loadEvents() {
@@ -1422,7 +1454,16 @@ function previewIDCard() { renderIDCardPreview(); }
 function printIDCard() {
   const card = document.getElementById('id-card-preview').innerHTML;
   const w = window.open('','_blank','width=400,height=300');
-  w.document.write(`<html><head><title>ID Card</title><style>body{margin:0;display:flex;justify-content:center;padding:20px;background:#f0f0f0;}@media print{body{background:#fff;}}</style></head><body>${card}</body></html>`);
+  w.document.write(`<html><head><title>ID Card</title><style>body{margin:0;display:flex;justify-content:center;padding:20px;background:#f0f0f0;}@media print{body{background:#fff;}}</style></head><body>${card}
+<!-- Member View Modal -->
+<div id="member-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)closeMemberModal()">
+  <div style="background:#fff;border-radius:12px;padding:28px;width:min(560px,95vw);max-height:90vh;overflow-y:auto;position:relative;">
+    <button onclick="closeMemberModal()" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#6b7280;">✕</button>
+    <h3 style="margin:0 0 20px;color:#052e16;">👤 Member Details</h3>
+    <div id="modal-member-content"></div>
+  </div>
+</div>
+</body></html>`);
   w.document.close(); w.focus(); setTimeout(() => w.print(), 400);
 }
 
