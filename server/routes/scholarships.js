@@ -13,8 +13,8 @@ const upload = multer({ storage });
 
 router.post('/apply', auth, upload.single('document'), apply);
 router.get('/my', auth, getMine);
-router.get('/', auth, role('admin', 'executive'), getAll);
+router.get('/', auth, role('admin', 'executive', 'super_admin'), getAll);
 router.get('/:id', auth, getOne);
-router.put('/:id', auth, role('admin', 'executive'), updateStatus);
+router.put('/:id', auth, role('admin', 'executive', 'super_admin'), updateStatus);
 
 module.exports = router;

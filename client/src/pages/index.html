@@ -92,11 +92,16 @@
     .typing-cursor {
     display: inline-block;
     color: var(--gold, #f59e0b);
-    animation: blink 0.75s step-end infinite;
-    font-weight: 300;
-    margin-left: 2px;
+    animation: blink 0.6s step-end infinite;
+    font-weight: 700;
+    margin-left: 3px;
+    font-size: 1.1em;
   }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  #typing-text {
+    color: var(--gold, #f59e0b);
+    display: inline;
+  }
 </style>
 </head>
 <body>
@@ -340,11 +345,12 @@
 <script>
 (function(){
   const phrases = [
-    'Growth & Development',
-    'Education & Empowerment',
-    'Leadership & Change',
-    'Unity & Progress',
-    'Community & Service'
+    'Growth & Development 🌱',
+    'Education & Empowerment 🎓',
+    'Leadership & Change 🔥',
+    'Unity & Progress 🤝',
+    'Community & Service 💚',
+    'Voice of the Voiceless 📢'
   ];
   const el = document.getElementById('typing-text');
   let pi = 0, ci = 0, deleting = false;
@@ -352,14 +358,15 @@
     const phrase = phrases[pi];
     if (!deleting) {
       el.textContent = phrase.slice(0, ++ci);
-      if (ci === phrase.length) { deleting = true; setTimeout(type, 2000); return; }
+      if (ci === phrase.length) { deleting = true; setTimeout(type, 2200); return; }
+      setTimeout(type, 75);
     } else {
       el.textContent = phrase.slice(0, --ci);
-      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 400); return; }
+      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 500); return; }
+      setTimeout(type, 40);
     }
-    setTimeout(type, deleting ? 50 : 80);
   }
-  type();
+  document.addEventListener('DOMContentLoaded', type);
 })();
 </script>
 </body>

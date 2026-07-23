@@ -22,9 +22,8 @@ app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/team', require('./routes/team'));
 app.use('/api/programs', require('./routes/programs'));
 
+app.use('/src', express.static(path.join(__dirname, '../client/src')));
 app.use(express.static(path.join(__dirname, '../client/src/pages')));
-app.use(express.static(path.join(__dirname, '../client/src')));
-app.use(express.static(path.join(__dirname, '../client')));
 app.use(express.static(path.join(__dirname, '../client/public')));
 app.use('/assets', express.static(path.join(__dirname, '../client/public/assets')));
 app.use('/images', express.static(path.join(__dirname, '../client/public/assets/images')));
