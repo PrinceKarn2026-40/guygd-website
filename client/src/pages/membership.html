@@ -422,7 +422,7 @@
       if (window.location.search.includes('login')) showTab('login');
       const u = getUser();
       if (u) {
-        window.location.href = ['admin','executive'].includes(u.role)
+        window.location.href = ['admin','executive','super_admin'].includes(u.role)
           ? '/dashboard/admin.html' : '/dashboard/member.html';
       }
     });
@@ -450,7 +450,7 @@
         localStorage.setItem('guygd_user', JSON.stringify(data.user));
         showAlert('register-alert','✅ Application submitted! Redirecting...','success');
         setTimeout(() => {
-          window.location.href = ['admin','executive'].includes(data.user.role)
+          window.location.href = ['admin','executive','super_admin'].includes(data.user.role)
             ? '/dashboard/admin.html' : '/dashboard/member.html';
         }, 1500);
       } catch(err) {
@@ -472,7 +472,7 @@
         localStorage.setItem('guygd_user', JSON.stringify(data.user));
         showAlert('login-alert','✅ Login successful! Redirecting...','success');
         setTimeout(() => {
-          window.location.href = ['admin','executive'].includes(data.user.role)
+          window.location.href = ['admin','executive','super_admin'].includes(data.user.role)
             ? '/dashboard/admin.html' : '/dashboard/member.html';
         }, 1200);
       } catch(err) {
