@@ -37,6 +37,25 @@
 
     /* ── TEAM SECTION ── */
     .team-section { background: var(--g50); }
+    /* ── TEAM CAROUSEL ── */
+    .team-carousel-wrap {
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    }
+    .team-carousel-track {
+      display: flex;
+      gap: 20px;
+      width: max-content;
+      animation: teamScroll 28s linear infinite;
+    }
+    .team-carousel-track:hover { animation-play-state: paused; }
+    @keyframes teamScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
     .team-card {
       background: #fff;
       border-radius: 16px;
@@ -44,6 +63,8 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       transition: transform 0.2s, box-shadow 0.2s;
       cursor: pointer;
+      flex-shrink: 0;
+      width: 220px;
     }
     .team-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.14); }
     .team-card-photo {
@@ -244,7 +265,9 @@
       <h2 class="section-title">Executive <span>Leadership</span></h2>
       <p class="section-subtitle">The dedicated leaders driving GUYGD's mission forward</p>
       <div class="section-divider"></div>
-      <div class="cards-grid" id="home-team" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+      <div class="team-carousel-wrap">
+        <div class="team-carousel-track" id="home-team"></div>
+      </div>
         <p style="color:var(--gray);text-align:center;grid-column:1/-1;">Loading team...</p>
       </div>
       <div style="text-align:center;margin-top:32px;">
@@ -354,16 +377,22 @@
         const team = await apiFetch('/team');
         const tc = document.getElementById('home-team');
         if (!team.length) { tc.innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Team info coming soon.</p>'; }
-        else tc.innerHTML = team.slice(0,4).map(m => `
-          <div class="team-card" onclick="openTeamModal(${m.id})">
-            ${m.photo
-              ? `<img src="${m.photo}" alt="${m.name}" class="team-card-photo"/>`
-              : `<div class="team-card-photo-placeholder">👤</div>`}
-            <div class="team-card-info">
-              <h3>${m.name}</h3>
-              <span>${m.position}</span>
-            </div>
-          </div>`).join('');
+        const tc = document.getElementById('home-team');
+        if (!team.length) { tc.innerHTML = '<p style="color:var(--gray);padding:20px;">Team info coming soon.</p>'; }
+        else {
+          const cards = team.map(m => `
+            <div class="team-card" onclick="openTeamModal(${m.id})">
+              ${m.photo
+                ? `<img src="${m.photo}" alt="${m.name}" class="team-card-photo"/>`
+                : `<div class="team-card-photo-placeholder">👤</div>`}
+              <div class="team-card-info">
+                <h3>${m.name}</h3>
+                <span>${m.position}</span>
+              </div>
+            </div>`).join('');
+          // duplicate for seamless infinite loop
+          tc.innerHTML = cards + cards;
+        }
       } catch { document.getElementById('home-team').innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Could not load team.</p>'; }
 
       window._teamData = [];
