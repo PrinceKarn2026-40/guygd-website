@@ -383,7 +383,7 @@
           <div class="table-wrap">
             <table id="dt-applications" class="admin-dt" style="width:100%">
               <thead>
-                <tr><th>Applicant</th><th>School</th><th>Level</th><th>Applied</th><th>Status</th><th>Actions</th></tr>
+                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Gender</th><th>Applied</th><th>Status</th><th>Actions</th></tr>
               </thead>
               <tbody id="applications-body"></tbody>
             </table>
@@ -1019,56 +1019,56 @@ async function loadDashboard() {
 }
 
 
-// ── APPLICATIONS ──────────────────────────────────────
+// ── APPLICATIONS (Membership) ────────────────────────────
 let allApplications = [];
 let currentAppFilter = 'all';
 
 async function loadApplications() {
   try {
-    allApplications = await apiFetch('/scholarships');
+    allApplications = await apiFetch('/members');
     filterApplications(currentAppFilter);
   } catch(e) {
     document.getElementById('applications-body').innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading applications.</td></tr>';
+      '<tr><td colspan="7" style="text-align:center;color:#e74c3c;">Error loading applications.</td></tr>';
   }
 }
 
 function filterApplications(filter) {
   currentAppFilter = filter;
-  // Update tab buttons
   ['all','pending','approved','rejected'].forEach(f => {
     const btn = document.getElementById('app-tab-' + f);
     if (btn) btn.className = 'btn btn-sm ' + (f === filter ? 'btn-primary' : 'btn-outline');
   });
-  const statusMap = { pending: ['submitted','under_review'], approved: ['approved'], rejected: ['rejected'] };
+  const statusMap = { pending: 'pending', approved: 'active', rejected: 'suspended' };
   const list = filter === 'all' ? allApplications
-    : allApplications.filter(a => (statusMap[filter] || []).includes(a.status));
+    : allApplications.filter(a => a.status === statusMap[filter]);
   const titles = { all: 'All Applications', pending: 'Pending Applications', approved: 'Approved Applications', rejected: 'Rejected Applications' };
   document.getElementById('app-panel-title').textContent = titles[filter];
   document.getElementById('app-count').textContent = `${list.length} record${list.length !== 1 ? 's' : ''}`;
-  document.getElementById('applications-body').innerHTML = list.length ? list.map(a => `
+  document.getElementById('applications-body').innerHTML = list.length ? list.map(m => `
     <tr>
-      <td><strong>${a.applicant_name}</strong></td>
-      <td>${a.school || '-'}</td>
-      <td>${a.level || '-'}</td>
-      <td>${fmtDate(a.applied_at)}</td>
-      <td>${badge(a.status)}</td>
+      <td><strong>${m.full_name}</strong></td>
+      <td>${m.email}</td>
+      <td>${m.phone || '-'}</td>
+      <td>${m.gender || '-'}</td>
+      <td>${fmtDate(m.joined_at)}</td>
+      <td>${badge(m.status)}</td>
       <td style="display:flex;gap:4px;flex-wrap:wrap;">
-        ${a.status !== 'approved' ? `<button class="btn btn-sm btn-success" onclick="updateScholarshipStatus(${a.id},'approved')">✅ Approve</button>` : ''}
-        ${a.status !== 'under_review' ? `<button class="btn btn-sm btn-warn" onclick="updateScholarshipStatus(${a.id},'under_review')">🔍 Review</button>` : ''}
-        ${a.status !== 'rejected' ? `<button class="btn btn-sm btn-danger" onclick="updateScholarshipStatus(${a.id},'rejected')">❌ Reject</button>` : ''}
-        ${a.supporting_docs ? `<a class="btn btn-sm btn-outline" href="${a.supporting_docs}" target="_blank">📄 Docs</a>` : ''}
+        ${m.status !== 'active'     ? `<button class="btn btn-sm btn-success" onclick="appAction(${m.id},'active')">✅ Approve</button>` : ''}
+        ${m.status !== 'suspended'  ? `<button class="btn btn-sm btn-danger"  onclick="appAction(${m.id},'suspended')">❌ Reject</button>` : ''}
+        ${m.status !== 'pending'    ? `<button class="btn btn-sm btn-warn"    onclick="appAction(${m.id},'pending')">↩ Reset</button>` : ''}
       </td>
     </tr>`).join('')
-    : `<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
-  dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: 5 }] });
+    : `<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
+  dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: 6 }] });
 }
 
-async function updateScholarshipStatus(id, status) {
+async function appAction(id, status) {
   try {
-    await apiFetch(`/scholarships/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
     await loadApplications();
-  } catch(e) { alert('Failed to update application: ' + (e.message || 'Unknown error')); }
+    loadDashboard();
+  } catch(e) { alert('Failed to update: ' + (e.message || 'Unknown error')); }
 }
 
 // ── MEMBERS ───────────────────────────────────────────
