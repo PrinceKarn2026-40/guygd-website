@@ -89,7 +89,15 @@
       letter-spacing: 2px;
       text-transform: uppercase;
     }
-  </style>
+    .typing-cursor {
+    display: inline-block;
+    color: var(--gold, #f59e0b);
+    animation: blink 0.75s step-end infinite;
+    font-weight: 300;
+    margin-left: 2px;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+</style>
 </head>
 <body>
 
@@ -111,7 +119,7 @@
   <section class="hero">
     <div class="hero-content">
       <div class="hero-badge">🌿 Gbeh-lay, Liberia</div>
-      <h1>Gbeh-lay United Youths for<br/><span>Growth &amp; Development</span></h1>
+      <h1>Gbeh-lay United Youths for<br/><span id="typing-text"></span><span class="typing-cursor">|</span></h1>
       <p>Empowering the next generation through education, leadership, and community service — building a stronger Gbeh-lay together.</p>
       <div class="hero-btns">
         <a href="/membership.html" class="btn btn-primary">🚀 Join Us Today</a>
@@ -328,5 +336,31 @@
       } catch { document.getElementById('home-gallery').innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Could not load gallery.</p>'; }
     });
   </script>
+
+<script>
+(function(){
+  const phrases = [
+    'Growth & Development',
+    'Education & Empowerment',
+    'Leadership & Change',
+    'Unity & Progress',
+    'Community & Service'
+  ];
+  const el = document.getElementById('typing-text');
+  let pi = 0, ci = 0, deleting = false;
+  function type() {
+    const phrase = phrases[pi];
+    if (!deleting) {
+      el.textContent = phrase.slice(0, ++ci);
+      if (ci === phrase.length) { deleting = true; setTimeout(type, 2000); return; }
+    } else {
+      el.textContent = phrase.slice(0, --ci);
+      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 400); return; }
+    }
+    setTimeout(type, deleting ? 50 : 80);
+  }
+  type();
+})();
+</script>
 </body>
 </html>
