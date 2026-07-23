@@ -1120,7 +1120,7 @@ document.getElementById('program-form').addEventListener('submit', async functio
   if (file) fd.append('image', file);
   const token = localStorage.getItem('guygd_token');
   try {
-    await fetch(`${API_BASE}/programs${id ? '/'+id : ''}`, {
+    await fetch(`${API}/programs${id ? '/'+id : ''}`, {
       method: id ? 'PUT' : 'POST',
       headers: { 'Authorization': 'Bearer ' + token },
       body: fd
