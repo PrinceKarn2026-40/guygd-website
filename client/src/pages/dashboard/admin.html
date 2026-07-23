@@ -276,6 +276,9 @@
       <a onclick="showSection('gallery', this)">
         <span class="icon">🖼️</span> Gallery
       </a>
+      <a onclick="showSection('programs', this)">
+        <span class="icon">📋</span> Programs
+      </a>
       <a onclick="showSection('team', this)">
         <span class="icon">👥</span> Our Team
       </a>
@@ -526,6 +529,40 @@
         </div>
       </div>
 
+
+      
+      <!-- ════ PROGRAMS ════ -->
+      <div id="section-programs" class="tab-section">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Programs</h3>
+          </div>
+          <form id="program-form" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
+            <input type="hidden" id="prog-id"/>
+            <div style="grid-column:1/-1;display:flex;gap:10px;align-items:center;">
+              <input type="text" id="prog-icon" placeholder="Icon (emoji)" style="width:80px;padding:8px;border-radius:8px;border:1px solid #d0d5dd;font-size:1.2rem;text-align:center;"/>
+              <input type="text" id="prog-title" placeholder="Program Title *" required style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid #d0d5dd;"/>
+            </div>
+            <textarea id="prog-desc" placeholder="Description *" required rows="3" style="grid-column:1/-1;padding:8px 12px;border-radius:8px;border:1px solid #d0d5dd;resize:vertical;"></textarea>
+            <textarea id="prog-bullets" placeholder="Bullet points (one per line)" rows="3" style="grid-column:1/-1;padding:8px 12px;border-radius:8px;border:1px solid #d0d5dd;resize:vertical;"></textarea>
+            <div style="grid-column:1/-1;">
+              <label style="font-size:0.85rem;font-weight:600;color:#374151;">Program Photo</label>
+              <input type="file" id="prog-image" accept="image/*" style="display:block;margin-top:6px;"/>
+              <img id="prog-preview" src="" alt="" style="display:none;margin-top:8px;max-height:120px;border-radius:8px;object-fit:cover;"/>
+            </div>
+            <div style="grid-column:1/-1;display:flex;gap:8px;">
+              <button type="submit" class="btn btn-primary">💾 Save Program</button>
+              <button type="button" class="btn" onclick="resetProgramForm()" style="background:#f3f4f6;color:#374151;">✕ Cancel</button>
+            </div>
+          </form>
+          <div class="table-wrap">
+            <table id="dt-programs" class="admin-dt" style="width:100%">
+              <thead><tr><th>Icon</th><th>Title</th><th>Photo</th><th>Description</th><th>Actions</th></tr></thead>
+              <tbody id="programs-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
       <!-- ════ DONATIONS ════ -->
       <div id="section-donations" class="tab-section">
@@ -887,7 +924,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── NAVIGATION ────────────────────────────────────────
 const sectionTitles = {
-  dashboard: 'Dashboard',
+  dashboard: 'Dashboard', programs: 'Programs',
   members: 'Members', events: 'Events', news: 'News',
   gallery: 'Gallery', team: 'Our Team', donations: 'Donations', messages: 'Messages',
   notifications: 'Notifications', reports: 'Reports',
@@ -901,7 +938,7 @@ function showSection(name, el) {
   if (el) el.classList.add('active');
   document.getElementById('topbar-title').textContent = sectionTitles[name] || name;
   const loaders = {
-    dashboard: loadDashboard,
+    dashboard: loadDashboard, programs: loadPrograms,
     members: loadMembers, events: loadEvents, news: loadNews,
     gallery: loadGallery, team: loadTeam, donations: loadDonations, messages: loadMessages,
     notifications: loadNotifications, reports: loadReports, users: loadUsers, config: loadConfig
@@ -1018,6 +1055,79 @@ function viewMember(id) {
   modal.style.display = 'flex';
 }
 function closeMemberModal() { document.getElementById('member-modal').style.display = 'none'; }
+
+
+// ── PROGRAMS ──────────────────────────────────────────
+let allPrograms = [];
+async function loadPrograms() {
+  try {
+    allPrograms = await apiFetch('/programs');
+    renderProgramsTable(allPrograms);
+  } catch(e) {
+    document.getElementById('programs-body').innerHTML = '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading programs.</td></tr>';
+  }
+}
+function renderProgramsTable(list) {
+  document.getElementById('programs-body').innerHTML = list.length ? list.map(p => `
+    <tr>
+      <td style="font-size:1.4rem;">${p.icon || '📌'}</td>
+      <td><strong>${p.title}</strong></td>
+      <td>${p.image_url ? `<img src="${p.image_url}" style="height:48px;border-radius:6px;object-fit:cover;"/>` : '<span style="color:#9ca3af;">No photo</span>'}</td>
+      <td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.description}</td>
+      <td style="display:flex;gap:4px;">
+        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="editProgram(${p.id})">✏️ Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteProgram(${p.id})">🗑 Delete</button>
+      </td>
+    </tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No programs yet.</td></tr>';
+  dtInit('dt-programs', { columnDefs: [{ orderable: false, targets: [0,2,4] }] });
+}
+function editProgram(id) {
+  const p = allPrograms.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('prog-id').value = p.id;
+  document.getElementById('prog-icon').value = p.icon || '';
+  document.getElementById('prog-title').value = p.title;
+  document.getElementById('prog-desc').value = p.description;
+  document.getElementById('prog-bullets').value = p.bullets || '';
+  if (p.image_url) { const img = document.getElementById('prog-preview'); img.src = p.image_url; img.style.display = 'block'; }
+  showSection('programs', document.querySelector('[onclick*="programs"]'));
+}
+function resetProgramForm() {
+  document.getElementById('program-form').reset();
+  document.getElementById('prog-id').value = '';
+  const img = document.getElementById('prog-preview'); img.src = ''; img.style.display = 'none';
+}
+async function deleteProgram(id) {
+  if (!confirm('Delete this program?')) return;
+  try { await apiFetch(`/programs/${id}`, { method: 'DELETE' }); loadPrograms(); }
+  catch(e) { alert('Failed to delete program.'); }
+}
+document.getElementById('prog-image').addEventListener('change', function() {
+  const f = this.files[0]; if (!f) return;
+  const img = document.getElementById('prog-preview');
+  img.src = URL.createObjectURL(f); img.style.display = 'block';
+});
+document.getElementById('program-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('prog-id').value;
+  const fd = new FormData();
+  fd.append('icon', document.getElementById('prog-icon').value);
+  fd.append('title', document.getElementById('prog-title').value);
+  fd.append('description', document.getElementById('prog-desc').value);
+  fd.append('bullets', document.getElementById('prog-bullets').value);
+  const file = document.getElementById('prog-image').files[0];
+  if (file) fd.append('image', file);
+  const token = localStorage.getItem('guygd_token');
+  try {
+    await fetch(`${API_BASE}/programs${id ? '/'+id : ''}`, {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: fd
+    });
+    resetProgramForm(); loadPrograms();
+  } catch(e) { alert('Failed to save program.'); }
+});
 
 // ── EVENTS ────────────────────────────────────────────
 async function loadEvents() {

@@ -22,60 +22,8 @@
   </div>
 
   <section class="section">
-    <div class="container">
-      
-
-      <div class="program-block reverse">
-        <div class="program-icon">🛠️</div>
-        <div class="program-info">
-          <h2>Skills Development</h2>
-          <p>We run vocational and skills training workshops to equip youths with practical abilities that translate into employment and entrepreneurship opportunities.</p>
-          <ul>
-            <li>Computer literacy and digital skills</li>
-            <li>Entrepreneurship and business training</li>
-            <li>Agricultural and trade skills workshops</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="program-block">
-        <div class="program-icon">🌍</div>
-        <div class="program-info">
-          <h2>Community Service</h2>
-          <p>Our members regularly engage in community service activities that improve the quality of life in Gbeh-lay and surrounding areas.</p>
-          <ul>
-            <li>Community clean-up campaigns</li>
-            <li>Tree planting and environmental awareness</li>
-            <li>Health and sanitation drives</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="program-block reverse">
-        <div class="program-icon">🏆</div>
-        <div class="program-info">
-          <h2>Leadership Development</h2>
-          <p>We invest in developing the next generation of leaders through structured training, mentorship, and opportunities to lead real projects.</p>
-          <ul>
-            <li>Youth leadership summits</li>
-            <li>Public speaking and debate training</li>
-            <li>Mentorship with community elders and professionals</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="program-block">
-        <div class="program-icon">⚽</div>
-        <div class="program-info">
-          <h2>Sports &amp; Recreation</h2>
-          <p>We organize sports tournaments and recreational activities to promote teamwork, discipline, and healthy living among youths.</p>
-          <ul>
-            <li>Annual football tournament</li>
-            <li>Indoor games and cultural activities</li>
-            <li>Youth talent showcases</li>
-          </ul>
-        </div>
-      </div>
+    <div class="container" id="programs-container">
+      <div style="text-align:center;padding:40px;color:#6b7280;">Loading programs...</div>
     </div>
   </section>
 
@@ -92,5 +40,43 @@
 
   <footer id="footer"></footer>
   <script src="/src/js/main.js"></script>
+  <script>
+    const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
+
+    const STATIC_PROGRAMS = [
+      { icon: '🛠️', title: 'Skills Development', description: 'We run vocational and skills training workshops to equip youths with practical abilities that translate into employment and entrepreneurship opportunities.', bullets: 'Computer literacy and digital skills\nEntrepreneurship and business training\nAgricultural and trade skills workshops', image_url: null },
+      { icon: '🌍', title: 'Community Service', description: 'Our members regularly engage in community service activities that improve the quality of life in Gbeh-lay and surrounding areas.', bullets: 'Community clean-up campaigns\nTree planting and environmental awareness\nHealth and sanitation drives', image_url: null },
+      { icon: '🏆', title: 'Leadership Development', description: 'We invest in developing the next generation of leaders through structured training, mentorship, and opportunities to lead real projects.', bullets: 'Youth leadership summits\nPublic speaking and debate training\nMentorship with community elders and professionals', image_url: null },
+      { icon: '⚽', title: 'Sports & Recreation', description: 'We organize sports tournaments and recreational activities to promote teamwork, discipline, and healthy living among youths.', bullets: 'Annual football tournament\nIndoor games and cultural activities\nYouth talent showcases', image_url: null },
+    ];
+
+    function renderPrograms(list) {
+      const c = document.getElementById('programs-container');
+      if (!list.length) { c.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;">No programs yet.</div>'; return; }
+      c.innerHTML = list.map((p, i) => `
+        <div class="program-block ${i % 2 !== 0 ? 'reverse' : ''}">
+          ${p.image_url
+            ? `<div class="program-img"><img src="${p.image_url}" alt="${p.title}" style="width:100%;max-width:340px;border-radius:14px;object-fit:cover;aspect-ratio:4/3;"/></div>`
+            : `<div class="program-icon">${p.icon || '📌'}</div>`}
+          <div class="program-info">
+            <h2>${p.icon ? p.icon + ' ' : ''}${p.title}</h2>
+            <p>${p.description}</p>
+            ${p.bullets ? `<ul>${p.bullets.split('\n').map(b => `<li>${b.trim()}</li>`).join('')}</ul>` : ''}
+          </div>
+        </div>`).join('');
+    }
+
+    async function loadPrograms() {
+      try {
+        const res = await fetch(`${API}/programs`);
+        const data = await res.json();
+        renderPrograms(data.length ? data : STATIC_PROGRAMS);
+      } catch {
+        renderPrograms(STATIC_PROGRAMS);
+      }
+    }
+
+    loadPrograms();
+  </script>
 </body>
 </html>
