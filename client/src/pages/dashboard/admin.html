@@ -1321,9 +1321,19 @@ async function loadNotifications() {
     ]);
     notifications = [];
     const pending = members.filter(m => m.status === 'pending');
-    const newApps = apps.filter(a => a.status === 'submitted');
     pending.forEach(m => notifications.push({ text: `New member pending approval: ${m.full_name}`, time: m.joined_at, read: false }));
-  } catch(e) { alert('Failed to update role.'); }
+    messages.forEach(msg => notifications.push({ text: `New message from ${msg.name || 'visitor'}`, time: msg.created_at, read: false }));
+    renderNotifications();
+  } catch(e) { console.error('Notifications error:', e); }
+}
+function renderNotifications() {
+  const badge = document.getElementById('notif-count');
+  if (badge) badge.textContent = notifications.length;
+  const body = document.getElementById('notif-body');
+  if (!body) return;
+  body.innerHTML = notifications.length
+    ? notifications.map(n => `<div style="padding:10px 0;border-bottom:1px solid #f0f2f5;font-size:0.88rem;">${n.text}<br/><span style="color:#9ca3af;font-size:0.75rem;">${n.time ? new Date(n.time).toLocaleString() : ''}</span></div>`).join('')
+    : '<p style="color:#9ca3af;text-align:center;padding:20px;">No new notifications.</p>';
 }
 
 // ── TEAM ──────────────────────────────────────────────────
