@@ -969,18 +969,24 @@ function showAlert(id, msg, type) {
 async function loadDashboard() {
   try {
     const [members, events, donations] = await Promise.all([
-      apiFetch('/members'),       apiFetch('/events'), apiFetch('/donations')
+      apiFetch('/members'), apiFetch('/events'), apiFetch('/donations')
     ]);
     document.getElementById('stat-members').textContent   = members.length;
     document.getElementById('stat-events').textContent    = events.length;
     document.getElementById('stat-donations').textContent = donations.length;
 
-    document.getElementById('recent-members-body').innerHTML = members.slice(0,5).map(m =>
+    const tbody = document.getElementById('recent-members-body');
+    tbody.innerHTML = members.slice(0,5).map(m =>
       `<tr><td>${m.full_name}</td><td>${badge(m.status)}</td><td>${fmtDate(m.joined_at)}</td></tr>`
-    ).join('');
+    ).join('') || '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No members yet.</td></tr>';
 
-    dtInit('dt-recent-members', { paging: false, searching: false, info: false, ordering: false, dom: 't', buttons: [] });
-  } catch(e) { console.error('Dashboard load error:', e); }
+    if ($.fn.DataTable.isDataTable('#dt-recent-members')) $('#dt-recent-members').DataTable().destroy();
+    $('#dt-recent-members').DataTable({ paging: false, searching: false, info: false, ordering: false, dom: 't', buttons: [] });
+  } catch(e) {
+    console.error('Dashboard load error:', e);
+    ['stat-members','stat-events','stat-donations'].forEach(id => document.getElementById(id).textContent = '!');
+    console.warn('Dashboard API error — check token/auth:', e.message);
+  }
 }
 
 
@@ -1144,6 +1150,7 @@ async function loadEvents() {
         </td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
+    dtInit('dt-events', { columnDefs: [{ orderable: false, targets: 4 }] });
   } catch(e) {
     document.getElementById('events-body').innerHTML =
       '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading events.</td></tr>';
@@ -1206,6 +1213,7 @@ async function loadNews() {
         </td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No articles yet.</td></tr>';
+    dtInit('dt-news', { columnDefs: [{ orderable: false, targets: 4 }] });
   } catch(e) {
     document.getElementById('news-body').innerHTML =
       '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading news.</td></tr>';
@@ -1299,13 +1307,14 @@ async function loadMessages() {
     const list = await apiFetch('/contact');
     document.getElementById('messages-body').innerHTML = list.length ? list.map(m => `
       <tr>
-        <td><strong>${m.sender_name}</strong></td>
+        <td><strong>${m.sender_name || m.name || '-'}</strong></td>
         <td>${m.email}</td>
         <td>${m.subject || '-'}</td>
         <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${m.message}">${m.message}</td>
-        <td>${fmtDate(m.received_at)}</td>
+        <td>${fmtDate(m.received_at || m.created_at)}</td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No messages yet.</td></tr>';
+    dtInit('dt-messages', { columnDefs: [{ orderable: false, targets: 3 }] });
   } catch(e) {
     document.getElementById('messages-body').innerHTML =
       '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading messages.</td></tr>';
@@ -1320,20 +1329,35 @@ async function loadNotifications() {
       apiFetch('/members'), apiFetch('/contact')
     ]);
     notifications = [];
-    const pending = members.filter(m => m.status === 'pending');
-    pending.forEach(m => notifications.push({ text: `New member pending approval: ${m.full_name}`, time: m.joined_at, read: false }));
-    messages.forEach(msg => notifications.push({ text: `New message from ${msg.name || 'visitor'}`, time: msg.created_at, read: false }));
+    members.filter(m => m.status === 'pending').forEach(m =>
+      notifications.push({ text: `New member pending approval: ${m.full_name}`, time: m.joined_at, read: false })
+    );
+    messages.forEach(msg =>
+      notifications.push({ text: `New message from ${msg.sender_name || msg.name || 'visitor'}`, time: msg.received_at || msg.created_at, read: false })
+    );
     renderNotifications();
   } catch(e) { console.error('Notifications error:', e); }
 }
 function renderNotifications() {
-  const badge = document.getElementById('notif-count');
-  if (badge) badge.textContent = notifications.length;
-  const body = document.getElementById('notif-body');
+  const badgeEl = document.getElementById('notif-count');
+  const unread = notifications.filter(n => !n.read).length;
+  if (badgeEl) badgeEl.textContent = unread;
+  const body = document.getElementById('notifications-list');
   if (!body) return;
   body.innerHTML = notifications.length
-    ? notifications.map(n => `<div style="padding:10px 0;border-bottom:1px solid #f0f2f5;font-size:0.88rem;">${n.text}<br/><span style="color:#9ca3af;font-size:0.75rem;">${n.time ? new Date(n.time).toLocaleString() : ''}</span></div>`).join('')
-    : '<p style="color:#9ca3af;text-align:center;padding:20px;">No new notifications.</p>';
+    ? notifications.map(n => `
+        <div class="notif-item">
+          <div class="notif-dot${n.read ? ' read' : ''}"></div>
+          <div class="notif-text">
+            <p>${n.text}</p>
+            <span>${n.time ? new Date(n.time).toLocaleString() : ''}</span>
+          </div>
+        </div>`).join('')
+    : '<div class="empty-state"><div class="empty-icon">🔔</div><p>No new notifications.</p></div>';
+}
+function markAllRead() {
+  notifications.forEach(n => n.read = true);
+  renderNotifications();
 }
 
 // ── TEAM ──────────────────────────────────────────────────
@@ -1573,18 +1597,88 @@ function previewIDCard() { renderIDCardPreview(); }
 
 function printIDCard() {
   const card = document.getElementById('id-card-preview').innerHTML;
-  const w = window.open('','_blank','width=400,height=300');
-  w.document.write(`<html><head><title>ID Card</title><style>body{margin:0;display:flex;justify-content:center;padding:20px;background:#f0f0f0;}@media print{body{background:#fff;}}</style></head><body>${card}
-<!-- Member View Modal -->
-<div id="member-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)closeMemberModal()">
-  <div style="background:#fff;border-radius:12px;padding:28px;width:min(560px,95vw);max-height:90vh;overflow-y:auto;position:relative;">
-    <button onclick="closeMemberModal()" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#6b7280;">✕</button>
-    <h3 style="margin:0 0 20px;color:#052e16;">👤 Member Details</h3>
-    <div id="modal-member-content"></div>
-  </div>
-</div>
-</body></html>`);
+  const w = window.open('', '_blank', 'width=400,height=300');
+  w.document.write(`<html><head><title>ID Card</title><style>body{margin:0;display:flex;justify-content:center;padding:20px;background:#f0f0f0;}@media print{body{background:#fff;}}</style></head><body>${card}</body></html>`);
   w.document.close(); w.focus(); setTimeout(() => w.print(), 400);
+}
+
+// ── DONATIONS ─────────────────────────────────────────
+async function loadDonations() {
+  try {
+    const list = await apiFetch('/donations');
+    document.getElementById('donations-body').innerHTML = list.length ? list.map(d => `
+      <tr>
+        <td>${d.donor_name || '-'}</td>
+        <td>${d.email || '-'}</td>
+        <td>$${parseFloat(d.amount || 0).toFixed(2)}</td>
+        <td>${d.purpose || '-'}</td>
+        <td>${d.transaction_ref || '-'}</td>
+        <td>${fmtDate(d.donated_at)}</td>
+      </tr>`).join('')
+      : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No donations yet.</td></tr>';
+    dtInit('dt-donations', {});
+  } catch(e) {
+    document.getElementById('donations-body').innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading donations.</td></tr>';
+  }
+}
+
+// ── REPORTS ───────────────────────────────────────────
+async function loadReports() {
+  try {
+    const [members, events, donations, scholarships] = await Promise.all([
+      apiFetch('/members'), apiFetch('/events'), apiFetch('/donations'),
+      apiFetch('/scholarships').catch(() => [])
+    ]);
+    const now = new Date();
+    document.getElementById('rpt-total').textContent     = members.length;
+    document.getElementById('rpt-active').textContent    = members.filter(m => m.status === 'active').length;
+    document.getElementById('rpt-pending').textContent   = members.filter(m => m.status === 'pending').length;
+    document.getElementById('rpt-suspended').textContent = members.filter(m => m.status === 'suspended').length;
+    document.getElementById('rpt-apps').textContent      = scholarships.length;
+    document.getElementById('rpt-submitted').textContent = scholarships.filter(s => s.status === 'submitted').length;
+    document.getElementById('rpt-review').textContent    = scholarships.filter(s => s.status === 'under_review').length;
+    document.getElementById('rpt-approved').textContent  = scholarships.filter(s => s.status === 'approved').length;
+    document.getElementById('rpt-rejected').textContent  = scholarships.filter(s => s.status === 'rejected').length;
+    document.getElementById('rpt-don-count').textContent = donations.length;
+    document.getElementById('rpt-don-total').textContent = '$' + donations.reduce((s, d) => s + parseFloat(d.amount || 0), 0).toFixed(2);
+    document.getElementById('rpt-ev-total').textContent   = events.length;
+    document.getElementById('rpt-ev-upcoming').textContent = events.filter(e => new Date(e.event_date) >= now).length;
+    document.getElementById('rpt-ev-past').textContent     = events.filter(e => new Date(e.event_date) < now).length;
+  } catch(e) { console.error('Reports error:', e); }
+}
+
+// ── USERS ─────────────────────────────────────────────
+async function loadUsers() {
+  try {
+    const list = await apiFetch('/members');
+    document.getElementById('users-body').innerHTML = list.length ? list.map(m => `
+      <tr>
+        <td><strong>${m.full_name}</strong></td>
+        <td>${m.email}</td>
+        <td>${badge(m.role)}</td>
+        <td>${badge(m.status)}</td>
+        <td>${fmtDate(m.joined_at)}</td>
+        <td>
+          <select onchange="changeRole(${m.id}, this.value)" style="padding:5px 8px;border-radius:6px;border:1px solid #d0d5dd;font-size:0.82rem;">
+            <option value="member"     ${m.role==='member'     ?'selected':''}>Member</option>
+            <option value="executive"  ${m.role==='executive'  ?'selected':''}>Executive</option>
+            <option value="admin"      ${m.role==='admin'      ?'selected':''}>Admin</option>
+            <option value="super_admin"${m.role==='super_admin'?'selected':''}>Super Admin</option>
+          </select>
+        </td>
+      </tr>`).join('')
+      : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No users found.</td></tr>';
+    dtInit('dt-users', { columnDefs: [{ orderable: false, targets: 5 }] });
+  } catch(e) {
+    document.getElementById('users-body').innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading users.</td></tr>';
+  }
+}
+async function changeRole(id, role) {
+  try {
+    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ role }) });
+  } catch(e) { alert('Failed to update role: ' + (e.message || 'Unknown error')); loadUsers(); }
 }
 
 // ── SETTINGS ──────────────────────────────────────────

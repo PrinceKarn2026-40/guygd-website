@@ -45,7 +45,7 @@ exports.updateMember = async (req, res) => {
 };
 
 exports.updatePassword = async (req, res) => {
-  const { password } = req.body;
+  const password = req.body.newPassword || req.body.password;
   if (!password) return res.status(400).json({ message: 'Password required' });
   try {
     const password_hash = await bcrypt.hash(password, 10);
