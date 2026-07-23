@@ -1,13 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GUYGD â€“ Home</title>
+  <title>GUYGD – Home</title>
   <link rel="stylesheet" href="/src/css/main.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
   <style>
-    /* â”€â”€ HERO OVERLAY â”€â”€ */
     .hero {
       background-image:
         linear-gradient(to bottom, rgba(5,46,22,0.82) 0%, rgba(5,46,22,0.65) 60%, rgba(5,46,22,0.9) 100%),
@@ -15,8 +14,6 @@
       background-size: cover;
       background-position: center;
     }
-
-    /* â”€â”€ WHAT WE DO â”€â”€ */
     .what-we-do {
       background-image:
         linear-gradient(rgba(5,46,22,0.93), rgba(5,46,22,0.93)),
@@ -25,7 +22,6 @@
       background-position: center;
       background-attachment: fixed;
     }
-
     .what-we-do .section-title { color: #fff; }
     .what-we-do .section-title span { color: var(--gold); }
     .what-we-do .section-subtitle { color: rgba(255,255,255,0.65); }
@@ -35,9 +31,8 @@
     .what-we-do .card li { color: rgba(255,255,255,0.7) !important; }
     .what-we-do .card-icon { filter: none; }
 
-    /* â”€â”€ TEAM SECTION â”€â”€ */
+    /* TEAM CAROUSEL */
     .team-section { background: var(--g50); }
-    /* â”€â”€ TEAM CAROUSEL â”€â”€ */
     .team-carousel-wrap {
       overflow: hidden;
       position: relative;
@@ -67,23 +62,18 @@
       width: 220px;
     }
     .team-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.14); }
-    .team-card-photo {
-      width: 100%; aspect-ratio: 4/3;
-      object-fit: cover; display: block;
-    }
+    .team-card-photo { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
     .team-card-photo-placeholder {
       width: 100%; aspect-ratio: 4/3;
       background: linear-gradient(135deg, var(--g600), var(--g800));
       display: flex; align-items: center; justify-content: center;
       font-size: 3.5rem;
     }
-    .team-card-info {
-      padding: 14px 16px 18px;
-      text-align: center;
-    }
+    .team-card-info { padding: 14px 16px 18px; text-align: center; }
     .team-card-info h3 { margin: 0 0 4px; font-size: 0.97rem; color: var(--g900); }
     .team-card-info span { color: var(--g600); font-size: 0.78rem; font-weight: 600; }
-    /* â”€â”€ TEAM MODAL â”€â”€ */
+
+    /* TEAM MODAL */
     .team-modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,0.6); z-index: 9999;
@@ -105,9 +95,7 @@
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 2px 8px rgba(239,68,68,0.4);
     }
-    .team-modal-img {
-      width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;
-    }
+    .team-modal-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
     .team-modal-img-placeholder {
       width: 100%; aspect-ratio: 4/3;
       background: linear-gradient(135deg, var(--g600), var(--g800));
@@ -119,33 +107,22 @@
     .team-modal-info .pos { color: var(--g600); font-size: 0.85rem; font-weight: 600; }
     .team-modal-info .bio { color: #6b7280; font-size: 0.83rem; margin-top: 8px; line-height: 1.6; }
 
-    /* â”€â”€ EVENTS / NEWS â”€â”€ */
     .events-section { background: var(--white); }
     .news-section { background: var(--g50); }
 
-    /* â”€â”€ CTA â”€â”€ */
     .cta-section {
       background: linear-gradient(135deg, var(--g900) 0%, var(--g800) 100%);
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
     .cta-section::before {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.1) 0%, transparent 60%);
     }
     .cta-section .cta-box h2 { color: #fff; }
     .cta-section .cta-box p { color: rgba(255,255,255,0.65); }
 
-    /* â”€â”€ GALLERY SECTION â”€â”€ */
     .gallery-section { background: var(--white); }
-    .gallery-thumb {
-      border-radius: var(--radius);
-      overflow: hidden;
-      aspect-ratio: 1;
-      position: relative;
-    }
+    .gallery-thumb { border-radius: var(--radius); overflow: hidden; aspect-ratio: 1; position: relative; }
     .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
     .gallery-thumb:hover img { transform: scale(1.06); }
     .gallery-thumb-overlay {
@@ -157,37 +134,23 @@
     .gallery-thumb:hover .gallery-thumb-overlay { opacity: 1; }
     .gallery-thumb-overlay span { color: #fff; font-size: 0.82rem; font-weight: 500; }
 
-    /* â”€â”€ MOTTO BANNER â”€â”€ */
-    .motto-banner {
-      background: var(--gold);
-      padding: 18px 5%;
-      text-align: center;
-    }
-    .motto-banner p {
-      color: var(--g900);
-      font-weight: 800;
-      font-size: 1rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+    .motto-banner { background: var(--gold); padding: 18px 5%; text-align: center; }
+    .motto-banner p { color: var(--g900); font-weight: 800; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; }
+
     .typing-cursor {
-    display: inline-block;
-    color: var(--gold, #f59e0b);
-    animation: blink 0.6s step-end infinite;
-    font-weight: 700;
-    margin-left: 3px;
-    font-size: 1.1em;
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-  #typing-text {
-    color: var(--gold, #f59e0b);
-    display: inline;
-  }
-</style>
+      display: inline-block;
+      color: var(--gold, #f59e0b);
+      animation: blink 0.6s step-end infinite;
+      font-weight: 700;
+      margin-left: 3px;
+      font-size: 1.1em;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    #typing-text { color: var(--gold, #f59e0b); display: inline; }
+  </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="nav-container">
       <a href="/index.html" class="nav-logo">GUYGD</a>
@@ -196,26 +159,23 @@
     </div>
   </nav>
 
-  <!-- MOTTO BANNER -->
   <div class="motto-banner">
-    <p>âœ¦ Voice of the Voiceless â€” Est. May 14, 2023 âœ¦</p>
+    <p>✦ Voice of the Voiceless — Est. May 14, 2023 ✦</p>
   </div>
 
-  <!-- HERO -->
   <section class="hero">
     <div class="hero-content">
-      <div class="hero-badge">ðŸŒ¿ Gbeh-lay, Liberia</div>
+      <div class="hero-badge">🌿 Gbeh-lay, Liberia</div>
       <h1>Gbeh-lay United Youths for<br/><span id="typing-text"></span><span class="typing-cursor">|</span></h1>
-      <p>Empowering the next generation through education, leadership, and community service â€” building a stronger Gbeh-lay together.</p>
+      <p>Empowering the next generation through education, leadership, and community service — building a stronger Gbeh-lay together.</p>
       <div class="hero-btns">
-        <a href="/membership.html" class="btn btn-primary">ðŸš€ Join Us Today</a>
+        <a href="/membership.html" class="btn btn-primary">🚀 Join Us Today</a>
         <a href="/about.html" class="btn btn-outline">Learn More</a>
       </div>
     </div>
-    <div class="hero-scroll">â–¼ Scroll</div>
+    <div class="hero-scroll">▼ Scroll</div>
   </section>
 
-  <!-- STATS -->
   <div class="stats-row">
     <div class="stat"><span class="stat-num" id="stat-members">0+</span><span>Members</span></div>
     <div class="stat"><span class="stat-num" id="stat-scholarships">0+</span><span>Scholarships Awarded</span></div>
@@ -223,30 +183,29 @@
     <div class="stat"><span class="stat-num" id="stat-communities">0+</span><span>Communities Reached</span></div>
   </div>
 
-  <!-- WHAT WE DO -->
   <section class="section what-we-do">
     <div class="container">
       <h2 class="section-title"><span>What We Do</span></h2>
       <p class="section-subtitle">Our mission, vision, and values driving change in Gbeh-lay</p>
       <div class="cards-grid">
         <div class="card">
-          <div class="card-icon">ðŸŒ±</div>
+          <div class="card-icon">🌱</div>
           <h3>Community Programs</h3>
           <p>From clean-up drives to skill-building workshops, we invest in our community every day.</p>
           <a href="/programs.html" class="btn btn-sm btn-primary">Learn More</a>
         </div>
         <div class="card">
-          <div class="card-icon">ðŸŽ¯</div>
+          <div class="card-icon">🎯</div>
           <h3>Our Mission</h3>
           <p>To unite the youths of Gbeh-lay and empower them through education, skills development, and community service to become agents of positive change.</p>
         </div>
         <div class="card">
-          <div class="card-icon">ðŸ”­</div>
+          <div class="card-icon">🔭</div>
           <h3>Our Vision</h3>
           <p>A Gbeh-lay where every young person has the opportunity, resources, and support to reach their full potential and contribute meaningfully to society.</p>
         </div>
         <div class="card">
-          <div class="card-icon">ðŸ’Ž</div>
+          <div class="card-icon">💎</div>
           <h3>Our Values</h3>
           <ul style="padding-left:1.2rem;list-style:disc;">
             <li>Unity &amp; Solidarity</li>
@@ -259,7 +218,6 @@
     </div>
   </section>
 
-  <!-- LEADERSHIP TEAM -->
   <section class="section team-section">
     <div class="container">
       <h2 class="section-title">Executive <span>Leadership</span></h2>
@@ -268,23 +226,19 @@
       <div class="team-carousel-wrap">
         <div class="team-carousel-track" id="home-team"></div>
       </div>
-        <p style="color:var(--gray);text-align:center;grid-column:1/-1;">Loading team...</p>
-      </div>
       <div style="text-align:center;margin-top:32px;">
-        <a href="/leadership.html" class="btn btn-green">Meet the Full Team â†’</a>
+        <a href="/leadership.html" class="btn btn-green">Meet the Full Team →</a>
       </div>
     </div>
   </section>
 
-      <!-- TEAM MODAL -->
-      <div class="team-modal-overlay" id="team-modal" onclick="if(event.target===this)closeTeamModal()">
-        <div class="team-modal-box">
-          <button class="team-modal-close" onclick="closeTeamModal()">âœ•</button>
-          <div id="team-modal-body"></div>
-        </div>
-      </div>
+  <div class="team-modal-overlay" id="team-modal" onclick="if(event.target===this)closeTeamModal()">
+    <div class="team-modal-box">
+      <button class="team-modal-close" onclick="closeTeamModal()">✕</button>
+      <div id="team-modal-body"></div>
+    </div>
+  </div>
 
-  <!-- UPCOMING EVENTS -->
   <section class="section events-section">
     <div class="container">
       <h2 class="section-title">Upcoming <span>Events</span></h2>
@@ -294,12 +248,11 @@
         <p style="color:var(--gray);text-align:center;grid-column:1/-1;">Loading events...</p>
       </div>
       <div style="text-align:center;margin-top:32px;">
-        <a href="/events.html" class="btn btn-green">View All Events â†’</a>
+        <a href="/events.html" class="btn btn-green">View All Events →</a>
       </div>
     </div>
   </section>
 
-  <!-- LATEST NEWS -->
   <section class="section news-section">
     <div class="container">
       <h2 class="section-title">Latest <span>News</span></h2>
@@ -309,12 +262,11 @@
         <p style="color:var(--gray);text-align:center;grid-column:1/-1;">Loading news...</p>
       </div>
       <div style="text-align:center;margin-top:32px;">
-        <a href="/news.html" class="btn btn-green">View All News â†’</a>
+        <a href="/news.html" class="btn btn-green">View All News →</a>
       </div>
     </div>
   </section>
 
-  <!-- GALLERY -->
   <section class="section gallery-section">
     <div class="container">
       <h2 class="section-title">Photo <span>Gallery</span></h2>
@@ -324,26 +276,23 @@
         <p style="color:var(--gray);text-align:center;grid-column:1/-1;">Loading gallery...</p>
       </div>
       <div style="text-align:center;margin-top:32px;">
-        <a href="/gallery.html" class="btn btn-green">View Full Gallery â†’</a>
+        <a href="/gallery.html" class="btn btn-green">View Full Gallery →</a>
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
   <section class="section cta-section">
     <div class="container cta-box" style="position:relative;z-index:1;">
       <h2>Ready to Make a Difference?</h2>
       <p>Support our mission by donating or becoming a member today.</p>
       <div class="hero-btns">
-        <a href="/donate.html" class="btn btn-primary">ðŸ’š Donate Now</a>
+        <a href="/donate.html" class="btn btn-primary">💚 Donate Now</a>
         <a href="/membership.html" class="btn btn-outline">Become a Member</a>
       </div>
     </div>
   </section>
 
   <footer id="footer"></footer>
-
-  
 
   <script src="/src/js/main.js"></script>
   <script>
@@ -367,8 +316,7 @@
       // Team
       try {
         const team = await apiFetch('/team');
-        const tc = document.getElementById('home-team');
-        if (!team.length) { tc.innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Team info coming soon.</p>'; }
+        window._teamData = team;
         const tc = document.getElementById('home-team');
         if (!team.length) { tc.innerHTML = '<p style="color:var(--gray);padding:20px;">Team info coming soon.</p>'; }
         else {
@@ -376,19 +324,15 @@
             <div class="team-card" onclick="openTeamModal(${m.id})">
               ${m.photo
                 ? `<img src="${m.photo}" alt="${m.name}" class="team-card-photo"/>`
-                : `<div class="team-card-photo-placeholder">ðŸ‘¤</div>`}
+                : `<div class="team-card-photo-placeholder">👤</div>`}
               <div class="team-card-info">
                 <h3>${m.name}</h3>
                 <span>${m.position}</span>
               </div>
             </div>`).join('');
-          // duplicate for seamless infinite loop
           tc.innerHTML = cards + cards;
         }
-      } catch { document.getElementById('home-team').innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Could not load team.</p>'; }
-
-      window._teamData = [];
-      try { window._teamData = await apiFetch('/team'); } catch {}
+      } catch { document.getElementById('home-team').innerHTML = '<p style="color:var(--gray);padding:20px;">Could not load team.</p>'; }
 
       // Events
       try {
@@ -398,10 +342,10 @@
         if (!upcoming.length) { ec.innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">No upcoming events yet.</p>'; }
         else ec.innerHTML = upcoming.map(e => `
           <div class="card">
-            <div class="card-icon">ðŸ“…</div>
+            <div class="card-icon">📅</div>
             <h3>${e.title}</h3>
-            <p class="card-meta">ðŸ“… ${new Date(e.event_date || e.date).toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'})}</p>
-            ${e.location ? `<p class="card-meta">ðŸ“ ${e.location}</p>` : ''}
+            <p class="card-meta">📅 ${new Date(e.event_date || e.date).toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'})}</p>
+            ${e.location ? `<p class="card-meta">📍 ${e.location}</p>` : ''}
             <p>${e.description ? e.description.substring(0,90)+'...' : ''}</p>
             <a href="/events.html" class="btn btn-sm btn-green">Learn More</a>
           </div>`).join('');
@@ -414,9 +358,9 @@
         if (!news.length) { c.innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">No news yet.</p>'; return; }
         c.innerHTML = news.slice(0,3).map(n => `
           <div class="card">
-            ${n.image_url ? `<img src="${n.image_url}" alt="${n.title}" class="card-img"/>` : '<div class="card-icon">ðŸ“°</div>'}
+            ${n.image_url ? `<img src="${n.image_url}" alt="${n.title}" class="card-img"/>` : '<div class="card-icon">📰</div>'}
             <h3>${n.title}</h3>
-            <p class="card-meta">ðŸ“… ${new Date(n.created_at).toLocaleDateString()}</p>
+            <p class="card-meta">📅 ${new Date(n.created_at).toLocaleDateString()}</p>
             <p>${(n.summary || (n.content||'').substring(0,100))}...</p>
             <a href="/news.html" class="btn btn-sm btn-green">Read More</a>
           </div>`).join('');
@@ -434,13 +378,14 @@
           </div>`).join('');
       } catch { document.getElementById('home-gallery').innerHTML = '<p style="color:var(--gray);grid-column:1/-1;text-align:center;">Could not load gallery.</p>'; }
     });
+
     function openTeamModal(id) {
       const m = (window._teamData || []).find(x => x.id === id);
       if (!m) return;
       document.getElementById('team-modal-body').innerHTML = `
         ${m.photo
           ? `<img src="${m.photo}" alt="${m.name}" class="team-modal-img"/>`
-          : `<div class="team-modal-img-placeholder">ðŸ‘¤</div>`}
+          : `<div class="team-modal-img-placeholder">👤</div>`}
         <div class="team-modal-info">
           <h3>${m.name}</h3>
           <div class="pos">${m.position}</div>
@@ -452,35 +397,32 @@
       document.getElementById('team-modal').classList.remove('open');
     }
   </script>
-<script>
-(function(){
-  const phrases = [
-    'Growth & Development ðŸŒ±',
-    'Education & Empowerment ðŸŽ“',
-    'Leadership & Change ðŸ”¥',
-    'Unity & Progress ðŸ¤',
-    'Community & Service ðŸ’š',
-    'Voice of the Voiceless ðŸ“¢'
-  ];
-  const el = document.getElementById('typing-text');
-  let pi = 0, ci = 0, deleting = false;
-  function type() {
-    const phrase = phrases[pi];
-    if (!deleting) {
-      el.textContent = phrase.slice(0, ++ci);
-      if (ci === phrase.length) { deleting = true; setTimeout(type, 2200); return; }
-      setTimeout(type, 75);
-    } else {
-      el.textContent = phrase.slice(0, --ci);
-      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 500); return; }
-      setTimeout(type, 40);
+  <script>
+  (function(){
+    const phrases = [
+      'Growth & Development 🌱',
+      'Education & Empowerment 🎓',
+      'Leadership & Change 🔥',
+      'Unity & Progress 🤝',
+      'Community & Service 💚',
+      'Voice of the Voiceless 📢'
+    ];
+    const el = document.getElementById('typing-text');
+    let pi = 0, ci = 0, deleting = false;
+    function type() {
+      const phrase = phrases[pi];
+      if (!deleting) {
+        el.textContent = phrase.slice(0, ++ci);
+        if (ci === phrase.length) { deleting = true; setTimeout(type, 2200); return; }
+        setTimeout(type, 75);
+      } else {
+        el.textContent = phrase.slice(0, --ci);
+        if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 500); return; }
+        setTimeout(type, 40);
+      }
     }
-  }
-  document.addEventListener('DOMContentLoaded', type);
-})();
-</script>
+    document.addEventListener('DOMContentLoaded', type);
+  })();
+  </script>
 </body>
 </html>
-
-
-
