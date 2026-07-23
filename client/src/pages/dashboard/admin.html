@@ -264,6 +264,9 @@
       <a class="active" onclick="showSection('dashboard', this)">
         <span class="icon">📊</span> Dashboard
       </a>
+      <a onclick="showSection('applications', this)">
+        <span class="icon">🎓</span> Applications
+      </a>
       <a onclick="showSection('members', this)">
         <span class="icon">👥</span> Members
       </a>
@@ -361,6 +364,30 @@
             </div>
           </div>
           
+        </div>
+      </div>
+
+      <!-- ════ APPLICATIONS ════ -->
+      <div id="section-applications" class="tab-section">
+        <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" id="app-tab-all"      onclick="filterApplications('all')">All</button>
+          <button class="btn btn-outline btn-sm" id="app-tab-pending"  onclick="filterApplications('pending')">⏳ Pending</button>
+          <button class="btn btn-outline btn-sm" id="app-tab-approved" onclick="filterApplications('approved')">✅ Approved</button>
+          <button class="btn btn-outline btn-sm" id="app-tab-rejected" onclick="filterApplications('rejected')">❌ Rejected</button>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3 id="app-panel-title">All Applications</h3>
+            <span id="app-count" style="font-size:0.82rem;color:#8b9bb4;"></span>
+          </div>
+          <div class="table-wrap">
+            <table id="dt-applications" class="admin-dt" style="width:100%">
+              <thead>
+                <tr><th>Applicant</th><th>School</th><th>Level</th><th>Applied</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="applications-body"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -925,6 +952,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── NAVIGATION ────────────────────────────────────────
 const sectionTitles = {
   dashboard: 'Dashboard', programs: 'Programs',
+  applications: 'Scholarship Applications',
   members: 'Members', events: 'Events', news: 'News',
   gallery: 'Gallery', team: 'Our Team', donations: 'Donations', messages: 'Messages',
   notifications: 'Notifications', reports: 'Reports',
@@ -939,6 +967,7 @@ function showSection(name, el) {
   document.getElementById('topbar-title').textContent = sectionTitles[name] || name;
   const loaders = {
     dashboard: loadDashboard, programs: loadPrograms,
+    applications: loadApplications,
     members: loadMembers, events: loadEvents, news: loadNews,
     gallery: loadGallery, team: loadTeam, donations: loadDonations, messages: loadMessages,
     notifications: loadNotifications, reports: loadReports, users: loadUsers, config: loadConfig
@@ -989,6 +1018,58 @@ async function loadDashboard() {
   }
 }
 
+
+// ── APPLICATIONS ──────────────────────────────────────
+let allApplications = [];
+let currentAppFilter = 'all';
+
+async function loadApplications() {
+  try {
+    allApplications = await apiFetch('/scholarships');
+    filterApplications(currentAppFilter);
+  } catch(e) {
+    document.getElementById('applications-body').innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading applications.</td></tr>';
+  }
+}
+
+function filterApplications(filter) {
+  currentAppFilter = filter;
+  // Update tab buttons
+  ['all','pending','approved','rejected'].forEach(f => {
+    const btn = document.getElementById('app-tab-' + f);
+    if (btn) btn.className = 'btn btn-sm ' + (f === filter ? 'btn-primary' : 'btn-outline');
+  });
+  const statusMap = { pending: ['submitted','under_review'], approved: ['approved'], rejected: ['rejected'] };
+  const list = filter === 'all' ? allApplications
+    : allApplications.filter(a => (statusMap[filter] || []).includes(a.status));
+  const titles = { all: 'All Applications', pending: 'Pending Applications', approved: 'Approved Applications', rejected: 'Rejected Applications' };
+  document.getElementById('app-panel-title').textContent = titles[filter];
+  document.getElementById('app-count').textContent = `${list.length} record${list.length !== 1 ? 's' : ''}`;
+  document.getElementById('applications-body').innerHTML = list.length ? list.map(a => `
+    <tr>
+      <td><strong>${a.applicant_name}</strong></td>
+      <td>${a.school || '-'}</td>
+      <td>${a.level || '-'}</td>
+      <td>${fmtDate(a.applied_at)}</td>
+      <td>${badge(a.status)}</td>
+      <td style="display:flex;gap:4px;flex-wrap:wrap;">
+        ${a.status !== 'approved' ? `<button class="btn btn-sm btn-success" onclick="updateScholarshipStatus(${a.id},'approved')">✅ Approve</button>` : ''}
+        ${a.status !== 'under_review' ? `<button class="btn btn-sm btn-warn" onclick="updateScholarshipStatus(${a.id},'under_review')">🔍 Review</button>` : ''}
+        ${a.status !== 'rejected' ? `<button class="btn btn-sm btn-danger" onclick="updateScholarshipStatus(${a.id},'rejected')">❌ Reject</button>` : ''}
+        ${a.supporting_docs ? `<a class="btn btn-sm btn-outline" href="${a.supporting_docs}" target="_blank">📄 Docs</a>` : ''}
+      </td>
+    </tr>`).join('')
+    : `<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
+  dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: 5 }] });
+}
+
+async function updateScholarshipStatus(id, status) {
+  try {
+    await apiFetch(`/scholarships/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    await loadApplications();
+  } catch(e) { alert('Failed to update application: ' + (e.message || 'Unknown error')); }
+}
 
 // ── MEMBERS ───────────────────────────────────────────
 let allMembers = [];
