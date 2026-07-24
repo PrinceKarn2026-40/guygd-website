@@ -1,5 +1,24 @@
 const bcrypt = require('bcryptjs');
 const db = require('../config/db');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
+});
+
+async function sendApprovalEmail(member) {
+  await transporter.sendMail({
+    from: `"GUYGD" <${process.env.EMAIL_USER}>`,
+    to: member.email,
+    subject: 'Your GUYGD Membership Has Been Approved!',
+    html: `<p>Dear ${member.full_name},</p>
+           <p>Congratulations! Your GUYGD membership application has been <strong>approved</strong>.</p>
+           <p>You can now <a href="${process.env.CLIENT_URL}/membership.html?login">log in here</a>.</p>
+           <p>Welcome to the family!<br/>— GUYGD Team</p>`
+  });
+}
 
 exports.getAllMembers = async (req, res) => {
   try {
@@ -29,7 +48,11 @@ exports.updateMember = async (req, res) => {
     if (status) {
       if (!['pending', 'active', 'suspended'].includes(status))
         return res.status(400).json({ message: 'Invalid status' });
+      const prev = await db.query('SELECT status, email, full_name FROM members WHERE id=$1', [req.params.id]);
       await db.query('UPDATE members SET status=$1 WHERE id=$2', [status, req.params.id]);
+      if (status === 'active' && prev.rows[0]?.status !== 'active') {
+        sendApprovalEmail(prev.rows[0]).catch(e => console.error('Email error:', e.message));
+      }
     } else if (role) {
       await db.query('UPDATE members SET role=$1 WHERE id=$2', [role, req.params.id]);
     } else {

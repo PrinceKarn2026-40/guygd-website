@@ -595,7 +595,7 @@
       const u = getUser();
       if (u) {
         window.location.href = ['admin','executive','super_admin'].includes(u.role)
-          ? '/dashboard/admin.html' : '/dashboard/member.html';
+          ? '/dashboard/admin.html' : '/index.html';
       }
     });
 
@@ -621,11 +621,9 @@
         })});
         localStorage.setItem('guygd_token', data.token);
         localStorage.setItem('guygd_user', JSON.stringify(data.user));
-        showAlert('register-alert','✅ Application submitted! Redirecting...','success');
-        setTimeout(() => {
-          window.location.href = ['admin','executive','super_admin'].includes(data.user.role)
-            ? '/dashboard/admin.html' : '/dashboard/member.html';
-        }, 1500);
+        showAlert('register-alert','✅ Application submitted! An admin will review your application and you will receive an email once approved.','success');
+        e.target.reset();
+        btn.textContent = '✅ Application Submitted';
       } catch(err) {
         showAlert('register-alert', err.message || 'Registration failed.', 'error');
         btn.disabled = false; btn.innerHTML = '🚀 Submit Membership Application';
@@ -646,7 +644,7 @@
         showAlert('login-alert','✅ Login successful! Redirecting...','success');
         setTimeout(() => {
           window.location.href = ['admin','executive','super_admin'].includes(data.user.role)
-            ? '/dashboard/admin.html' : '/dashboard/member.html';
+            ? '/dashboard/admin.html' : '/index.html';
         }, 1200);
       } catch(err) {
         showAlert('login-alert', err.message || 'Login failed. Check your credentials.', 'error');

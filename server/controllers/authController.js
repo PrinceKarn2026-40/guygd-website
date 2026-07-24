@@ -34,12 +34,7 @@ exports.register = async (req, res) => {
       ]
     );
     const member = result.rows[0];
-    const token = jwt.sign(
-      { id: member.id, role: member.role, full_name: member.full_name },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
-    res.status(201).json({ token, user: member });
+    res.status(201).json({ pending: true, message: 'Application submitted! You will receive an email once approved.' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
