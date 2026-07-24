@@ -875,7 +875,7 @@
                   ">
                     <!-- Back rendered by JS -->
                   </div>
-                  <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%;" onclick="printIDCard()">ðŸ-¨ï¸ Print Sample Card</button>
+                  <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%;" onclick="printIDCard()">ðŸ-🖨️ Print Sample Card</button>
                 </div>
               </div>
             </div>
@@ -942,8 +942,8 @@ function dtInit(id, opts) {
     lengthMenu: [5, 10, 25, 50],
     dom: '<"dt-top"Bf>rt<"dt-bottom"lip>',
     buttons: [
-      { extend: 'excelHtml5', text: 'â¬‡ Excel', className: 'dt-btn' },
-      { extend: 'csvHtml5',   text: 'â¬‡ CSV',   className: 'dt-btn' },
+      { extend: 'excelHtml5', text: '⬇️ Excel', className: 'dt-btn' },
+      { extend: 'csvHtml5',   text: '⬇️ CSV',   className: 'dt-btn' },
       { extend: 'print',      text: 'ðŸ-¨ Print',  className: 'dt-btn' }
     ],
     language: {
@@ -1124,7 +1124,7 @@ function renderMembers(list) {
         <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewMember(${m.id})">ðŸ‘ View</button>
         <button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">âœ… Approve</button>
         <button class="btn btn-sm btn-danger"  onclick="updateMemberStatus(${m.id},'suspended')">âŒ Reject</button>
-        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}')">ðŸ-‘ Delete</button>
+        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}')">🗑️ Delete</button>
       </td>
     </tr>`).join('');
   dtInit('dt-members', { columnDefs: [{ orderable: false, targets: 6 }] });
@@ -1166,7 +1166,7 @@ function viewMember(id) {
     <div style="display:flex;gap:8px;margin-top:16px;">
       <button class="btn btn-success" onclick="updateMemberStatus(${m.id},'active');closeMemberModal()">âœ… Approve</button>
       <button class="btn btn-danger"  onclick="updateMemberStatus(${m.id},'suspended');closeMemberModal()">âŒ Reject</button>
-      <button class="btn" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}');closeMemberModal()">ðŸ-‘ Delete</button>
+      <button class="btn" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}');closeMemberModal()">🗑️ Delete</button>
     </div>`;
   modal.style.display = 'flex';
 }
@@ -1317,7 +1317,7 @@ async function loadNews() {
         <td>${n.category || '-'}</td>
         <td>${n.published ? '<span class="badge badge-active">Published</span>' : '<span class="badge badge-pending">Draft</span>'}</td>
         <td>${fmtDate(n.created_at)}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">ðŸ-‘ Delete</button></td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">🗑️ Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No articles yet.</td></tr>';
     if (list.length) dtInit('dt-news', { columnDefs: [{ orderable: false, targets: 4 }] });
@@ -1593,7 +1593,7 @@ function renderEmailTemplates() {
       <td style="display:flex;gap:6px;">
         <button class="btn btn-sm btn-outline" onclick="previewEmailTemplate(${t.id})">ðŸ‘ Preview</button>
         <button class="btn btn-sm btn-warn"    onclick='showEmailForm(${JSON.stringify(t).replace(/'/g,"&#39;")})'>✏️ Edit</button>
-        <button class="btn btn-sm btn-danger"  onclick="deleteEmailTemplate(${t.id})">ðŸ-‘</button>
+        <button class="btn btn-sm btn-danger"  onclick="deleteEmailTemplate(${t.id})">🗑️</button>
       </td>
     </tr>`).join('');
 }
