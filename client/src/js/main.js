@@ -120,6 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.classList.add('open');
     hamburger.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
+    // Add nav header if not present
+    if (!navLinks.querySelector('.nav-mobile-header')) {
+      const header = document.createElement('div');
+      header.className = 'nav-mobile-header';
+      header.innerHTML = '<span>🌿 GUYGD</span>';
+      navLinks.insertBefore(header, navLinks.firstChild);
+    }
   }
 
   function closeMenu() {
