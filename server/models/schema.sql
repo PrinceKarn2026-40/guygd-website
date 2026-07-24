@@ -103,3 +103,14 @@ CREATE TABLE IF NOT EXISTS team (
   sort_order INT DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS programs (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(150) NOT NULL,
+  icon VARCHAR(10) DEFAULT '📌',
+  description TEXT,
+  bullets TEXT,
+  image_url VARCHAR(255),
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -2,6 +2,21 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const db = require('./config/db');
+
+// Auto-migrate missing tables
+db.query(`
+  CREATE TABLE IF NOT EXISTS programs (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(150) NOT NULL,
+    icon VARCHAR(10) DEFAULT '📌',
+    description TEXT,
+    bullets TEXT,
+    image_url VARCHAR(255),
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`).catch(e => console.error('Migration error:', e.message));
 
 const app = express();
 

@@ -78,7 +78,7 @@ ul { list-style: none; }
 }
 
 .nav-links a {
-  color: rgba(255,255,255,0.75);
+  color: #ffffff;
   padding: 8px 13px;
   border-radius: 8px;
   font-size: 0.875rem;
