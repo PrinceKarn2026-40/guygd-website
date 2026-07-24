@@ -27,6 +27,26 @@ function showAlert(containerId, message, type = 'success') {
   setTimeout(() => (el.style.display = 'none'), 5000);
 }
 
+function applyTheme(dark) {
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+}
+
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  localStorage.setItem('guygd_theme', isDark ? 'light' : 'dark');
+  applyTheme(!isDark);
+  document.querySelectorAll('.dark-toggle').forEach(btn => {
+    btn.textContent = isDark ? '🌙' : '☀️';
+  });
+}
+
+// Apply saved theme immediately
+(function() {
+  const saved = localStorage.getItem('guygd_theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved ? saved === 'dark' : prefersDark);
+})();
+
 function renderNavbar() {
   const user = getUser();
   const links = `
@@ -45,6 +65,16 @@ function renderNavbar() {
       : `<a href="/membership.html" class="btn-nav">Join Us</a>`}
   `;
   document.getElementById('nav-links').innerHTML = links;
+  // inject dark toggle after nav-links
+  const existing = document.querySelector('.dark-toggle');
+  if (!existing) {
+    const btn = document.createElement('button');
+    btn.className = 'dark-toggle';
+    btn.title = 'Toggle dark mode';
+    btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    btn.addEventListener('click', toggleDark);
+    document.getElementById('nav-links').after(btn);
+  }
   highlightActiveLink();
 }
 
