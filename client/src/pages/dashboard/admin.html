@@ -1083,9 +1083,9 @@ function filterApplications(filter) {
       <td>${fmtDate(m.joined_at)}</td>
       <td>${badge(m.status)}</td>
       <td style="display:flex;gap:4px;flex-wrap:wrap;">
-        ${m.status !== 'active'     ? `<button class="btn btn-sm btn-success" onclick="appAction(${m.id},'active')">✅ Approve</button>` : ''}
-        ${m.status !== 'suspended'  ? `<button class="btn btn-sm btn-danger"  onclick="appAction(${m.id},'suspended')">❌ Reject</button>` : ''}
-        ${m.status !== 'pending'    ? `<button class="btn btn-sm btn-warn"    onclick="appAction(${m.id},'pending')">↩ Reset</button>` : ''}
+        ${m.status !== 'active'    ? `<button class="btn btn-sm btn-success" onclick="appAction(${m.id},'active')">✅ Approve</button>` : '<span class="badge badge-active">Approved</span>'}
+        ${m.status !== 'suspended' ? `<button class="btn btn-sm btn-danger"  onclick="appAction(${m.id},'suspended')">❌ Reject</button>` : '<span class="badge badge-suspended">Rejected</span>'}
+        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="appDelete(${m.id},'${m.full_name.replace(/'/g,'')}')">🗑️ Delete</button>
       </td>
     </tr>`).join('')
     : `<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
@@ -1098,6 +1098,16 @@ async function appAction(id, status) {
     await loadApplications();
     loadDashboard();
   } catch(e) { alert('Failed to update: ' + (e.message || 'Unknown error')); }
+}
+
+async function appDelete(id, name) {
+  if (!confirm(`Permanently delete "${name}"? This cannot be undone.`)) return;
+  try {
+    await apiFetch(`/members/${id}`, { method: 'DELETE' });
+    await loadApplications();
+    loadDashboard();
+  } catch(e) { alert('Failed to delete: ' + (e.message || 'Unknown error')); }
+}known error')); }
 }
 
 // â”€â”€ MEMBERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
