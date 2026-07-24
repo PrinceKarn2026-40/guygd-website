@@ -303,6 +303,9 @@
       <a onclick="showSection('users', this)">
         <span class="icon">👤</span> Users
       </a>
+      <a onclick="showSection('idcard', this)">
+        <span class="icon">🪹</span> ID Card
+      </a>
       <a onclick="showSection('settings', this)">
         <span class="icon">⚙️</span> Settings
       </a>
@@ -794,7 +797,7 @@ const sectionTitles = {
   members: 'Members', events: 'Events', news: 'News',
   gallery: 'Gallery', team: 'Our Team', donations: 'Donations', messages: 'Messages',
   notifications: 'Notifications', reports: 'Reports',
-  users: 'User Management', settings: 'Settings'
+  users: 'User Management', idcard: 'ID Card Templates', settings: 'Settings'
 };
 
 function showSection(name, el) {
@@ -808,7 +811,7 @@ function showSection(name, el) {
     applications: loadApplications,
     members: loadMembers, events: loadEvents, news: loadNews,
     gallery: loadGallery, team: loadTeam, donations: loadDonations, messages: loadMessages,
-    notifications: loadNotifications, reports: loadReports, users: loadUsers
+    notifications: loadNotifications, reports: loadReports, users: loadUsers, idcard: loadIDCard
   };
   if (loaders[name]) loaders[name]();
 }
@@ -1428,6 +1431,80 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
     document.getElementById('settings-form').reset();
   } catch(err) { showAlert('settings-alert', err.message || 'Failed to update password.', 'error'); }
 });
+
+// -- ID CARD --
+let idcLogoUrl = '';
+function loadIDCard() {
+  renderIDCard();
+  const saved = JSON.parse(localStorage.getItem('guygd_idcard') || 'null');
+  if (!saved) return;
+  document.getElementById('idc-bg').value      = saved.bg      || '#1a6b3c';
+  document.getElementById('idc-text').value    = saved.text    || '#ffffff';
+  document.getElementById('idc-accent').value  = saved.accent  || '#d4a017';
+  document.getElementById('idc-org').value     = saved.org     || '';
+  document.getElementById('idc-acronym').value = saved.acronym || 'GUYGD';
+  document.getElementById('idc-footer').value  = saved.footer  || '';
+  document.getElementById('idc-validity').value= saved.validity|| 12;
+  idcLogoUrl = saved.logo || '';
+  renderIDCard();
+}
+function loadLogo(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { idcLogoUrl = e.target.result; renderIDCard(); };
+  reader.readAsDataURL(file);
+}
+function getIDCValues() {
+  return {
+    bg:      document.getElementById('idc-bg').value,
+    text:    document.getElementById('idc-text').value,
+    accent:  document.getElementById('idc-accent').value,
+    org:     document.getElementById('idc-org').value,
+    acronym: document.getElementById('idc-acronym').value,
+    footer:  document.getElementById('idc-footer').value,
+    validity:parseInt(document.getElementById('idc-validity').value)||12,
+    showPhoto:  document.getElementById('idc-show-photo').checked,
+    showId:     document.getElementById('idc-show-id').checked,
+    showRole:   document.getElementById('idc-show-role').checked,
+    showExpiry: document.getElementById('idc-show-expiry').checked,
+    logo: idcLogoUrl
+  };
+}
+function renderIDCard() {
+  const c = getIDCValues();
+  const expiry = new Date(); expiry.setMonth(expiry.getMonth() + c.validity);
+  document.getElementById('idc-preview').innerHTML = `
+    <div style="background:${c.bg};color:${c.text};font-family:'Segoe UI',sans-serif;">
+      <div style="background:rgba(0,0,0,0.25);padding:14px 18px;display:flex;align-items:center;gap:12px;">
+        ${c.logo ? `<img src="${c.logo}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid ${c.accent};"/>` : `<div style="width:38px;height:38px;border-radius:50%;background:${c.accent};display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:1rem;">${c.acronym.charAt(0)}</div>`}
+        <div>
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:1px;opacity:0.85;">${c.acronym}</div>
+          <div style="font-size:0.58rem;opacity:0.65;">${c.org}</div>
+        </div>
+      </div>
+      <div style="padding:16px 18px;display:flex;gap:14px;align-items:flex-start;">
+        ${c.showPhoto ? `<div style="width:64px;height:64px;border-radius:10px;background:rgba(255,255,255,0.15);border:2px solid ${c.accent};display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">&#128100;</div>` : ''}
+        <div style="flex:1;">
+          <div style="font-size:1rem;font-weight:800;margin-bottom:4px;">James K. Doe</div>
+          <div style="font-size:0.72rem;background:${c.accent};color:#000;display:inline-block;padding:2px 10px;border-radius:20px;font-weight:700;margin-bottom:8px;">Member</div>
+          ${c.showId     ? `<div style="font-size:0.7rem;opacity:0.75;">ID: <strong>GUYGD-2025-001</strong></div>` : ''}
+          ${c.showExpiry ? `<div style="font-size:0.7rem;opacity:0.75;">Expires: <strong>${expiry.toLocaleDateString()}</strong></div>` : ''}
+        </div>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);padding:8px 18px;font-size:0.6rem;text-align:center;opacity:0.75;">${c.footer}</div>
+    </div>`;
+}
+function saveIDCard() {
+  const c = getIDCValues();
+  try { localStorage.setItem('guygd_idcard', JSON.stringify(c)); } catch(e) { const s={...c,logo:''}; localStorage.setItem('guygd_idcard',JSON.stringify(s)); }
+  showAlert('idcard-alert','\u2705 Template saved!','success');
+}
+function printIDCard() {
+  const html = document.getElementById('idc-preview').innerHTML;
+  const w = window.open('','_blank','width=400,height=300');
+  w.document.write(`<!DOCTYPE html><html><head><title>ID Card</title><style>body{margin:0;background:#e5e7eb;display:flex;align-items:center;justify-content:center;min-height:100vh;} .card{width:320px;border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.25);} @media print{body{background:#fff;} .card{box-shadow:none;}}</style></head><body><div class="card">${html}</div></body></html>`);
+  w.document.close(); w.focus(); setTimeout(()=>w.print(),500);
+}
 </script>
 </body>
 </html>
