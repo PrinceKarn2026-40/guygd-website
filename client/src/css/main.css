@@ -136,9 +136,8 @@ ul { list-style: none; }
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.75);
   z-index: 999;
-  backdrop-filter: blur(3px);
 }
 .nav-overlay.open { display: block; }
 
@@ -639,45 +638,47 @@ tr:hover td { background: var(--g50); }
     flex-direction: column;
     position: fixed;
     top: 0; right: -100%;
-    width: 80%;
-    max-width: 300px;
+    width: 78%;
+    max-width: 320px;
     height: 100vh;
-    background: #0a2e1a;
+    background: #071a0f;
     padding: 80px 0 40px;
-    border-left: 2px solid rgba(245,158,11,0.3);
+    border-left: 3px solid rgba(245,158,11,0.5);
     z-index: 1000;
     transition: right 0.3s ease;
     overflow-y: auto;
     gap: 0;
-    box-shadow: -8px 0 32px rgba(0,0,0,0.5);
+    box-shadow: -10px 0 40px rgba(0,0,0,0.8);
   }
   .nav-links.open {
     display: flex;
     right: 0;
   }
   .nav-links a {
-    padding: 16px 28px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.9);
+    padding: 18px 32px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
     border-radius: 0;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    letter-spacing: 0.3px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    letter-spacing: 0.5px;
   }
   .nav-links a:hover, .nav-links a.active {
-    background: rgba(245,158,11,0.15);
+    background: rgba(245,158,11,0.2);
     color: var(--gold);
-    padding-left: 36px;
+    padding-left: 40px;
   }
   .nav-links .btn-nav {
-    margin: 20px 24px 0;
+    margin: 24px 24px 0;
     text-align: center;
     justify-content: center;
     border-radius: 10px;
     background: var(--gold);
     color: var(--g900);
-    font-weight: 700;
+    font-weight: 800;
+    font-size: 1.1rem;
     border-bottom: none;
+    padding: 16px 28px;
   }
   .nav-links .btn-nav:hover {
     background: var(--gold-dark);
