@@ -45,7 +45,8 @@ exports.login = async (req, res) => {
     const result = await db.query('SELECT * FROM members WHERE email = $1', [email]);
     const member = result.rows[0];
     if (!member) return res.status(404).json({ message: 'Member not found' });
-    if (member.status !== 'active') return res.status(403).json({ message: 'Account not yet approved. Please wait for admin approval.' });
+    const isAdmin = ['admin','executive','super_admin'].includes(member.role);
+    if (!isAdmin && member.status !== 'active') return res.status(403).json({ message: 'Account not yet approved. Please wait for admin approval.' });
     const valid = await bcrypt.compare(password, member.password_hash);
     if (!valid) return res.status(401).json({ message: 'Invalid credentials' });
     await db.query('UPDATE members SET last_login = NOW(), updated_at = NOW() WHERE id = $1', [member.id]);
