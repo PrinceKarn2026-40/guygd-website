@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
   <title>GUYGD – Admin Dashboard</title>
   <link rel="stylesheet" href="/src/css/main.css"/>
   <link rel="stylesheet" href="/src/css/dashboard.css"/>
@@ -1306,7 +1309,7 @@ async function deleteEvent(id) {
 // ── NEWS ──────────────────────────────────────────────
 async function loadNews() {
   try {
-    const list = await apiFetch('/news');
+    const list = await apiFetch('/news/all');
     document.getElementById('news-body').innerHTML = list.length ? list.map(n => `
       <tr>
         <td><strong>${n.title}</strong></td>
