@@ -1198,6 +1198,7 @@ function renderProgramsTable(list) {
     : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No programs yet.</td></tr>';
 
   if (list.length) dtInit('dt-programs', { columnDefs: [{ orderable: false, targets: [0,2,4] }] });
+}
 function editProgram(id) {
   const p = allPrograms.find(x => x.id === id);
   if (!p) return;
@@ -1250,12 +1251,12 @@ async function loadEvents() {
   try {
     const list = await apiFetch('/events');
     document.getElementById('events-body').innerHTML = list.length ? list.map(e => `
-    if ($.fn.DataTable.isDataTable('#dt-events')) $('#dt-events').DataTable().destroy();
+      <tr>
         <td><strong>${e.title}</strong></td>
         <td>${fmtDate(e.event_date)}</td>
         <td>${e.location || '-'}</td>
         <td>${badge(e.category || 'General')}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">ðŸ-‘ Delete</button></td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">🗑️ Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
     if (list.length) dtInit('dt-events', { columnDefs: [{ orderable: false, targets: 4 }] });
@@ -1868,7 +1869,7 @@ async function loadUsers() {
       '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading users.</td></tr>';
   }
 }
-async async function changeRole(id, role) {
+async function changeRole(id, role) {
   try {
     await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ role }) });
   } catch(e) { alert('Failed to update role: ' + (e.message || 'Unknown error')); loadUsers(); }
