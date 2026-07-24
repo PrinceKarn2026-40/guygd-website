@@ -658,15 +658,14 @@ tr:hover td { background: var(--g50); }
     padding: 16px 28px;
     font-size: 1.1rem;
     font-weight: 700;
-    color: #f0f0f0;
+    color: #ffffff !important;
     border-radius: 0;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
     letter-spacing: 0.3px;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
   }
   .nav-links a:hover, .nav-links a.active {
-    background: rgba(245,158,11,0.15);
-    color: #f59e0b;
+    background: rgba(245,158,11,0.2);
+    color: #f59e0b !important;
     border-left: 4px solid #f59e0b;
     padding-left: 24px;
   }
