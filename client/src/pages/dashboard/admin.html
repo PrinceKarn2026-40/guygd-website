@@ -783,9 +783,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('topbar-role').textContent  = user.role.replace('_', ' ');
   const initials = (user.full_name || 'A').split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
   document.getElementById('topbar-avatar').textContent = initials;
-  document.getElementById('topbar-last-login').textContent = user.last_login
-    ? 'Last login: ' + new Date(user.last_login).toLocaleString()
-    : 'First login';
   loadDashboard();
   loadNotifications();
 });
