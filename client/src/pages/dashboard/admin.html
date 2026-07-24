@@ -440,7 +440,7 @@
                 <div id="ev-image-preview" style="display:none;margin-top:8px;"><img id="ev-img-thumb" style="max-height:120px;border-radius:8px;border:1px solid #e0e0e0;"/></div>
               </div>
               <div class="form-actions full">
-                <button type="submit" class="btn btn-primary">ðŸ’¾ Save Event</button>
+                <button type="submit" class="btn btn-primary">💾 Save Event</button>
                 <button type="button" class="btn btn-outline" onclick="hideEventForm()">Cancel</button>
               </div>
             </form>
@@ -513,7 +513,7 @@
               <div class="form-group"><label>Photo</label><input type="file" id="tm-photo" accept="image/*"/></div>
               <div class="form-group full"><label>Bio (optional)</label><textarea id="tm-bio" rows="2" placeholder="Short bio..."></textarea></div>
               <div class="form-actions full">
-                <button type="submit" class="btn btn-primary">ðŸ’¾ Save</button>
+                <button type="submit" class="btn btn-primary">💾 Save</button>
                 <button type="button" class="btn btn-outline" onclick="document.getElementById('team-form-panel').style.display='none'">Cancel</button>
               </div>
             </form>
@@ -581,7 +581,7 @@
               <img id="prog-preview" src="" alt="" style="display:none;margin-top:8px;max-height:120px;border-radius:8px;object-fit:cover;"/>
             </div>
             <div style="grid-column:1/-1;display:flex;gap:8px;">
-              <button type="submit" class="btn btn-primary">ðŸ’¾ Save Program</button>
+              <button type="submit" class="btn btn-primary">💾 Save Program</button>
               <button type="button" class="btn" onclick="resetProgramForm()" style="background:#f3f4f6;color:#374151;">âœ• Cancel</button>
             </div>
           </form>
@@ -736,7 +736,7 @@
                 </div>
               </div>
               <div class="form-actions" style="padding-top:12px;">
-                <button class="btn btn-primary" onclick="saveEmailTemplate()">ðŸ’¾ Save Template</button>
+                <button class="btn btn-primary" onclick="saveEmailTemplate()">💾 Save Template</button>
                 <button class="btn btn-outline" onclick="document.getElementById('email-tpl-form').style.display='none'">Cancel</button>
               </div>
             </div>
@@ -777,7 +777,7 @@
               <h3>ðŸªª ID Card Templates</h3>
               <div style="display:flex;gap:8px;">
                 <button class="btn btn-outline btn-sm" onclick="previewIDCard()">ðŸ‘ Preview</button>
-                <button class="btn btn-primary btn-sm" onclick="saveIDCardTemplate()">ðŸ’¾ Save Template</button>
+                <button class="btn btn-primary btn-sm" onclick="saveIDCardTemplate()">💾 Save Template</button>
               </div>
             </div>
             <div class="panel-body">
@@ -1191,7 +1191,7 @@ function renderProgramsTable(list) {
       <td>${p.image_url ? `<img src="${p.image_url}" style="height:48px;border-radius:6px;object-fit:cover;"/>` : '<span style="color:#9ca3af;">No photo</span>'}</td>
       <td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.description}</td>
       <td style="display:flex;gap:4px;">
-        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="editProgram(${p.id})">âœï¸ Edit</button>
+        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="editProgram(${p.id})">✏️ Edit</button>
       <td>
       </td>
     </tr>`).join('')
@@ -1592,7 +1592,7 @@ function renderEmailTemplates() {
       <td>${t.updated ? new Date(t.updated).toLocaleDateString() : '-'}</td>
       <td style="display:flex;gap:6px;">
         <button class="btn btn-sm btn-outline" onclick="previewEmailTemplate(${t.id})">ðŸ‘ Preview</button>
-        <button class="btn btn-sm btn-warn"    onclick='showEmailForm(${JSON.stringify(t).replace(/'/g,"&#39;")})'>âœï¸ Edit</button>
+        <button class="btn btn-sm btn-warn"    onclick='showEmailForm(${JSON.stringify(t).replace(/'/g,"&#39;")})'>✏️ Edit</button>
         <button class="btn btn-sm btn-danger"  onclick="deleteEmailTemplate(${t.id})">ðŸ-‘</button>
       </td>
     </tr>`).join('');
