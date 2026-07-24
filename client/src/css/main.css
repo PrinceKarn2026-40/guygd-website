@@ -638,51 +638,54 @@ tr:hover td { background: var(--g50); }
     flex-direction: column;
     position: fixed;
     top: 0; right: -100%;
-    width: 78%;
-    max-width: 320px;
+    width: 80%;
+    max-width: 300px;
     height: 100vh;
-    background: #071a0f;
+    background: #0d2b18;
     padding: 80px 0 40px;
-    border-left: 3px solid rgba(245,158,11,0.5);
+    border-left: 4px solid #f59e0b;
     z-index: 1000;
     transition: right 0.3s ease;
     overflow-y: auto;
     gap: 0;
-    box-shadow: -10px 0 40px rgba(0,0,0,0.8);
+    box-shadow: -8px 0 32px rgba(0,0,0,0.7);
   }
   .nav-links.open {
     display: flex;
     right: 0;
   }
   .nav-links a {
-    padding: 18px 32px;
-    font-size: 1.15rem;
+    padding: 16px 28px;
+    font-size: 1.1rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #f0f0f0;
     border-radius: 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
   }
   .nav-links a:hover, .nav-links a.active {
-    background: rgba(245,158,11,0.2);
-    color: var(--gold);
-    padding-left: 40px;
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+    border-left: 4px solid #f59e0b;
+    padding-left: 24px;
   }
   .nav-links .btn-nav {
-    margin: 24px 24px 0;
+    margin: 20px 20px 0;
     text-align: center;
     justify-content: center;
-    border-radius: 10px;
-    background: var(--gold);
-    color: var(--g900);
+    border-radius: 8px;
+    background: #f59e0b;
+    color: #0d2b18;
     font-weight: 800;
-    font-size: 1.1rem;
+    font-size: 1rem;
     border-bottom: none;
-    padding: 16px 28px;
+    padding: 14px 24px;
   }
   .nav-links .btn-nav:hover {
-    background: var(--gold-dark);
+    background: #d97706;
     color: #fff;
-    padding-left: 28px;
+    padding-left: 24px;
+    border-left: none;
   }
 }
