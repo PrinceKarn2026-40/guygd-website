@@ -46,6 +46,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 async function migrate() {
+  await db.query(`ALTER TABLE members ALTER COLUMN password_hash DROP NOT NULL`).catch(() => {});
   await db.query(`
     CREATE TABLE IF NOT EXISTS programs (
       id SERIAL PRIMARY KEY,
@@ -60,6 +61,18 @@ async function migrate() {
   `).catch(e => console.error('Migration error:', e.message));
 }
 
-migrate().then(() => {
+migrate().then(async () => {
+  // Seed super_admin if not exists
+  const bcrypt = require('bcryptjs');
+  const existing = await db.query("SELECT id FROM members WHERE email = 'admin@guygd.org'").catch(() => ({ rows: [] }));
+  if (!existing.rows.length) {
+    const hash = await bcrypt.hash('Admin@2025', 10);
+    await db.query(
+      `INSERT INTO members (full_name, email, password_hash, role, status)
+       VALUES ('Super Admin', 'admin@guygd.org', $1, 'super_admin', 'active')`,
+      [hash]
+    ).catch(e => console.error('Seed error:', e.message));
+    console.log('Super admin account created: admin@guygd.org / Admin@2025');
+  }
   app.listen(PORT, () => console.log(`GUYGD server running on port ${PORT}`));
 });
