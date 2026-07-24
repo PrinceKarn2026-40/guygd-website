@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -230,8 +230,8 @@
     }
     .dataTables_wrapper .dt-buttons .dt-button:hover { background: #2d6a4f; color: #fff; border-color: #2d6a4f; }
     table.dataTable thead th { cursor: pointer; user-select: none; }
-    table.dataTable thead th.sorting_asc::after  { content: ' â–²'; font-size: 0.65rem; color: #2d6a4f; }
-    table.dataTable thead th.sorting_desc::after { content: ' â–¼'; font-size: 0.65rem; color: #2d6a4f; }
+    table.dataTable thead th.sorting_asc::after  { content: ' â-²'; font-size: 0.65rem; color: #2d6a4f; }
+    table.dataTable thead th.sorting_desc::after { content: ' â-¼'; font-size: 0.65rem; color: #2d6a4f; }
     .dataTables_wrapper { padding: 0 22px 18px; }
 
     /* â”€â”€ RESPONSIVE â”€â”€ */
@@ -280,7 +280,7 @@
         <span class="icon">ðŸ“°</span> News
       </a>
       <a onclick="showSection('gallery', this)">
-        <span class="icon">ðŸ–¼ï¸</span> Gallery
+        <span class="icon">ðŸ-¼ï¸</span> Gallery
       </a>
       <a onclick="showSection('programs', this)">
         <span class="icon">ðŸ“‹</span> Programs
@@ -554,7 +554,7 @@
             <button class="btn btn-primary btn-sm" onclick="document.getElementById('gallery-form-panel').style.display='block'">+ Upload Photo</button>
           </div>
           <div class="gallery-admin-grid" id="admin-gallery-grid">
-            <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">ðŸ–¼ï¸</div><p>No images yet.</p></div>
+            <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">ðŸ-¼ï¸</div><p>No images yet.</p></div>
           </div>
         </div>
       </div>
@@ -875,7 +875,7 @@
                   ">
                     <!-- Back rendered by JS -->
                   </div>
-                  <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%;" onclick="printIDCard()">ðŸ–¨ï¸ Print Sample Card</button>
+                  <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%;" onclick="printIDCard()">ðŸ-¨ï¸ Print Sample Card</button>
                 </div>
               </div>
             </div>
@@ -944,7 +944,7 @@ function dtInit(id, opts) {
     buttons: [
       { extend: 'excelHtml5', text: 'â¬‡ Excel', className: 'dt-btn' },
       { extend: 'csvHtml5',   text: 'â¬‡ CSV',   className: 'dt-btn' },
-      { extend: 'print',      text: 'ðŸ–¨ Print',  className: 'dt-btn' }
+      { extend: 'print',      text: 'ðŸ-¨ Print',  className: 'dt-btn' }
     ],
     language: {
       search: '',
@@ -1022,23 +1022,12 @@ function showAlert(id, msg, type) {
   setTimeout(() => { el.className = 'alert'; el.textContent = ''; }, 4000);
 }
 
-// -- CACHE --
-const _cache = {};
-async function cachedFetch(endpoint, ttlMs = 30000) {
-  const now = Date.now();
-  if (_cache[endpoint] && now - _cache[endpoint].ts < ttlMs) return _cache[endpoint].data;
-  const data = await apiFetch(endpoint);
-  _cache[endpoint] = { data, ts: now };
-  return data;
-}
-function invalidateCache(endpoint) { delete _cache[endpoint]; }
-
 
 // â”€â”€ DASHBOARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadDashboard() {
   try {
     const [members, events, donations] = await Promise.all([
-      cachedFetch('/members'), cachedFetch('/events'), cachedFetch('/donations')
+      apiFetch('/members'), apiFetch('/events'), apiFetch('/donations')
     ]);
     document.getElementById('stat-members').textContent   = members.length;
     document.getElementById('stat-events').textContent    = events.length;
@@ -1065,7 +1054,7 @@ let currentAppFilter = 'all';
 
 async function loadApplications() {
   try {
-    allApplications = await cachedFetch('/members');
+    allApplications = await apiFetch('/members');
     filterApplications(currentAppFilter);
   } catch(e) {
     document.getElementById('applications-body').innerHTML =
@@ -1106,7 +1095,6 @@ function filterApplications(filter) {
 async function appAction(id, status) {
   try {
     await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
-    invalidateCache('/members');
     await loadApplications();
     loadDashboard();
   } catch(e) { alert('Failed to update: ' + (e.message || 'Unknown error')); }
@@ -1116,7 +1104,7 @@ async function appAction(id, status) {
 let allMembers = [];
 async function loadMembers() {
   try {
-    allMembers = await cachedFetch('/members');
+    allMembers = await apiFetch('/members');
     renderMembers(allMembers);
   } catch(e) {
     document.getElementById('members-body').innerHTML =
@@ -1136,7 +1124,7 @@ function renderMembers(list) {
         <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewMember(${m.id})">ðŸ‘ View</button>
         <button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">âœ… Approve</button>
         <button class="btn btn-sm btn-danger"  onclick="updateMemberStatus(${m.id},'suspended')">âŒ Reject</button>
-        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}')">ðŸ—‘ Delete</button>
+        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}')">ðŸ-‘ Delete</button>
       </td>
     </tr>`).join('');
   dtInit('dt-members', { columnDefs: [{ orderable: false, targets: 6 }] });
@@ -1150,7 +1138,6 @@ function searchMembers() {
 async function updateMemberStatus(id, status) {
   try {
     await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
-    invalidateCache('/members');
     loadMembers(); loadDashboard();
   } catch(e) { alert('Failed to update member.'); }
 }
@@ -1158,7 +1145,6 @@ async function deleteMember(id, name) {
   if (!confirm(`Delete member "${name}"? This cannot be undone.`)) return;
   try {
     await apiFetch(`/members/${id}`, { method: 'DELETE' });
-    invalidateCache('/members');
     loadMembers(); loadDashboard();
   } catch(e) { alert('Failed to delete member.'); }
 }
@@ -1180,7 +1166,7 @@ function viewMember(id) {
     <div style="display:flex;gap:8px;margin-top:16px;">
       <button class="btn btn-success" onclick="updateMemberStatus(${m.id},'active');closeMemberModal()">âœ… Approve</button>
       <button class="btn btn-danger"  onclick="updateMemberStatus(${m.id},'suspended');closeMemberModal()">âŒ Reject</button>
-      <button class="btn" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}');closeMemberModal()">ðŸ—‘ Delete</button>
+      <button class="btn" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}');closeMemberModal()">ðŸ-‘ Delete</button>
     </div>`;
   modal.style.display = 'flex';
 }
@@ -1269,7 +1255,7 @@ async function loadEvents() {
         <td>${fmtDate(e.event_date)}</td>
         <td>${e.location || '-'}</td>
         <td>${badge(e.category || 'General')}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">ðŸ—‘ Delete</button></td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">ðŸ-‘ Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
     if (list.length) dtInit('dt-events', { columnDefs: [{ orderable: false, targets: 4 }] });
@@ -1301,7 +1287,6 @@ document.getElementById('event-form').addEventListener('submit', async (e) => {
     showAlert('event-alert', 'âœ… Event created successfully!', 'success');
     document.getElementById('event-form').reset();
     document.getElementById('ev-image-preview').style.display = 'none';
-    invalidateCache('/events');
     hideEventForm(); loadEvents(); loadDashboard();
   } catch(err) { showAlert('event-alert', err.message || 'Failed to create event.', 'error'); }
 });
@@ -1316,7 +1301,7 @@ document.getElementById('ev-image-file').addEventListener('change', function() {
 });
 async function deleteEvent(id) {
   if (!confirm('Delete this event? This cannot be undone.')) return;
-  try { await apiFetch(`/events/${id}`, { method: 'DELETE' }); invalidateCache('/events'); loadEvents(); loadDashboard(); }
+  try { await apiFetch(`/events/${id}`, { method: 'DELETE' }); loadEvents(); loadDashboard(); }
   catch(e) { alert('Failed to delete event.'); }
 }
 
@@ -1331,7 +1316,7 @@ async function loadNews() {
         <td>${n.category || '-'}</td>
         <td>${n.published ? '<span class="badge badge-active">Published</span>' : '<span class="badge badge-pending">Draft</span>'}</td>
         <td>${fmtDate(n.created_at)}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">ðŸ—‘ Delete</button></td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">ðŸ-‘ Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No articles yet.</td></tr>';
     if (list.length) dtInit('dt-news', { columnDefs: [{ orderable: false, targets: 4 }] });
@@ -1389,7 +1374,7 @@ async function loadGallery() {
         <img src="${img.image_url}" alt="${img.title || 'image'}" onerror="this.src='/assets/images/placeholder.png'"/>
         <button class="del-btn" onclick="deleteGallery(${img.id})">âœ•</button>
       </div>`).join('')
-      : '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">ðŸ–¼ï¸</div><p>No images yet.</p></div>';
+      : '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">ðŸ-¼ï¸</div><p>No images yet.</p></div>';
   } catch(e) {
     document.getElementById('admin-gallery-grid').innerHTML =
       '<div class="empty-state" style="grid-column:1/-1;"><p>Error loading gallery.</p></div>';
@@ -1447,7 +1432,7 @@ let notifications = [];
 async function loadNotifications() {
   try {
     const [members, messages] = await Promise.all([
-      cachedFetch('/members'), cachedFetch('/contact')
+      apiFetch('/members'), apiFetch('/contact')
     ]);
     notifications = [];
     members.filter(m => m.status === 'pending').forEach(m =>
@@ -1607,7 +1592,7 @@ function renderEmailTemplates() {
       <td style="display:flex;gap:6px;">
         <button class="btn btn-sm btn-outline" onclick="previewEmailTemplate(${t.id})">ðŸ‘ Preview</button>
         <button class="btn btn-sm btn-warn"    onclick='showEmailForm(${JSON.stringify(t).replace(/'/g,"&#39;")})'>âœï¸ Edit</button>
-        <button class="btn btn-sm btn-danger"  onclick="deleteEmailTemplate(${t.id})">ðŸ—‘</button>
+        <button class="btn btn-sm btn-danger"  onclick="deleteEmailTemplate(${t.id})">ðŸ-‘</button>
       </td>
     </tr>`).join('');
 }
@@ -1835,8 +1820,8 @@ async function loadDonations() {
 async function loadReports() {
   try {
     const [members, events, donations, scholarships] = await Promise.all([
-      cachedFetch('/members'), cachedFetch('/events'), cachedFetch('/donations'),
-      cachedFetch('/scholarships', 60000).catch(() => [])
+      apiFetch('/members'), apiFetch('/events'), apiFetch('/donations'),
+      apiFetch('/scholarships').catch(() => [])
     ]);
     const now = new Date();
     document.getElementById('rpt-total').textContent     = members.length;
@@ -1859,7 +1844,7 @@ async function loadReports() {
 // â”€â”€ USERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadUsers() {
   try {
-    const list = await cachedFetch('/members');
+    const list = await apiFetch('/members');
     document.getElementById('users-body').innerHTML = list.length ? list.map(m => `
       <tr>
         <td><strong>${m.full_name}</strong></td>
@@ -1886,7 +1871,6 @@ async function loadUsers() {
 async function changeRole(id, role) {
   try {
     await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ role }) });
-    invalidateCache('/members');
   } catch(e) { alert('Failed to update role: ' + (e.message || 'Unknown error')); loadUsers(); }
 }
 
