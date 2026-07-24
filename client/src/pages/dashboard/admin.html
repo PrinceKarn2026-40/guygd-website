@@ -375,8 +375,8 @@
         <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
           <button class="btn btn-primary btn-sm" id="app-tab-all"      onclick="filterApplications('all')">All</button>
           <button class="btn btn-outline btn-sm" id="app-tab-pending"  onclick="filterApplications('pending')">â³ Pending</button>
-          <button class="btn btn-outline btn-sm" id="app-tab-approved" onclick="filterApplications('approved')">âœ… Approved</button>
-          <button class="btn btn-outline btn-sm" id="app-tab-rejected" onclick="filterApplications('rejected')">âŒ Rejected</button>
+          <button class="btn btn-outline btn-sm" id="app-tab-approved" onclick="filterApplications('approved')">✅ Approved</button>
+          <button class="btn btn-outline btn-sm" id="app-tab-rejected" onclick="filterApplications('rejected')">❌ Rejected</button>
         </div>
         <div class="panel">
           <div class="panel-header">
@@ -756,7 +756,7 @@
           <div id="email-preview-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:none;align-items:center;justify-content:center;">
             <div style="background:#fff;border-radius:14px;width:90%;max-width:620px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
               <div style="padding:18px 22px;border-bottom:1px solid #f0f2f5;display:flex;justify-content:space-between;align-items:center;">
-                <h3 style="margin:0;font-size:1rem;">ðŸ“§ Email Preview</h3>
+                <h3 style="margin:0;font-size:1rem;">🔧 Email Preview</h3>
                 <button onclick="closeEmailPreview()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#6c757d;">âœ•</button>
               </div>
               <div style="padding:22px;">
@@ -776,7 +776,7 @@
             <div class="panel-header">
               <h3>ðŸªª ID Card Templates</h3>
               <div style="display:flex;gap:8px;">
-                <button class="btn btn-outline btn-sm" onclick="previewIDCard()">ðŸ‘ Preview</button>
+                <button class="btn btn-outline btn-sm" onclick="previewIDCard()">👁 Preview</button>
                 <button class="btn btn-primary btn-sm" onclick="saveIDCardTemplate()">💾 Save Template</button>
               </div>
             </div>
@@ -859,7 +859,7 @@
 
                 <!-- Right: live preview -->
                 <div>
-                  <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2d6a4f;border-bottom:2px solid #f0f2f5;padding-bottom:8px;margin-bottom:16px;">ðŸ‘ Live Preview</p>
+                  <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2d6a4f;border-bottom:2px solid #f0f2f5;padding-bottom:8px;margin-bottom:16px;">👁 Live Preview</p>
                   <div id="id-card-preview" style="
                     width:100%;max-width:340px;border-radius:16px;overflow:hidden;
                     box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:'Segoe UI',sans-serif;
@@ -944,7 +944,7 @@ function dtInit(id, opts) {
     buttons: [
       { extend: 'excelHtml5', text: '⬇️ Excel', className: 'dt-btn' },
       { extend: 'csvHtml5',   text: '⬇️ CSV',   className: 'dt-btn' },
-      { extend: 'print',      text: 'ðŸ-¨ Print',  className: 'dt-btn' }
+      { extend: 'print',      text: '🖨️ Print',  className: 'dt-btn' }
     ],
     language: {
       search: '',
@@ -1083,9 +1083,9 @@ function filterApplications(filter) {
       <td>${fmtDate(m.joined_at)}</td>
       <td>${badge(m.status)}</td>
       <td style="display:flex;gap:4px;flex-wrap:wrap;">
-        ${m.status !== 'active'     ? `<button class="btn btn-sm btn-success" onclick="appAction(${m.id},'active')">âœ… Approve</button>` : ''}
-        ${m.status !== 'suspended'  ? `<button class="btn btn-sm btn-danger"  onclick="appAction(${m.id},'suspended')">âŒ Reject</button>` : ''}
-        ${m.status !== 'pending'    ? `<button class="btn btn-sm btn-warn"    onclick="appAction(${m.id},'pending')">â†© Reset</button>` : ''}
+        ${m.status !== 'active'     ? `<button class="btn btn-sm btn-success" onclick="appAction(${m.id},'active')">✅ Approve</button>` : ''}
+        ${m.status !== 'suspended'  ? `<button class="btn btn-sm btn-danger"  onclick="appAction(${m.id},'suspended')">❌ Reject</button>` : ''}
+        ${m.status !== 'pending'    ? `<button class="btn btn-sm btn-warn"    onclick="appAction(${m.id},'pending')">↩ Reset</button>` : ''}
       </td>
     </tr>`).join('')
     : `<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
@@ -1121,9 +1121,9 @@ function renderMembers(list) {
       <td>${badge(m.status)}</td>
       <td>${fmtDate(m.joined_at)}</td>
       <td style="display:flex;gap:4px;flex-wrap:wrap;">
-        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewMember(${m.id})">ðŸ‘ View</button>
-        <button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">âœ… Approve</button>
-        <button class="btn btn-sm btn-danger"  onclick="updateMemberStatus(${m.id},'suspended')">âŒ Reject</button>
+        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewMember(${m.id})">👁 View</button>
+        <button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">✅ Approve</button>
+        <button class="btn btn-sm btn-danger"  onclick="updateMemberStatus(${m.id},'suspended')">❌ Reject</button>
         <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}')">🗑️ Delete</button>
       </td>
     </tr>`).join('');
@@ -1164,8 +1164,8 @@ function viewMember(id) {
       ${m.bio ? `<div style="grid-column:1/-1"><strong>Bio</strong><p>${m.bio}</p></div>` : ''}
     </div>
     <div style="display:flex;gap:8px;margin-top:16px;">
-      <button class="btn btn-success" onclick="updateMemberStatus(${m.id},'active');closeMemberModal()">âœ… Approve</button>
-      <button class="btn btn-danger"  onclick="updateMemberStatus(${m.id},'suspended');closeMemberModal()">âŒ Reject</button>
+      <button class="btn btn-success" onclick="updateMemberStatus(${m.id},'active');closeMemberModal()">✅ Approve</button>
+      <button class="btn btn-danger"  onclick="updateMemberStatus(${m.id},'suspended');closeMemberModal()">❌ Reject</button>
       <button class="btn" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}');closeMemberModal()">🗑️ Delete</button>
     </div>`;
   modal.style.display = 'flex';
@@ -1285,7 +1285,7 @@ document.getElementById('event-form').addEventListener('submit', async (e) => {
       body: formData
     });
     if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed'); }
-    showAlert('event-alert', 'âœ… Event created successfully!', 'success');
+    showAlert('event-alert', '✅ Event created successfully!', 'success');
     document.getElementById('event-form').reset();
     document.getElementById('ev-image-preview').style.display = 'none';
     hideEventForm(); loadEvents(); loadDashboard();
@@ -1343,7 +1343,7 @@ document.getElementById('news-form').addEventListener('submit', async (e) => {
       body: formData
     });
     if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed'); }
-    showAlert('news-alert', 'âœ… Article published!', 'success');
+    showAlert('news-alert', '✅ Article published!', 'success');
     document.getElementById('news-form').reset();
     document.getElementById('news-image-preview').style.display = 'none';
     document.getElementById('news-form-panel').style.display = 'none';
@@ -1395,7 +1395,7 @@ document.getElementById('gallery-form').addEventListener('submit', async (e) => 
       body: formData
     });
     if (!res.ok) throw new Error('Upload failed');
-    showAlert('gallery-alert', 'âœ… Image uploaded!', 'success');
+    showAlert('gallery-alert', '✅ Image uploaded!', 'success');
     document.getElementById('gallery-form').reset();
     document.getElementById('gallery-form-panel').style.display = 'none';
     loadGallery();
@@ -1572,7 +1572,7 @@ function saveEmailTemplate() {
     emailTemplates.push({ id: Date.now(), name, type, subject, body, updated: new Date().toISOString() });
   }
   localStorage.setItem('guygd_email_tpls', JSON.stringify(emailTemplates));
-  showAlert('email-tpl-alert','âœ… Template saved!','success');
+  showAlert('email-tpl-alert','✅ Template saved!','success');
   document.getElementById('email-tpl-form').style.display = 'none';
   renderEmailTemplates();
 }
@@ -1591,7 +1591,7 @@ function renderEmailTemplates() {
       <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.subject}</td>
       <td>${t.updated ? new Date(t.updated).toLocaleDateString() : '-'}</td>
       <td style="display:flex;gap:6px;">
-        <button class="btn btn-sm btn-outline" onclick="previewEmailTemplate(${t.id})">ðŸ‘ Preview</button>
+        <button class="btn btn-sm btn-outline" onclick="previewEmailTemplate(${t.id})">👁 Preview</button>
         <button class="btn btn-sm btn-warn"    onclick='showEmailForm(${JSON.stringify(t).replace(/'/g,"&#39;")})'>✏️ Edit</button>
         <button class="btn btn-sm btn-danger"  onclick="deleteEmailTemplate(${t.id})">🗑️</button>
       </td>
@@ -1759,12 +1759,12 @@ function saveIDCardTemplate() {
   idCardConfig = getIDCardFormValues();
   try {
     localStorage.setItem('guygd_idcard_cfg', JSON.stringify(idCardConfig));
-    showAlert('idcard-alert', 'âœ… ID Card template saved!', 'success');
+    showAlert('idcard-alert', '✅ ID Card template saved!', 'success');
   } catch(e) {
     // logo data URL may exceed localStorage quota â€” save without it and warn
     const cfg = { ...idCardConfig, logoDataUrl: '' };
     localStorage.setItem('guygd_idcard_cfg', JSON.stringify(cfg));
-    showAlert('idcard-alert', 'âœ… Saved (logo not persisted â€” too large for browser storage).', 'success');
+    showAlert('idcard-alert', '✅ Saved (logo not persisted â€” too large for browser storage).', 'success');
   }
 }
 
@@ -1887,7 +1887,7 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
       currentPassword: document.getElementById('set-current-pass').value,
       newPassword: np
     })});
-    showAlert('settings-alert', 'âœ… Password updated successfully!', 'success');
+    showAlert('settings-alert', '✅ Password updated successfully!', 'success');
     document.getElementById('settings-form').reset();
   } catch(err) { showAlert('settings-alert', err.message || 'Failed to update password.', 'error'); }
 });
