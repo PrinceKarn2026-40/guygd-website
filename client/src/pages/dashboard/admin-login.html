@@ -135,6 +135,9 @@
   <script>
     const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
 
+    // Force light mode on this page
+    document.documentElement.removeAttribute('data-theme');
+
     // Redirect if already logged in as admin
     try {
       const u = JSON.parse(localStorage.getItem('guygd_user') || 'null');
