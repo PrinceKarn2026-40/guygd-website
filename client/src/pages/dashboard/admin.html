@@ -928,7 +928,7 @@
 <script src="/src/js/main.js"></script>
 <script>
 // ── DATATABLES HELPER ────────────────────────────────
-// Destroy existing instance before reinitialising to avoid "already initialised" errors
+$.fn.DataTable.ext.errMode = 'none';
 function dtInit(id, opts) {
   if ($.fn.DataTable.isDataTable('#' + id)) {
     $('#' + id).DataTable().destroy();
@@ -1252,9 +1252,7 @@ async function loadEvents() {
         <td>${fmtDate(e.event_date)}</td>
         <td>${e.location || '-'}</td>
         <td>${badge(e.category || 'General')}</td>
-        <td>
-          <button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">🗑 Delete</button>
-        </td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">🗑 Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
     dtInit('dt-events', { columnDefs: [{ orderable: false, targets: 4 }] });
@@ -1315,9 +1313,7 @@ async function loadNews() {
         <td>${n.category || '-'}</td>
         <td>${n.published ? '<span class="badge badge-active">Published</span>' : '<span class="badge badge-pending">Draft</span>'}</td>
         <td>${fmtDate(n.created_at)}</td>
-        <td style="display:flex;gap:6px;">
-          <button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">🗑 Delete</button>
-        </td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">🗑 Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No articles yet.</td></tr>';
     dtInit('dt-news', { columnDefs: [{ orderable: false, targets: 4 }] });
