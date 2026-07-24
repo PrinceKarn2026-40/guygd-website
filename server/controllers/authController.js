@@ -10,22 +10,21 @@ exports.register = async (req, res) => {
     emergency_contact_phone, reason_for_joining
   } = req.body;
   const name = full_name || `${first_name || ''} ${last_name || ''}`.trim();
-  if (!name || !email || !password)
-    return res.status(400).json({ message: 'Name, email, and password are required' });
+  if (!name || !email)
+    return res.status(400).json({ message: 'Name and email are required' });
   try {
     const existing = await db.query('SELECT id FROM members WHERE email = $1', [email]);
     if (existing.rows.length) return res.status(409).json({ message: 'Email already registered' });
-    const password_hash = await bcrypt.hash(password, 10);
     const result = await db.query(
       `INSERT INTO members (
-        first_name, last_name, full_name, email, password_hash, phone, gender,
+        first_name, last_name, full_name, email, phone, gender,
         date_of_birth, address, county, district, town, occupation,
         education_level, nationality, emergency_contact_name,
         emergency_contact_phone, reason_for_joining
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
       RETURNING id, full_name, email, role, status`,
       [
-        first_name || null, last_name || null, name, email, password_hash,
+        first_name || null, last_name || null, name, email,
         phone || null, gender || null, date_of_birth || null, address || null,
         county || null, district || null, town || null, occupation || null,
         education_level || null, nationality || 'Liberian',
@@ -33,7 +32,6 @@ exports.register = async (req, res) => {
         reason_for_joining || null
       ]
     );
-    const member = result.rows[0];
     res.status(201).json({ pending: true, message: 'Application submitted! You will receive an email once approved.' });
   } catch (err) {
     res.status(500).json({ message: err.message });

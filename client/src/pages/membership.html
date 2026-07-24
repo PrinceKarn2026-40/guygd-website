@@ -412,11 +412,7 @@
       <div class="glass-card">
 
         <!-- TABS -->
-        <div class="auth-tabs">
-          <button class="auth-tab active" id="tab-register" onclick="showTab('register')">📝 Apply for Membership</button>
-          <button class="auth-tab" id="tab-login" onclick="showTab('login')">🔐 Member Login</button>
-          <button class="auth-tab" onclick="scrollToLanding()" style="flex:0;padding:11px 14px;font-size:0.8rem;">← Back</button>
-        </div>
+        <div style="text-align:right;margin-bottom:10px;"><button class="auth-tab" onclick="scrollToLanding()" style="padding:8px 14px;font-size:0.8rem;">← Back</button></div>
 
         <!-- ══ REGISTER ══ -->
         <div id="register-section">
@@ -493,42 +489,11 @@
               </select>
             </div>
 
-            <div class="form-section-title">🔒 Account Security</div>
-            <div class="form-grid">
-              <div class="form-group"><label>Password <span class="req">*</span></label><input type="password" id="reg-password" placeholder="Min 6 characters" required/></div>
-              <div class="form-group"><label>Confirm Password <span class="req">*</span></label><input type="password" id="reg-confirm" placeholder="Repeat password" required/></div>
-            </div>
-
             <button type="submit" class="submit-btn">🚀 Submit Membership Application</button>
-            <p class="switch-link">Already a member? <a onclick="showTab('login')">Login here</a></p>
           </form>
         </div>
 
-        <!-- ══ LOGIN ══ -->
-        <div id="login-section" style="display:none;">
-          <div class="form-header">
-            <div class="fh-icon">🔐</div>
-            <h2>Welcome Back</h2>
-            <p>Login to access your GUYGD member dashboard</p>
-          </div>
-          <div class="alert-box" id="login-alert"></div>
-          <form id="login-form">
-            <div class="form-group" style="margin-bottom:16px;">
-              <label>Email Address <span class="req">*</span></label>
-              <input type="email" id="login-email" placeholder="your@email.com" required/>
-            </div>
-            <div class="form-group" style="margin-bottom:10px;">
-              <label>Password <span class="req">*</span></label>
-              <input type="password" id="login-password" placeholder="Your password" required/>
-            </div>
-            <div style="text-align:right;margin-bottom:22px;">
-              <a href="#" style="font-size:0.82rem;color:#16a34a;font-weight:600;">Forgot password?</a>
-            </div>
-            <button type="submit" class="submit-btn">🔓 Login to Dashboard</button>
-            <div class="login-divider">or</div>
-            <p class="switch-link">Don't have an account? <a onclick="showTab('register')">Apply for membership</a></p>
-          </form>
-        </div>
+        
 
       </div><!-- end glass-card -->
     </div><!-- end auth-right -->
@@ -601,26 +566,19 @@
 
     document.getElementById('register-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const pw = document.getElementById('reg-password').value;
-      const cf = document.getElementById('reg-confirm').value;
-      if (pw !== cf)   { showAlert('register-alert','Passwords do not match.','error'); return; }
-      if (pw.length<6) { showAlert('register-alert','Password must be at least 6 characters.','error'); return; }
       const first = document.getElementById('reg-firstname').value.trim();
       const last  = document.getElementById('reg-lastname').value.trim();
       const btn = e.target.querySelector('.submit-btn');
       btn.disabled = true; btn.textContent = '⏳ Submitting...';
       try {
-        const data = await apiFetch('/auth/register', { method:'POST', body: JSON.stringify({
+        await apiFetch('/auth/register', { method:'POST', body: JSON.stringify({
           full_name:`${first} ${last}`, email:document.getElementById('reg-email').value,
           phone:document.getElementById('reg-phone').value,
           gender:document.getElementById('reg-gender').value,
           date_of_birth:document.getElementById('reg-dob').value,
           address:document.getElementById('reg-address').value,
-          password:pw,
           membership_type: document.getElementById('reg-membership-type').value,
         })});
-        localStorage.setItem('guygd_token', data.token);
-        localStorage.setItem('guygd_user', JSON.stringify(data.user));
         showAlert('register-alert','✅ Application submitted! An admin will review your application and you will receive an email once approved.','success');
         e.target.reset();
         btn.textContent = '✅ Application Submitted';
@@ -630,27 +588,7 @@
       }
     });
 
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = e.target.querySelector('.submit-btn');
-      btn.disabled = true; btn.textContent = '⏳ Logging in...';
-      try {
-        const data = await apiFetch('/auth/login', { method:'POST', body: JSON.stringify({
-          email:document.getElementById('login-email').value,
-          password:document.getElementById('login-password').value,
-        })});
-        localStorage.setItem('guygd_token', data.token);
-        localStorage.setItem('guygd_user', JSON.stringify(data.user));
-        showAlert('login-alert','✅ Login successful! Redirecting...','success');
-        setTimeout(() => {
-          window.location.href = ['admin','executive','super_admin'].includes(data.user.role)
-            ? '/dashboard/admin.html' : '/index.html';
-        }, 1200);
-      } catch(err) {
-        showAlert('login-alert', err.message || 'Login failed. Check your credentials.', 'error');
-        btn.disabled = false; btn.innerHTML = '🔓 Login to Dashboard';
-      }
-    });
+
   </script>
 </body>
 </html>
