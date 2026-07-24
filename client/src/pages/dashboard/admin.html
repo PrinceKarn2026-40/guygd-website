@@ -726,7 +726,21 @@
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="/src/js/main.js"></script>
+<script>
+const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
+function getToken() { return localStorage.getItem('guygd_token'); }
+function getUser()  { return JSON.parse(localStorage.getItem('guygd_user') || 'null'); }
+async function apiFetch(endpoint, options = {}) {
+  const token = getToken();
+  const res = await fetch(`${API}${endpoint}`, {
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options.headers },
+    ...options
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Request failed');
+  return data;
+}
+</script>
 <script>
 // â”€â”€ DATATABLES HELPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $.fn.DataTable.ext.errMode = 'none';
