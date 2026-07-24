@@ -62,7 +62,7 @@ function renderNavbar() {
     <a href="/contact.html">Contact</a>
     ${user
       ? `<a href="${['admin','executive','super_admin'].includes(user.role) ? '/dashboard/admin.html' : '/dashboard/member.html'}" class="btn-nav">Dashboard</a>`
-      : `<a href="/membership.html" class="btn-nav">Join Us</a>`}
+      : `<a href="/membership.html" class="btn-nav">Join GUYGD</a>`}
   `;
   document.getElementById('nav-links').innerHTML = links;
   // inject dark toggle after nav-links
