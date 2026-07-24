@@ -1311,7 +1311,7 @@ async function deleteEvent(id) {
 async function loadNews() {
   try {
     const list = await apiFetch('/news/all');
-    if ($.fn.DataTable.isDataTable('#dt-news')) $('#dt-news').DataTable().destroy();
+    document.getElementById('news-body').innerHTML = list.length ? list.map(n => `
       <tr>
         <td><strong>${n.title}</strong></td>
         <td>${n.category || '-'}</td>
