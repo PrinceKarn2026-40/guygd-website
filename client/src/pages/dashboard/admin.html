@@ -304,9 +304,6 @@
       <a onclick="showSection('users', this)">
         <span class="icon">👤</span> Users
       </a>
-      <a onclick="showSection('config', this)">
-        <span class="icon">🛠️</span> System Config
-      </a>
       <a onclick="showSection('settings', this)">
         <span class="icon">⚙️</span> Settings
       </a>
@@ -332,7 +329,7 @@
           <div class="topbar-user-details">
             <span class="t-name" id="topbar-user">Admin</span>
             <span class="t-role" id="topbar-role">super_admin</span>
-            <span class="t-login" id="topbar-last-login">Last login: â€”</span>
+            
           </div>
         </div>
       </div>
@@ -685,205 +682,6 @@
         </div>
       </div>
 
-      <!-- â•â•â•â• SYSTEM CONFIG â•â•â•â• -->
-      <div id="section-config" class="tab-section">
-
-        <!-- Config sub-tabs -->
-        <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-          <button class="btn btn-primary btn-sm" id="cfg-tab-email" onclick="showConfigTab('email')">✉️ Email Templates</button>
-          <button class="btn btn-outline btn-sm" id="cfg-tab-idcard" onclick="showConfigTab('idcard')">🪪 ID Card Templates</button>
-        </div>
-
-        <!-- â”€â”€ EMAIL TEMPLATES â”€â”€ -->
-        <div id="cfg-email" class="cfg-panel">
-          <div class="panel" style="margin-bottom:20px;">
-            <div class="panel-header">
-              <h3>✉️ Email Templates</h3>
-              <button class="btn btn-primary btn-sm" onclick="showEmailForm()">+ New Template</button>
-            </div>
-
-            <!-- Form -->
-            <div id="email-tpl-form" style="display:none;padding:20px 22px;border-bottom:1px solid #f0f2f5;">
-              <div class="alert" id="email-tpl-alert"></div>
-              <div class="form-grid">
-                <div class="form-group">
-                  <label>Template Name *</label>
-                  <input type="text" id="etpl-name" placeholder="e.g. Welcome Email" required/>
-                </div>
-                <div class="form-group">
-                  <label>Trigger / Type</label>
-                  <select id="etpl-type">
-                    <option value="welcome">Welcome / Registration</option>
-                    <option value="approval">Membership Approved</option>
-                    <option value="rejection">Membership Rejected</option>
-                    <option value="scholarship">Scholarship Result</option>
-                    <option value="event">Event Reminder</option>
-                    <option value="password_reset">Password Reset</option>
-                    <option value="custom">Custom / Manual</option>
-                  </select>
-                </div>
-                <div class="form-group full">
-                  <label>Subject *</label>
-                  <input type="text" id="etpl-subject" placeholder="Email subject line" required/>
-                </div>
-                <div class="form-group full">
-                  <label>Body *
-                    <span style="font-size:0.72rem;color:#8b9bb4;font-weight:400;margin-left:8px;">
-                      Available variables: <code>{{name}}</code> <code>{{email}}</code> <code>{{date}}</code> <code>{{org}}</code> <code>{{status}}</code>
-                    </span>
-                  </label>
-                  <textarea id="etpl-body" rows="8" placeholder="Dear {{name}},&#10;&#10;Your message here...&#10;&#10;Regards,&#10;GUYGD Team" required></textarea>
-                </div>
-              </div>
-              <div class="form-actions" style="padding-top:12px;">
-                <button class="btn btn-primary" onclick="saveEmailTemplate()">💾 Save Template</button>
-                <button class="btn btn-outline" onclick="document.getElementById('email-tpl-form').style.display='none'">Cancel</button>
-              </div>
-            </div>
-
-            <!-- Template list -->
-            <div class="table-wrap">
-              <table style="width:100%;">
-                <thead><tr><th>Name</th><th>Type</th><th>Subject</th><th>Last Updated</th><th>Actions</th></tr></thead>
-                <tbody id="email-tpl-list">
-                  <tr><td colspan="5" style="text-align:center;color:#8b9bb4;padding:32px;">No templates yet. Click "+ New Template" to create one.</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Preview modal -->
-          <div id="email-preview-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:none;align-items:center;justify-content:center;">
-            <div style="background:#fff;border-radius:14px;width:90%;max-width:620px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-              <div style="padding:18px 22px;border-bottom:1px solid #f0f2f5;display:flex;justify-content:space-between;align-items:center;">
-                <h3 style="margin:0;font-size:1rem;">🔧 Email Preview</h3>
-                <button onclick="closeEmailPreview()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#6c757d;">✕</button>
-              </div>
-              <div style="padding:22px;">
-                <div style="background:#f8f9fb;border-radius:8px;padding:12px 16px;margin-bottom:16px;">
-                  <strong style="font-size:0.82rem;color:#6c757d;">SUBJECT:</strong>
-                  <p id="preview-subject" style="margin:4px 0 0;font-weight:600;"></p>
-                </div>
-                <div style="border:1px solid #e8ecf0;border-radius:8px;padding:20px;font-size:0.9rem;line-height:1.7;white-space:pre-wrap;" id="preview-body"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- â”€â”€ ID CARD TEMPLATES â”€â”€ -->
-        <div id="cfg-idcard" class="cfg-panel" style="display:none;">
-          <div class="panel">
-            <div class="panel-header">
-              <h3>🪪 ID Card Templates</h3>
-              <div style="display:flex;gap:8px;">
-                <button class="btn btn-outline btn-sm" onclick="previewIDCard()">👁 Preview</button>
-                <button class="btn btn-primary btn-sm" onclick="saveIDCardTemplate()">💾 Save Template</button>
-              </div>
-            </div>
-            <div class="panel-body">
-              <div class="alert" id="idcard-alert"></div>
-
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
-
-                <!-- Left: settings -->
-                <div>
-                  <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2d6a4f;border-bottom:2px solid #f0f2f5;padding-bottom:8px;margin-bottom:16px;">🎨 Card Design</p>
-                  <div class="form-group" style="margin-bottom:14px;">
-                    <label>Card Background Color</label>
-                    <div style="display:flex;gap:8px;align-items:center;">
-                      <input type="color" id="idc-bg-color" value="#1a6b3c" style="width:48px;height:36px;border:1px solid #d0d5dd;border-radius:6px;cursor:pointer;"/>
-                      <input type="text" id="idc-bg-color-hex" value="#1a6b3c" style="flex:1;" oninput="document.getElementById('idc-bg-color').value=this.value"/>
-                    </div>
-                  </div>
-                  <div class="form-group" style="margin-bottom:14px;">
-                    <label>Text Color</label>
-                    <div style="display:flex;gap:8px;align-items:center;">
-                      <input type="color" id="idc-text-color" value="#ffffff" style="width:48px;height:36px;border:1px solid #d0d5dd;border-radius:6px;cursor:pointer;"/>
-                      <input type="text" id="idc-text-color-hex" value="#ffffff" style="flex:1;" oninput="document.getElementById('idc-text-color').value=this.value"/>
-                    </div>
-                  </div>
-                  <div class="form-group" style="margin-bottom:14px;">
-                    <label>Accent / Badge Color</label>
-                    <div style="display:flex;gap:8px;align-items:center;">
-                      <input type="color" id="idc-accent-color" value="#d4a017" style="width:48px;height:36px;border:1px solid #d0d5dd;border-radius:6px;cursor:pointer;"/>
-                      <input type="text" id="idc-accent-color-hex" value="#d4a017" style="flex:1;" oninput="document.getElementById('idc-accent-color').value=this.value"/>
-                    </div>
-                  </div>
-
-                  <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2d6a4f;border-bottom:2px solid #f0f2f5;padding-bottom:8px;margin:20px 0 16px;">🔍 Card Fields</p>
-                  <div class="form-group" style="margin-bottom:14px;">
-                    <label>Organization Logo / Photo</label>
-                    <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
-                      <div id="idc-logo-preview" style="width:64px;height:64px;border-radius:10px;border:2px dashed #d0d5dd;background:#f8f9fb;display:flex;align-items:center;justify-content:center;font-size:1.6rem;overflow:hidden;flex-shrink:0;">ðŸ›ï¸</div>
-                      <div style="flex:1;">
-                        <input type="file" id="idc-logo-file" accept="image/*" style="display:block;font-size:0.82rem;"/>
-                        <p style="font-size:0.73rem;color:#8b9bb4;margin-top:4px;">JPG or PNG â€” shown in card header</p>
-                        <button type="button" class="btn btn-sm" style="margin-top:6px;background:#fee2e2;color:#dc2626;font-size:0.75rem;padding:3px 10px;" onclick="clearIDCardLogo()">✕ Remove</button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group" style="margin-bottom:14px;">
-                    <label>Organization Name</label>
-                    <input type="text" id="idc-org" value="Gbeh-lay United Youths for Growth and Development"/>
-                  </div>
-                  <div class="form-group" style="margin-bottom:14px;">
-                    <label>Organization Acronym</label>
-                    <input type="text" id="idc-acronym" value="GUYGD"/>
-                  </div>
-                  <div class="form-group" style="margin-bottom:14px;">
-                    <label>Card Footer Text</label>
-                    <input type="text" id="idc-footer" value="Voice of the Voiceless â€” Est. May 14, 2023"/>
-                  </div>
-                  <div class="form-group" style="margin-bottom:14px;">
-                    <label>Show Fields on Card</label>
-                    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
-                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-photo" checked/> Member Photo</label>
-                      <div id="idc-member-photo-wrap" style="margin-left:28px;margin-top:8px;display:flex;align-items:center;gap:10px;">
-                        <div id="idc-member-preview" style="width:56px;height:56px;border-radius:8px;border:2px dashed #d0d5dd;background:#f8f9fb;display:flex;align-items:center;justify-content:center;font-size:1.4rem;overflow:hidden;flex-shrink:0;">👤</div>
-                        <div>
-                          <input type="file" id="idc-member-file" accept="image/*" style="font-size:0.78rem;"/>
-                          <button type="button" class="btn btn-sm" style="margin-top:4px;background:#fee2e2;color:#dc2626;font-size:0.72rem;padding:2px 8px;" onclick="clearMemberPhoto()">✕ Remove</button>
-                        </div>
-                      </div>
-                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-id" checked/> Member ID</label>
-                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-role" checked/> Role / Position</label>
-                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-expiry" checked/> Expiry Date</label>
-                      <label style="font-weight:400;display:flex;align-items:center;gap:8px;"><input type="checkbox" id="idc-show-phone"/> Phone Number</label>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label>Card Validity (months)</label>
-                    <input type="number" id="idc-validity" value="12" min="1" max="60"/>
-                  </div>
-                </div>
-
-                <!-- Right: live preview -->
-                <div>
-                  <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2d6a4f;border-bottom:2px solid #f0f2f5;padding-bottom:8px;margin-bottom:16px;">👁 Live Preview</p>
-                  <div id="id-card-preview" style="
-                    width:100%;max-width:340px;border-radius:16px;overflow:hidden;
-                    box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:'Segoe UI',sans-serif;
-                  ">
-                    <!-- Card rendered by JS -->
-                  </div>
-                  <p style="font-size:0.76rem;color:#8b9bb4;margin-top:10px;text-align:center;">Preview uses sample data. Actual cards use member data.</p>
-                  <!-- BACK PREVIEW -->
-                  <p style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2d6a4f;margin-top:20px;border-top:2px solid #f0f2f5;padding-top:14px;">🔄 Back of Card</p>
-                  <div id="id-card-back-preview" style="
-                    width:100%;max-width:340px;border-radius:16px;overflow:hidden;
-                    box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:'Segoe UI',sans-serif;
-                  ">
-                    <!-- Back rendered by JS -->
-                  </div>
-                  <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%;" onclick="printIDCard()">🖨️ Print Sample Card</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
       <!-- â•â•â•â• SETTINGS â•â•â•â• -->
       <div id="section-settings" class="tab-section">
         <div class="panel">
@@ -985,7 +783,7 @@ const sectionTitles = {
   members: 'Members', events: 'Events', news: 'News',
   gallery: 'Gallery', team: 'Our Team', donations: 'Donations', messages: 'Messages',
   notifications: 'Notifications', reports: 'Reports',
-  users: 'User Management', config: 'System Configuration', settings: 'Settings'
+  users: 'User Management', settings: 'Settings'
 };
 
 function showSection(name, el) {
@@ -999,7 +797,7 @@ function showSection(name, el) {
     applications: loadApplications,
     members: loadMembers, events: loadEvents, news: loadNews,
     gallery: loadGallery, team: loadTeam, donations: loadDonations, messages: loadMessages,
-    notifications: loadNotifications, reports: loadReports, users: loadUsers, config: loadConfig
+    notifications: loadNotifications, reports: loadReports, users: loadUsers
   };
   if (loaders[name]) loaders[name]();
 }
