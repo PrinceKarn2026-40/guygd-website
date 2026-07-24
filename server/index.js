@@ -22,11 +22,16 @@ app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/team', require('./routes/team'));
 app.use('/api/programs', require('./routes/programs'));
 
-app.use('/src', express.static(path.join(__dirname, '../client/src')));
-app.use(express.static(path.join(__dirname, '../client/src/pages')));
-app.use(express.static(path.join(__dirname, '../client/public')));
-app.use('/assets', express.static(path.join(__dirname, '../client/public/assets')));
-app.use('/images', express.static(path.join(__dirname, '../client/public/assets/images')));
+const staticOpts = { setHeaders: (res, filePath) => {
+  if (filePath.endsWith('.html')) res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  if (filePath.endsWith('.css'))  res.setHeader('Content-Type', 'text/css; charset=utf-8');
+  if (filePath.endsWith('.js'))   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+}};
+app.use('/src', express.static(path.join(__dirname, '../client/src'), staticOpts));
+app.use(express.static(path.join(__dirname, '../client/src/pages'), staticOpts));
+app.use(express.static(path.join(__dirname, '../client/public'), staticOpts));
+app.use('/assets', express.static(path.join(__dirname, '../client/public/assets'), staticOpts));
+app.use('/images', express.static(path.join(__dirname, '../client/public/assets/images'), staticOpts));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/src/pages/index.html'));

@@ -1022,12 +1022,23 @@ function showAlert(id, msg, type) {
   setTimeout(() => { el.className = 'alert'; el.textContent = ''; }, 4000);
 }
 
+// -- CACHE --
+const _cache = {};
+async function cachedFetch(endpoint, ttlMs = 30000) {
+  const now = Date.now();
+  if (_cache[endpoint] && now - _cache[endpoint].ts < ttlMs) return _cache[endpoint].data;
+  const data = await apiFetch(endpoint);
+  _cache[endpoint] = { data, ts: now };
+  return data;
+}
+function invalidateCache(endpoint) { delete _cache[endpoint]; }
+
 
 // â”€â”€ DASHBOARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadDashboard() {
   try {
     const [members, events, donations] = await Promise.all([
-      apiFetch('/members'), apiFetch('/events'), apiFetch('/donations')
+      cachedFetch('/members'), cachedFetch('/events'), cachedFetch('/donations')
     ]);
     document.getElementById('stat-members').textContent   = members.length;
     document.getElementById('stat-events').textContent    = events.length;
@@ -1054,7 +1065,7 @@ let currentAppFilter = 'all';
 
 async function loadApplications() {
   try {
-    allApplications = await apiFetch('/members');
+    allApplications = await cachedFetch('/members');
     filterApplications(currentAppFilter);
   } catch(e) {
     document.getElementById('applications-body').innerHTML =
@@ -1095,6 +1106,7 @@ function filterApplications(filter) {
 async function appAction(id, status) {
   try {
     await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    invalidateCache('/members');
     await loadApplications();
     loadDashboard();
   } catch(e) { alert('Failed to update: ' + (e.message || 'Unknown error')); }
@@ -1104,7 +1116,7 @@ async function appAction(id, status) {
 let allMembers = [];
 async function loadMembers() {
   try {
-    allMembers = await apiFetch('/members');
+    allMembers = await cachedFetch('/members');
     renderMembers(allMembers);
   } catch(e) {
     document.getElementById('members-body').innerHTML =
@@ -1138,6 +1150,7 @@ function searchMembers() {
 async function updateMemberStatus(id, status) {
   try {
     await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    invalidateCache('/members');
     loadMembers(); loadDashboard();
   } catch(e) { alert('Failed to update member.'); }
 }
@@ -1145,6 +1158,7 @@ async function deleteMember(id, name) {
   if (!confirm(`Delete member "${name}"? This cannot be undone.`)) return;
   try {
     await apiFetch(`/members/${id}`, { method: 'DELETE' });
+    invalidateCache('/members');
     loadMembers(); loadDashboard();
   } catch(e) { alert('Failed to delete member.'); }
 }
@@ -1287,6 +1301,7 @@ document.getElementById('event-form').addEventListener('submit', async (e) => {
     showAlert('event-alert', 'âœ… Event created successfully!', 'success');
     document.getElementById('event-form').reset();
     document.getElementById('ev-image-preview').style.display = 'none';
+    invalidateCache('/events');
     hideEventForm(); loadEvents(); loadDashboard();
   } catch(err) { showAlert('event-alert', err.message || 'Failed to create event.', 'error'); }
 });
@@ -1301,7 +1316,7 @@ document.getElementById('ev-image-file').addEventListener('change', function() {
 });
 async function deleteEvent(id) {
   if (!confirm('Delete this event? This cannot be undone.')) return;
-  try { await apiFetch(`/events/${id}`, { method: 'DELETE' }); loadEvents(); loadDashboard(); }
+  try { await apiFetch(`/events/${id}`, { method: 'DELETE' }); invalidateCache('/events'); loadEvents(); loadDashboard(); }
   catch(e) { alert('Failed to delete event.'); }
 }
 
@@ -1432,7 +1447,7 @@ let notifications = [];
 async function loadNotifications() {
   try {
     const [members, messages] = await Promise.all([
-      apiFetch('/members'), apiFetch('/contact')
+      cachedFetch('/members'), cachedFetch('/contact')
     ]);
     notifications = [];
     members.filter(m => m.status === 'pending').forEach(m =>
@@ -1820,8 +1835,8 @@ async function loadDonations() {
 async function loadReports() {
   try {
     const [members, events, donations, scholarships] = await Promise.all([
-      apiFetch('/members'), apiFetch('/events'), apiFetch('/donations'),
-      apiFetch('/scholarships').catch(() => [])
+      cachedFetch('/members'), cachedFetch('/events'), cachedFetch('/donations'),
+      cachedFetch('/scholarships', 60000).catch(() => [])
     ]);
     const now = new Date();
     document.getElementById('rpt-total').textContent     = members.length;
@@ -1844,7 +1859,7 @@ async function loadReports() {
 // â”€â”€ USERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadUsers() {
   try {
-    const list = await apiFetch('/members');
+    const list = await cachedFetch('/members');
     document.getElementById('users-body').innerHTML = list.length ? list.map(m => `
       <tr>
         <td><strong>${m.full_name}</strong></td>
@@ -1871,6 +1886,7 @@ async function loadUsers() {
 async function changeRole(id, role) {
   try {
     await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ role }) });
+    invalidateCache('/members');
   } catch(e) { alert('Failed to update role: ' + (e.message || 'Unknown error')); loadUsers(); }
 }
 
