@@ -18,7 +18,8 @@ exports.getAllMembers = async (req, res) => {
     const r = await db.query(
       `SELECT id, member_id, full_name, first_name, last_name, email, phone, gender,
               date_of_birth, address, county, district, town, occupation, education_level,
-              nationality, profile_photo, reason_for_joining, role, status, joined_at, updated_at
+              nationality, profile_photo, membership_type, reason_for_joining,
+              role, status, joined_at, updated_at
        FROM members ORDER BY joined_at DESC`
     );
     res.json(r.rows);

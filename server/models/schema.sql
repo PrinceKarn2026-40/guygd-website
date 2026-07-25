@@ -2,6 +2,7 @@
 
 CREATE TABLE IF NOT EXISTS members (
   id SERIAL PRIMARY KEY,
+  member_id VARCHAR(30) UNIQUE,
   first_name VARCHAR(50),
   last_name VARCHAR(50),
   full_name VARCHAR(100) NOT NULL,
@@ -21,11 +22,40 @@ CREATE TABLE IF NOT EXISTS members (
   emergency_contact_name VARCHAR(100),
   emergency_contact_phone VARCHAR(20),
   reason_for_joining TEXT,
+  membership_type VARCHAR(50) DEFAULT 'Regular Member',
   role VARCHAR(20) DEFAULT 'member' CHECK (role IN ('member', 'admin', 'executive', 'super_admin')),
   status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'suspended', 'inactive')),
   last_login TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS applications (
+  id SERIAL PRIMARY KEY,
+  full_name VARCHAR(100) NOT NULL,
+  first_name VARCHAR(50),
+  last_name VARCHAR(50),
+  email VARCHAR(100) NOT NULL,
+  phone VARCHAR(20),
+  gender VARCHAR(10),
+  date_of_birth DATE,
+  address TEXT,
+  county VARCHAR(100),
+  district VARCHAR(100),
+  town VARCHAR(100),
+  occupation VARCHAR(100),
+  education_level VARCHAR(50),
+  nationality VARCHAR(50) DEFAULT 'Liberian',
+  emergency_contact_name VARCHAR(100),
+  emergency_contact_phone VARCHAR(20),
+  reason_for_joining TEXT,
+  membership_type VARCHAR(50) DEFAULT 'Regular Member',
+  photo_url VARCHAR(255),
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  member_id INT REFERENCES members(id) ON DELETE SET NULL,
+  rejection_reason TEXT,
+  reviewed_at TIMESTAMP,
+  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS scholarships (

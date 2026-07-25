@@ -54,7 +54,7 @@ const approvalHtml = (name, memberId, tempPassword, loginUrl) => `
       <p style="margin:0 0 6px;color:#166534;font-weight:700;font-size:0.95rem;">🪪 Your Member Details</p>
       <table style="width:100%;font-size:0.88rem;color:#374151;border-collapse:collapse;">
         <tr><td style="padding:5px 0;color:#6b7280;width:40%;">Member ID</td><td style="font-weight:700;color:#15803d;">${memberId}</td></tr>
-        <tr><td style="padding:5px 0;color:#6b7280;">Email</td><td>${name}</td></tr>
+        <tr><td style="padding:5px 0;color:#6b7280;">Full Name</td><td>${name}</td></tr>
         <tr><td style="padding:5px 0;color:#6b7280;">Temporary Password</td><td style="font-weight:700;font-family:monospace;background:#dcfce7;padding:2px 8px;border-radius:4px;">${tempPassword}</td></tr>
       </table>
     </div>
@@ -249,10 +249,15 @@ exports.approve = async (req, res) => {
       await db.query('UPDATE members SET member_id=$1 WHERE id=$2', [memberId, memberDbId]);
     }
 
-    // Mark application approved and link member
+    // Mark application approved, record approval date, link member
     await db.query(
       'UPDATE applications SET status=$1, reviewed_at=NOW(), member_id=$2 WHERE id=$3',
       ['approved', memberDbId, req.params.id]
+    );
+    // Ensure joined_at is set on the member record
+    await db.query(
+      `UPDATE members SET joined_at=COALESCE(joined_at, NOW()) WHERE id=$1`,
+      [memberDbId]
     );
 
     // Send approval email with credentials

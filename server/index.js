@@ -49,6 +49,8 @@ const PORT = process.env.PORT || 3000;
 async function migrate() {
   await db.query(`ALTER TABLE members ALTER COLUMN password_hash DROP NOT NULL`).catch(() => {});
   await db.query(`ALTER TABLE members ADD COLUMN IF NOT EXISTS member_id VARCHAR(30) UNIQUE`).catch(() => {});
+  await db.query(`ALTER TABLE members ADD COLUMN IF NOT EXISTS membership_type VARCHAR(50) DEFAULT 'Regular Member'`).catch(() => {});
+  await db.query(`ALTER TABLE applications ADD COLUMN IF NOT EXISTS rejection_reason TEXT`).catch(() => {});
   await db.query(`
     CREATE TABLE IF NOT EXISTS programs (
       id SERIAL PRIMARY KEY,
