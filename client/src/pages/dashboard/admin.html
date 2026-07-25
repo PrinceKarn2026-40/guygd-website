@@ -366,10 +366,8 @@
             <span id="app-count" style="font-size:0.82rem;color:#8b9bb4;"></span>
           </div>
           <div class="table-wrap">
-            <table id="dt-applications" class="admin-dt" style="width:100%">
-              <thead>
-                <tr><th>Photo</th><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>Applied</th><th>Status</th><th>Actions</th></tr>
-              </thead>
+            <table style="width:100%;border-collapse:collapse;font-size:0.87rem;">
+              <thead><tr><th style="background:#f8f9fb;padding:11px 14px;text-align:left;color:#6c757d;font-weight:600;font-size:0.78rem;text-transform:uppercase;">Photo</th><th style="background:#f8f9fb;padding:11px 14px;text-align:left;color:#6c757d;font-weight:600;font-size:0.78rem;text-transform:uppercase;">Name</th><th style="background:#f8f9fb;padding:11px 14px;text-align:left;color:#6c757d;font-weight:600;font-size:0.78rem;text-transform:uppercase;">Email</th><th style="background:#f8f9fb;padding:11px 14px;text-align:left;color:#6c757d;font-weight:600;font-size:0.78rem;text-transform:uppercase;">Phone</th><th style="background:#f8f9fb;padding:11px 14px;text-align:left;color:#6c757d;font-weight:600;font-size:0.78rem;text-transform:uppercase;">Type</th><th style="background:#f8f9fb;padding:11px 14px;text-align:left;color:#6c757d;font-weight:600;font-size:0.78rem;text-transform:uppercase;">Applied</th><th style="background:#f8f9fb;padding:11px 14px;text-align:left;color:#6c757d;font-weight:600;font-size:0.78rem;text-transform:uppercase;">Status</th><th style="background:#f8f9fb;padding:11px 14px;text-align:left;color:#6c757d;font-weight:600;font-size:0.78rem;text-transform:uppercase;">Actions</th></tr></thead>
               <tbody id="applications-body"></tbody>
             </table>
           </div>
@@ -939,53 +937,11 @@ async function loadDashboard() {
       apiFetch('/members'), apiFetch('/events'), apiFetch('/donations'),
       apiFetch('/news/all').catch(()=>[]), apiFetch('/team').catch(()=>[]), apiFetch('/programs').catch(()=>[])
     ]);
-    // Note: applications loaded separately below
     document.getElementById('stat-members').textContent   = members.length;
     document.getElementById('stat-events').textContent    = events.length;
     document.getElementById('stat-donations').textContent = donations.length;
     document.getElementById('stat-news').textContent      = newsList.length;
     document.getElementById('stat-programs').textContent  = programs.length;
-
-    // Applications — load from /applications endpoint
-    const applications = await apiFetch('/applications').catch(() => []);
-    const _u = getUser();
-    const _isAdmin = _u && ['admin','super_admin'].includes(_u.role);
-    document.getElementById('dash-app-count').textContent = applications.length + ' record' + (applications.length!==1?'s':'');
-    document.getElementById('dash-applications-body').innerHTML = applications.length ? applications.map(a => `
-      <tr>
-        <td><strong>${a.full_name}</strong></td><td>${a.email}</td><td>${a.phone||'-'}</td>
-        <td>${a.membership_type||'Regular Member'}</td>
-        <td>${badge(a.status)}</td><td>${fmtDate(a.submitted_at)}</td>
-        <td style="display:flex;gap:4px;flex-wrap:wrap;">
-          ${a.status==='pending' && _isAdmin ? `<button class="btn btn-sm btn-success" onclick="appApprove(${a.id})">&#10003; Approve</button>` : ''}
-          ${a.status==='pending' && _isAdmin ? `<button class="btn btn-sm btn-danger"  onclick="appReject(${a.id})">&#10007; Reject</button>` : ''}
-          ${a.status==='approved' ? '<span class="badge badge-approved">Approved</span>' : ''}
-          ${a.status==='rejected' ? '<span class="badge badge-rejected">Rejected</span>' : ''}
-        </td>
-      </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No applications yet.</td></tr>';
-
-    // Events
-    document.getElementById('dash-events-count').textContent = events.length + ' event' + (events.length!==1?'s':'');
-    document.getElementById('dash-events-body').innerHTML = events.length ? events.map(e => `
-      <tr><td><strong>${e.title}</strong></td><td>${fmtDate(e.event_date)}</td><td>${e.location||'-'}</td><td>${badge(e.category||'General')}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
-
-    // News
-    document.getElementById('dash-news-count').textContent = newsList.length + ' article' + (newsList.length!==1?'s':'');
-    document.getElementById('dash-news-body').innerHTML = newsList.length ? newsList.map(n => `
-      <tr><td><strong>${n.title}</strong></td><td>${n.category||'-'}</td><td>${n.published?'<span class="badge badge-active">Published</span>':'<span class="badge badge-pending">Draft</span>'}</td><td>${fmtDate(n.created_at)}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:#8b9bb4;">No news yet.</td></tr>';
-
-    // Leadership
-    document.getElementById('dash-team-count').textContent = team.length + ' member' + (team.length!==1?'s':'');
-    document.getElementById('dash-team-body').innerHTML = team.length ? team.map(m => `
-      <tr>
-        <td>${m.photo?`<img src="${m.photo}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;"/>`:`<div style="width:36px;height:36px;border-radius:50%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">${(m.name||'?')[0]}</div>`}</td>
-        <td><strong>${m.name}</strong></td><td>${m.position}</td>
-      </tr>`).join('') : '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No leadership added yet.</td></tr>';
-
-    // Programs
-    document.getElementById('dash-programs-count').textContent = programs.length + ' program' + (programs.length!==1?'s':'');
-    document.getElementById('dash-programs-body').innerHTML = programs.length ? programs.map(p => `
-      <tr><td style="font-size:1.3rem;">${p.icon||'&#128204;'}</td><td><strong>${p.title}</strong></td><td style="max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.description}</td></tr>`).join('') : '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No programs yet.</td></tr>';
 
   } catch(e) {
     console.error('Dashboard load error:', e);
@@ -1042,18 +998,16 @@ function renderApplications(filter, q) {
       <td>${a.membership_type || 'Regular Member'}</td>
       <td>${fmtDate(a.submitted_at)}</td>
       <td>${badge(a.status)}</td>
-      <td style="display:flex;gap:4px;flex-wrap:wrap;">
+      <td><div style="display:flex;gap:4px;flex-wrap:wrap;">
         <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewApplication(${a.id})">&#128065; View</button>
         ${a.status === 'pending' && isAdmin ? `<button class="btn btn-sm btn-success" onclick="appApprove(${a.id})">&#10003; Approve</button>` : ''}
         ${a.status === 'pending' && isAdmin ? `<button class="btn btn-sm btn-danger"  onclick="appReject(${a.id})">&#10007; Reject</button>` : ''}
         ${a.status === 'approved' ? '<span class="badge badge-approved">Approved</span>' : ''}
         ${a.status === 'rejected' ? '<span class="badge badge-rejected">Rejected</span>' : ''}
         <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="appDelete(${a.id},'${a.full_name.replace(/'/g,'')}')">&#128465; Delete</button>
-      </td>
+      </div></td>
     </tr>`).join('')
     : `<tr><td colspan="8" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
-  if ($.fn.DataTable.isDataTable('#dt-applications')) $('#dt-applications').DataTable().destroy();
-  setTimeout(() => dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: [0, 7] }] }), 0);
 }
 
 function viewApplication(id) {
