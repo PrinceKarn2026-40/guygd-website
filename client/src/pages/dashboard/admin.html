@@ -794,6 +794,8 @@
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 document.documentElement.removeAttribute('data-theme');
 const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
@@ -1163,26 +1165,128 @@ async function deleteMember(id, name) {
 function viewMember(id) {
   const m = allMembers.find(x => x.id === id);
   if (!m) return;
-  const modal = document.getElementById('member-modal');
+  const row = (label, val) => val ? `<div><strong style="font-size:0.78rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">${label}</strong><p style="margin:3px 0 0;color:#1a1f36;">${val}</p></div>` : '';
   document.getElementById('modal-member-content').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;font-size:0.9rem;">
-      <div><strong>Full Name</strong><p>${m.full_name}</p></div>
-      <div><strong>Email</strong><p>${m.email}</p></div>
-      <div><strong>Phone</strong><p>${m.phone || '-'}</p></div>
-      <div><strong>Role</strong><p>${m.role}</p></div>
-      <div><strong>Status</strong><p>${m.status}</p></div>
-      <div><strong>Joined</strong><p>${fmtDate(m.joined_at)}</p></div>
-      ${m.address ? `<div style="grid-column:1/-1"><strong>Address</strong><p>${m.address}</p></div>` : ''}
-      ${m.bio ? `<div style="grid-column:1/-1"><strong>Bio</strong><p>${m.bio}</p></div>` : ''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;font-size:0.88rem;margin-bottom:20px;">
+      ${row('Member ID', m.member_id || '-')}
+      ${row('Full Name', m.full_name)}
+      ${row('Email', m.email)}
+      ${row('Phone', m.phone)}
+      ${row('Gender', m.gender)}
+      ${row('County', m.county)}
+      ${row('Membership Type', m.membership_type)}
+      ${row('Role', m.role)}
+      ${row('Status', m.status)}
+      ${row('Date Joined', fmtDate(m.joined_at))}
+      ${m.address ? `<div style="grid-column:1/-1">${row('Address', m.address)}</div>` : ''}
     </div>
-    <div style="display:flex;gap:8px;margin-top:16px;">
-      <button class="btn btn-success" onclick="updateMemberStatus(${m.id},'active');closeMemberModal()">✅ Approve</button>
-      <button class="btn btn-danger"  onclick="updateMemberStatus(${m.id},'suspended');closeMemberModal()">❌ Reject</button>
-      <button class="btn" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}');closeMemberModal()">🗑️ Delete</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="closeMemberModal();printMemberCard(${m.id})">&#128424; Print Card</button>
+      <button class="btn btn-success" onclick="updateMemberStatus(${m.id},'active');closeMemberModal()">&#10003; Activate</button>
+      <button class="btn btn-danger"  onclick="updateMemberStatus(${m.id},'suspended');closeMemberModal()">&#10007; Suspend</button>
+      <button class="btn" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name.replace(/'/g,'')}');closeMemberModal()">&#128465; Delete</button>
     </div>`;
-  modal.style.display = 'flex';
+  document.getElementById('member-modal').style.display = 'flex';
 }
 function closeMemberModal() { document.getElementById('member-modal').style.display = 'none'; }
+
+function printMemberCard(id) {
+  const m = allMembers.find(x => x.id === id);
+  if (!m) return;
+  const memberId = m.member_id || `GUYGD-${new Date().getFullYear()}-${String(m.id).padStart(4,'0')}`;
+  const photoHtml = m.profile_photo
+    ? `<img src="${m.profile_photo}" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #d4a017;"/>`
+    : `<div style="width:90px;height:90px;border-radius:50%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:#fff;border:3px solid #d4a017;">&#128100;</div>`;
+
+  const cardHtml = `
+  <div id="member-card-print" style="width:210mm;min-height:297mm;background:#fff;font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:flex-start;justify-content:center;padding:20mm;box-sizing:border-box;">
+    <div style="width:100%;max-width:170mm;">
+
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,#052e16,#15803d);border-radius:16px 16px 0 0;padding:28px 32px;display:flex;align-items:center;gap:20px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:#d4a017;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.3rem;color:#052e16;flex-shrink:0;">G</div>
+        <div>
+          <div style="color:#fff;font-size:1.4rem;font-weight:800;letter-spacing:2px;">GUYGD</div>
+          <div style="color:rgba(255,255,255,0.75);font-size:0.72rem;margin-top:2px;">Gbeh-lay United Youths for Growth and Development</div>
+          <div style="color:#d4a017;font-size:0.68rem;margin-top:2px;font-style:italic;">Voice of the Voiceless &mdash; Est. May 14, 2023</div>
+        </div>
+        <div style="margin-left:auto;text-align:right;">
+          <div style="color:rgba(255,255,255,0.6);font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;">Membership Card</div>
+          <div style="color:#d4a017;font-weight:800;font-size:0.9rem;font-family:monospace;margin-top:4px;">${memberId}</div>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 16px 16px;padding:32px;">
+        <div style="display:flex;gap:28px;align-items:flex-start;margin-bottom:28px;">
+          <div style="flex-shrink:0;text-align:center;">
+            ${photoHtml}
+            <div style="margin-top:10px;background:${m.status==='active'?'#d4edda':'#fff3cd'};color:${m.status==='active'?'#155724':'#856404'};padding:4px 14px;border-radius:20px;font-size:0.72rem;font-weight:700;text-transform:uppercase;display:inline-block;">${m.status}</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:1.5rem;font-weight:800;color:#052e16;margin-bottom:4px;">${m.full_name}</div>
+            <div style="color:#15803d;font-size:0.85rem;font-weight:600;margin-bottom:16px;">${m.membership_type || 'Regular Member'}</div>
+            <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
+              <tr><td style="color:#6b7280;padding:5px 0;width:38%;">Member ID</td><td style="font-weight:700;font-family:monospace;color:#052e16;">${memberId}</td></tr>
+              <tr><td style="color:#6b7280;padding:5px 0;">Gender</td><td>${m.gender || '-'}</td></tr>
+              <tr><td style="color:#6b7280;padding:5px 0;">Phone</td><td>${m.phone || '-'}</td></tr>
+              <tr><td style="color:#6b7280;padding:5px 0;">County</td><td>${m.county || '-'}</td></tr>
+              <tr><td style="color:#6b7280;padding:5px 0;">Date Joined</td><td>${fmtDate(m.joined_at)}</td></tr>
+              <tr><td style="color:#6b7280;padding:5px 0;">Role</td><td style="text-transform:capitalize;">${(m.role||'').replace('_',' ')}</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- QR + Footer -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:20px;border-top:1px dashed #d1fae5;">
+          <div>
+            <div id="card-qr-${m.id}" style="width:80px;height:80px;"></div>
+            <div style="font-size:0.62rem;color:#9ca3af;margin-top:4px;text-align:center;">Scan to verify</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.7rem;color:#6b7280;">Issued by GUYGD Administration</div>
+            <div style="font-size:0.7rem;color:#6b7280;margin-top:2px;">Gbeh-lay, Liberia</div>
+            <div style="font-size:0.7rem;color:#6b7280;margin-top:2px;">info@guygd.org</div>
+            <div style="margin-top:8px;font-size:0.65rem;color:#9ca3af;font-style:italic;">This card is the property of GUYGD. If found, please return.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>`;
+
+  // Render card in hidden container, generate QR, then export PDF
+  let container = document.getElementById('card-print-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'card-print-container';
+    container.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;';
+    document.body.appendChild(container);
+  }
+  container.innerHTML = cardHtml;
+
+  // Generate QR code
+  new QRCode(document.getElementById(`card-qr-${m.id}`), {
+    text: memberId,
+    width: 80, height: 80,
+    colorDark: '#052e16', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  // Wait for QR render then export
+  setTimeout(() => {
+    html2pdf()
+      .set({
+        margin: 0,
+        filename: `GUYGD-Card-${memberId}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      })
+      .from(document.getElementById('member-card-print'))
+      .save();
+  }, 300);
+}
 
 
 // â”€â”€ PROGRAMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
