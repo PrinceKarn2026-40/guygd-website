@@ -29,6 +29,7 @@
         <a href="#" class="active" onclick="showSection('profile')"><span class="icon">👤</span> My Profile</a>
         <a href="#" onclick="showSection('scholarships')"><span class="icon">🎓</span> My Scholarships</a>
         <a href="#" onclick="showSection('apply')"><span class="icon">📝</span> Apply for Scholarship</a>
+        <a href="#" onclick="showSection('card')"><span class="icon">🪪</span> Membership Card</a>
         <a href="#" onclick="showSection('events')"><span class="icon">📅</span> Upcoming Events</a>
         <a href="#" onclick="showSection('news')"><span class="icon">📰</span> Latest News</a>
         <a href="#" onclick="logout()" style="margin-top:20px;color:#ff6b6b;"><span class="icon">🚪</span> Logout</a>
@@ -52,6 +53,51 @@
               <div class="form-group"><label>Confirm Password</label><input type="password" id="confirm-password" placeholder="Confirm password" required/></div>
               <button type="submit" class="btn btn-primary">Update Password</button>
             </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Membership Card -->
+      <div id="section-card" class="tab-section">
+        <div class="dashboard-header">
+          <h2>Membership Card</h2>
+          <button class="btn btn-primary" onclick="downloadCard()">⬇ Download PDF</button>
+        </div>
+        <div style="display:flex;justify-content:center;">
+          <div class="mem-card" id="membership-card">
+            <!-- Header -->
+            <div class="mem-card-header">
+              <div class="mem-logo-circle">🌿</div>
+              <div>
+                <div class="mem-org-name">GUYGD</div>
+                <div class="mem-org-sub">Gbeh-lay United Youths for Growth and Development</div>
+                <div class="mem-org-motto">Voice of the Voiceless</div>
+              </div>
+            </div>
+            <!-- Body -->
+            <div class="mem-card-body">
+              <div class="mem-info">
+                <div class="mem-field"><span>Member ID</span><strong id="card-member-id">—</strong></div>
+                <div class="mem-field"><span>Name</span><strong id="card-name">—</strong></div>
+                <div class="mem-field"><span>Gender</span><strong id="card-gender">—</strong></div>
+                <div class="mem-field"><span>Phone</span><strong id="card-phone">—</strong></div>
+                <div class="mem-field"><span>County</span><strong id="card-county">—</strong></div>
+                <div class="mem-field"><span>Date Joined</span><strong id="card-joined">—</strong></div>
+                <div class="mem-field"><span>Status</span><strong id="card-status">—</strong></div>
+              </div>
+              <div class="mem-photo-wrap">
+                <img id="card-photo" src="" alt="Member Photo" onerror="this.style.display='none';document.getElementById('card-photo-placeholder').style.display='flex';"/>
+                <div id="card-photo-placeholder" class="mem-photo-placeholder">👤</div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="mem-card-footer">
+              <div class="mem-qr" id="card-qr"></div>
+              <div class="mem-signature">
+                <div class="mem-sig-line"></div>
+                <span>Authorized Signature</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -113,7 +159,7 @@
   <footer id="footer"></footer>
   <script src="/src/js/main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const user = getUser();
       if (!user) { window.location.href = '/membership.html?login'; return; }
       document.getElementById('sidebar-name').textContent = user.full_name || 'Member';
@@ -126,6 +172,7 @@
           <tr><td style="padding:10px;font-weight:600;">Status</td><td><span class="status-${user.status}">${user.status}</span></td></tr>
         </table>`;
       loadMemberEvents();
+      await loadMemberCard(user);
     });
 
     function showSection(name) {
@@ -197,6 +244,36 @@
             <p>${(n.summary || n.content.substring(0,100))}...</p>
           </div>`).join('') : '<p>No news yet.</p>';
       } catch { document.getElementById('member-news').innerHTML = '<p>Could not load news.</p>'; }
+    }
+
+    async function loadMemberCard(user) {
+      try {
+        const m = await apiFetch(`/members/${user.id}`);
+        document.getElementById('card-member-id').textContent = m.member_id || 'GUYGD-' + String(m.id).padStart(4, '0');
+        document.getElementById('card-name').textContent = m.full_name || '—';
+        document.getElementById('card-gender').textContent = m.gender || '—';
+        document.getElementById('card-phone').textContent = m.phone || '—';
+        document.getElementById('card-county').textContent = m.county || '—';
+        document.getElementById('card-joined').textContent = m.joined_at ? new Date(m.joined_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+        document.getElementById('card-status').textContent = m.status ? m.status.charAt(0).toUpperCase() + m.status.slice(1) : '—';
+        const photoEl = document.getElementById('card-photo');
+        const placeholder = document.getElementById('card-photo-placeholder');
+        if (m.profile_photo) {
+          photoEl.src = m.profile_photo.startsWith('http') ? m.profile_photo : `/uploads/${m.profile_photo}`;
+          photoEl.style.display = 'block';
+          placeholder.style.display = 'none';
+        } else {
+          photoEl.style.display = 'none';
+          placeholder.style.display = 'flex';
+        }
+        // Simple QR using a free API
+        const memberId = m.member_id || 'GUYGD-' + String(m.id).padStart(4, '0');
+        document.getElementById('card-qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(memberId)}" alt="QR Code" width="80" height="80"/>`;
+      } catch(e) { console.error('Card load error:', e.message); }
+    }
+
+    function downloadCard() {
+      window.print();
     }
 
     document.getElementById('password-form').addEventListener('submit', async (e) => {
