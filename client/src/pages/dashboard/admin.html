@@ -1052,7 +1052,8 @@ function renderApplications(filter, q) {
       </td>
     </tr>`).join('')
     : `<tr><td colspan="8" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
-  dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: [0, 7] }] });
+  if ($.fn.DataTable.isDataTable('#dt-applications')) $('#dt-applications').DataTable().destroy();
+  setTimeout(() => dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: [0, 7] }] }), 0);
 }
 
 function viewApplication(id) {
