@@ -92,7 +92,7 @@ function renderFooter() {
         <strong style="color:#fff;font-size:1.1rem;">GUYGD</strong>
         <p>Gbeh-lay United Youths for Growth and Development. Uniting young people through education, leadership, and community service.</p>
         <div class="social-links">
-          <a href="#" title="Facebook">f</a>
+          <a href="https://www.facebook.com/share/1D6KEuhVUc/?mibextid=wwXIfr" target="_blank" rel="noopener" title="Facebook">f</a>
           <a href="#" title="Twitter">t</a>
           <a href="#" title="Instagram">in</a>
           <a href="#" title="WhatsApp">w</a>
