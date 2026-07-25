@@ -342,34 +342,40 @@
       <!-- â•â•â•â• DASHBOARD â•â•â•â• -->
       <div id="section-dashboard" class="tab-section active">
         <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon green">👥</div>
-            <div class="stat-info"><h3 id="stat-members">-</h3><p>Total Members</p></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon orange">📅</div>
-            <div class="stat-info"><h3 id="stat-events">-</h3><p>Events</p></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon purple">💰</div>
-            <div class="stat-info"><h3 id="stat-donations">-</h3><p>Donations</p></div>
-          </div>
+          <div class="stat-card"><div class="stat-icon green">&#128101;</div><div class="stat-info"><h3 id="stat-members">-</h3><p>Total Members</p></div></div>
+          <div class="stat-card"><div class="stat-icon orange">&#128197;</div><div class="stat-info"><h3 id="stat-events">-</h3><p>Events</p></div></div>
+          <div class="stat-card"><div class="stat-icon purple">&#128176;</div><div class="stat-info"><h3 id="stat-donations">-</h3><p>Donations</p></div></div>
+          <div class="stat-card"><div class="stat-icon blue">&#128240;</div><div class="stat-info"><h3 id="stat-news">-</h3><p>News Articles</p></div></div>
+          <div class="stat-card"><div class="stat-icon green">&#128203;</div><div class="stat-info"><h3 id="stat-programs">-</h3><p>Programs</p></div></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-          <div class="panel">
-            <div class="panel-header"><h3>Recent Members</h3></div>
-            <div class="table-wrap">
-              <table id="dt-recent-members" class="admin-dt" style="width:100%">
-                <thead><tr><th>Name</th><th>Status</th><th>Joined</th></tr></thead>
-                <tbody id="recent-members-body"></tbody>
-              </table>
-            </div>
-          </div>
-          
+
+        <div class="panel">
+          <div class="panel-header"><h3>&#127891; Membership Applications</h3><span id="dash-app-count" style="font-size:0.82rem;color:#8b9bb4;"></span></div>
+          <div class="table-wrap"><table class="admin-dt" style="width:100%"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="dash-applications-body"></tbody></table></div>
         </div>
+
+        <div class="panel">
+          <div class="panel-header"><h3>&#128197; All Events</h3><span id="dash-events-count" style="font-size:0.82rem;color:#8b9bb4;"></span></div>
+          <div class="table-wrap"><table class="admin-dt" style="width:100%"><thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Category</th></tr></thead><tbody id="dash-events-body"></tbody></table></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h3>&#128240; All News</h3><span id="dash-news-count" style="font-size:0.82rem;color:#8b9bb4;"></span></div>
+          <div class="table-wrap"><table class="admin-dt" style="width:100%"><thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Date</th></tr></thead><tbody id="dash-news-body"></tbody></table></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h3>&#128101; Leadership Team</h3><span id="dash-team-count" style="font-size:0.82rem;color:#8b9bb4;"></span></div>
+          <div class="table-wrap"><table class="admin-dt" style="width:100%"><thead><tr><th>Photo</th><th>Name</th><th>Position</th></tr></thead><tbody id="dash-team-body"></tbody></table></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h3>&#128203; All Programs</h3><span id="dash-programs-count" style="font-size:0.82rem;color:#8b9bb4;"></span></div>
+          <div class="table-wrap"><table class="admin-dt" style="width:100%"><thead><tr><th>Icon</th><th>Title</th><th>Description</th></tr></thead><tbody id="dash-programs-body"></tbody></table></div>
+        </div>
+
       </div>
 
-      <!-- â•â•â•â• APPLICATIONS â•â•â•â• -->
       <div id="section-applications" class="tab-section">
         <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
           <button class="btn btn-primary btn-sm" id="app-tab-all"      onclick="filterApplications('all')">All</button>
@@ -838,684 +844,52 @@ function showAlert(id, msg, type) {
 // â”€â”€ DASHBOARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadDashboard() {
   try {
-    const [members, events, donations] = await Promise.all([
-      apiFetch('/members'), apiFetch('/events'), apiFetch('/donations')
+    const [members, events, donations, newsList, team, programs] = await Promise.all([
+      apiFetch('/members'), apiFetch('/events'), apiFetch('/donations'),
+      apiFetch('/news/all').catch(()=>[]), apiFetch('/team').catch(()=>[]), apiFetch('/programs').catch(()=>[])
     ]);
     document.getElementById('stat-members').textContent   = members.length;
     document.getElementById('stat-events').textContent    = events.length;
     document.getElementById('stat-donations').textContent = donations.length;
+    document.getElementById('stat-news').textContent      = newsList.length;
+    document.getElementById('stat-programs').textContent  = programs.length;
 
-    const tbody = document.getElementById('recent-members-body');
-    tbody.innerHTML = members.slice(0,5).map(m =>
-      `<tr><td>${m.full_name}</td><td>${badge(m.status)}</td><td>${fmtDate(m.joined_at)}</td></tr>`
-    ).join('') || '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No members yet.</td></tr>';
+    // Applications
+    document.getElementById('dash-app-count').textContent = members.length + ' record' + (members.length!==1?'s':'');
+    document.getElementById('dash-applications-body').innerHTML = members.length ? members.map(m => `
+      <tr>
+        <td><strong>${m.full_name}</strong></td><td>${m.email}</td><td>${m.phone||'-'}</td>
+        <td>${badge(m.status)}</td><td>${fmtDate(m.joined_at)}</td>
+        <td style="display:flex;gap:4px;flex-wrap:wrap;">
+          ${m.status!=='active'    ? `<button class="btn btn-sm btn-success" onclick="appAction(${m.id},'active')">&#10003; Approve</button>` : '<span class="badge badge-active">Approved</span>'}
+          ${m.status!=='suspended' ? `<button class="btn btn-sm btn-danger"  onclick="appAction(${m.id},'suspended')">&#10007; Reject</button>`  : '<span class="badge badge-suspended">Rejected</span>'}
+        </td>
+      </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No applications yet.</td></tr>';
 
-    if ($.fn.DataTable.isDataTable('#dt-recent-members')) $('#dt-recent-members').DataTable().destroy();
-    $('#dt-recent-members').DataTable({ paging: false, searching: false, info: false, ordering: false, dom: 't', buttons: [] });
+    // Events
+    document.getElementById('dash-events-count').textContent = events.length + ' event' + (events.length!==1?'s':'');
+    document.getElementById('dash-events-body').innerHTML = events.length ? events.map(e => `
+      <tr><td><strong>${e.title}</strong></td><td>${fmtDate(e.event_date)}</td><td>${e.location||'-'}</td><td>${badge(e.category||'General')}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
+
+    // News
+    document.getElementById('dash-news-count').textContent = newsList.length + ' article' + (newsList.length!==1?'s':'');
+    document.getElementById('dash-news-body').innerHTML = newsList.length ? newsList.map(n => `
+      <tr><td><strong>${n.title}</strong></td><td>${n.category||'-'}</td><td>${n.published?'<span class="badge badge-active">Published</span>':'<span class="badge badge-pending">Draft</span>'}</td><td>${fmtDate(n.created_at)}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:#8b9bb4;">No news yet.</td></tr>';
+
+    // Leadership
+    document.getElementById('dash-team-count').textContent = team.length + ' member' + (team.length!==1?'s':'');
+    document.getElementById('dash-team-body').innerHTML = team.length ? team.map(m => `
+      <tr><td>${m.photo?`<img src="${m.photo}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;"/>`:`<div style="width:36px;height:36px;border-radius:50%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">${(m.name||'?')[0]}</div>`}</td><td><strong>${m.name}</strong></td><td>${m.position}</td></tr>`).join('') : '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No leadership added yet.</td></tr>';
+
+    // Programs
+    document.getElementById('dash-programs-count').textContent = programs.length + ' program' + (programs.length!==1?'s':'');
+    document.getElementById('dash-programs-body').innerHTML = programs.length ? programs.map(p => `
+      <tr><td style="font-size:1.3rem;">${p.icon||'&#128204;'}</td><td><strong>${p.title}</strong></td><td style="max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.description}</td></tr>`).join('') : '<tr><td colspan="3" style="text-align:center;color:#8b9bb4;">No programs yet.</td></tr>';
+
   } catch(e) {
     console.error('Dashboard load error:', e);
-    ['stat-members','stat-events','stat-donations'].forEach(id => document.getElementById(id).textContent = '!');
-    console.warn('Dashboard API error â€” check token/auth:', e.message);
+    ['stat-members','stat-events','stat-donations','stat-news','stat-programs'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent='!'; });
   }
 }
 
 
-// â”€â”€ APPLICATIONS (Membership) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-let allApplications = [];
-let currentAppFilter = 'all';
-
-async function loadApplications() {
-  try {
-    allApplications = await apiFetch('/members');
-    filterApplications(currentAppFilter);
-  } catch(e) {
-    document.getElementById('applications-body').innerHTML =
-      '<tr><td colspan="7" style="text-align:center;color:#e74c3c;">Error loading applications.</td></tr>';
-  }
-}
-
-function filterApplications(filter) {
-  currentAppFilter = filter;
-  ['all','pending','approved','rejected'].forEach(f => {
-    const btn = document.getElementById('app-tab-' + f);
-    if (btn) btn.className = 'btn btn-sm ' + (f === filter ? 'btn-primary' : 'btn-outline');
-  });
-  const statusMap = { pending: 'pending', approved: 'active', rejected: 'suspended' };
-  const list = filter === 'all' ? allApplications
-    : allApplications.filter(a => a.status === statusMap[filter]);
-  const titles = { all: 'All Applications', pending: 'Pending Applications', approved: 'Approved Applications', rejected: 'Rejected Applications' };
-  document.getElementById('app-panel-title').textContent = titles[filter];
-  document.getElementById('app-count').textContent = `${list.length} record${list.length !== 1 ? 's' : ''}`;
-  document.getElementById('applications-body').innerHTML = list.length ? list.map(m => `
-    <tr>
-      <td><strong>${m.full_name}</strong></td>
-      <td>${m.email}</td>
-      <td>${m.phone || '-'}</td>
-      <td>${m.gender || '-'}</td>
-      <td>${fmtDate(m.joined_at)}</td>
-      <td>${badge(m.status)}</td>
-      <td style="display:flex;gap:4px;flex-wrap:wrap;">
-        ${m.status !== 'active'    ? `<button class="btn btn-sm btn-success" onclick="appAction(${m.id},'active')">✅ Approve</button>` : '<span class="badge badge-active">Approved</span>'}
-        ${m.status !== 'suspended' ? `<button class="btn btn-sm btn-danger"  onclick="appAction(${m.id},'suspended')">❌ Reject</button>` : '<span class="badge badge-suspended">Rejected</span>'}
-        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="appDelete(${m.id},'${m.full_name.replace(/'/g,'')}')">🗑️ Delete</button>
-      </td>
-    </tr>`).join('')
-    : `<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
-  dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: 6 }] });
-}
-
-async function appAction(id, status) {
-  try {
-    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
-    await loadApplications();
-    loadDashboard();
-  } catch(e) { alert('Failed to update: ' + (e.message || 'Unknown error')); }
-}
-
-async function appDelete(id, name) {
-  if (!confirm(`Permanently delete "${name}"? This cannot be undone.`)) return;
-  try {
-    await apiFetch(`/members/${id}`, { method: 'DELETE' });
-    await loadApplications();
-    loadDashboard();
-  } catch(e) { alert('Failed to delete: ' + (e.message || 'Unknown error')); }
-}
-
-// â”€â”€ MEMBERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-let allMembers = [];
-async function loadMembers() {
-  const tbody = document.getElementById('members-body');
-  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#6b7280;">Loading...</td></tr>';
-  try {
-    const data = await apiFetch('/members');
-    allMembers = Array.isArray(data) ? data : [];
-    if (!allMembers.length) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#6b7280;">No members registered yet.</td></tr>';
-      return;
-    }
-    renderMembers(allMembers);
-  } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#e74c3c;padding:16px;">&#9888; ${e.message}<br><small>Try logging out and back in.</small></td></tr>`;
-  }
-}
-function renderMembers(list) {
-  if (!list.length) {
-    document.getElementById('members-body').innerHTML =
-      '<tr><td colspan="7" style="text-align:center;color:#6b7280;">No members found.</td></tr>';
-    return;
-  }
-  document.getElementById('members-body').innerHTML = list.map(m => `
-    <tr>
-      <td><strong>${m.full_name}</strong></td>
-      <td>${m.email}</td>
-      <td>${m.phone || '-'}</td>
-      <td>${badge(m.role)}</td>
-      <td>${badge(m.status)}</td>
-      <td>${fmtDate(m.joined_at)}</td>
-      <td style="display:flex;gap:4px;flex-wrap:wrap;">
-        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewMember(${m.id})">👁 View</button>
-        <button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">✅ Approve</button>
-        <button class="btn btn-sm btn-danger"  onclick="updateMemberStatus(${m.id},'suspended')">❌ Reject</button>
-        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}')">🗑️ Delete</button>
-      </td>
-    </tr>`).join('');
-  dtInit('dt-members', { columnDefs: [{ orderable: false, targets: 6 }] });
-}
-function searchMembers() {
-  const q = document.getElementById('member-search').value.toLowerCase();
-  renderMembers(allMembers.filter(m =>
-    m.full_name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q)
-  ));
-}
-async function updateMemberStatus(id, status) {
-  try {
-    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
-    loadMembers(); loadDashboard();
-  } catch(e) { alert('Failed to update member.'); }
-}
-async function deleteMember(id, name) {
-  if (!confirm(`Delete member "${name}"? This cannot be undone.`)) return;
-  try {
-    await apiFetch(`/members/${id}`, { method: 'DELETE' });
-    loadMembers(); loadDashboard();
-  } catch(e) { alert('Failed to delete member.'); }
-}
-function viewMember(id) {
-  const m = allMembers.find(x => x.id === id);
-  if (!m) return;
-  const modal = document.getElementById('member-modal');
-  document.getElementById('modal-member-content').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;font-size:0.9rem;">
-      <div><strong>Full Name</strong><p>${m.full_name}</p></div>
-      <div><strong>Email</strong><p>${m.email}</p></div>
-      <div><strong>Phone</strong><p>${m.phone || '-'}</p></div>
-      <div><strong>Role</strong><p>${m.role}</p></div>
-      <div><strong>Status</strong><p>${m.status}</p></div>
-      <div><strong>Joined</strong><p>${fmtDate(m.joined_at)}</p></div>
-      ${m.address ? `<div style="grid-column:1/-1"><strong>Address</strong><p>${m.address}</p></div>` : ''}
-      ${m.bio ? `<div style="grid-column:1/-1"><strong>Bio</strong><p>${m.bio}</p></div>` : ''}
-    </div>
-    <div style="display:flex;gap:8px;margin-top:16px;">
-      <button class="btn btn-success" onclick="updateMemberStatus(${m.id},'active');closeMemberModal()">✅ Approve</button>
-      <button class="btn btn-danger"  onclick="updateMemberStatus(${m.id},'suspended');closeMemberModal()">❌ Reject</button>
-      <button class="btn" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name}');closeMemberModal()">🗑️ Delete</button>
-    </div>`;
-  modal.style.display = 'flex';
-}
-function closeMemberModal() { document.getElementById('member-modal').style.display = 'none'; }
-
-
-// â”€â”€ PROGRAMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-let allPrograms = [];
-async function loadPrograms() {
-  try {
-    allPrograms = await apiFetch('/programs');
-    renderProgramsTable(allPrograms);
-  } catch(e) {
-    document.getElementById('programs-body').innerHTML = '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading programs.</td></tr>';
-  }
-}
-function renderProgramsTable(list) {
-  document.getElementById('programs-body').innerHTML = list.length ? list.map(p => `
-    <tr>
-      <td style="font-size:1.4rem;">${p.icon || 'ðŸ“Œ'}</td>
-      <td><strong>${p.title}</strong></td>
-      <td>${p.image_url ? `<img src="${p.image_url}" style="height:48px;border-radius:6px;object-fit:cover;"/>` : '<span style="color:#9ca3af;">No photo</span>'}</td>
-      <td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.description}</td>
-      <td style="display:flex;gap:4px;">
-        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="editProgram(${p.id})">✏️ Edit</button>
-      <td>
-      </td>
-    </tr>`).join('')
-    : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No programs yet.</td></tr>';
-
-  if (list.length) dtInit('dt-programs', { columnDefs: [{ orderable: false, targets: [0,2,4] }] });
-}
-function editProgram(id) {
-  const p = allPrograms.find(x => x.id === id);
-  if (!p) return;
-  document.getElementById('prog-id').value = p.id;
-  document.getElementById('prog-icon').value = p.icon || '';
-  document.getElementById('prog-title').value = p.title;
-  document.getElementById('prog-desc').value = p.description;
-  document.getElementById('prog-bullets').value = p.bullets || '';
-  if (p.image_url) { const img = document.getElementById('prog-preview'); img.src = p.image_url; img.style.display = 'block'; }
-  showSection('programs', document.querySelector('[onclick*="programs"]'));
-}
-function resetProgramForm() {
-  document.getElementById('program-form').reset();
-  document.getElementById('prog-id').value = '';
-  const img = document.getElementById('prog-preview'); img.src = ''; img.style.display = 'none';
-}
-async function deleteProgram(id) {
-  if (!confirm('Delete this program?')) return;
-  try { await apiFetch(`/programs/${id}`, { method: 'DELETE' }); loadPrograms(); }
-  catch(e) { alert('Failed to delete program.'); }
-}
-document.getElementById('prog-image').addEventListener('change', function() {
-  const f = this.files[0]; if (!f) return;
-  const img = document.getElementById('prog-preview');
-  img.src = URL.createObjectURL(f); img.style.display = 'block';
-});
-document.getElementById('program-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const id = document.getElementById('prog-id').value;
-  const fd = new FormData();
-  fd.append('icon', document.getElementById('prog-icon').value);
-  fd.append('title', document.getElementById('prog-title').value);
-  fd.append('description', document.getElementById('prog-desc').value);
-  fd.append('bullets', document.getElementById('prog-bullets').value);
-  const file = document.getElementById('prog-image').files[0];
-  if (file) fd.append('image', file);
-  const token = localStorage.getItem('guygd_token');
-  try {
-    await fetch(`${API}/programs${id ? '/'+id : ''}`, {
-      method: id ? 'PUT' : 'POST',
-      headers: { 'Authorization': 'Bearer ' + token },
-      body: fd
-    });
-    resetProgramForm(); loadPrograms();
-  } catch(e) { alert('Failed to save program.'); }
-});
-
-// â”€â”€ EVENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function loadEvents() {
-  try {
-    const list = await apiFetch('/events');
-    document.getElementById('events-body').innerHTML = list.length ? list.map(e => `
-      <tr>
-        <td><strong>${e.title}</strong></td>
-        <td>${fmtDate(e.event_date)}</td>
-        <td>${e.location || '-'}</td>
-        <td>${badge(e.category || 'General')}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">🗑️ Delete</button></td>
-      </tr>`).join('')
-      : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
-    if (list.length) dtInit('dt-events', { columnDefs: [{ orderable: false, targets: 4 }] });
-  } catch(e) {
-    document.getElementById('events-body').innerHTML =
-      '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading events.</td></tr>';
-  }
-}
-function showEventForm() { document.getElementById('event-form-panel').style.display = 'block'; }
-function hideEventForm() { document.getElementById('event-form-panel').style.display = 'none'; }
-
-document.getElementById('event-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData();
-  formData.append('title',       document.getElementById('ev-title').value);
-  formData.append('event_date',  document.getElementById('ev-date').value);
-  formData.append('location',    document.getElementById('ev-location').value);
-  formData.append('category',    document.getElementById('ev-category').value);
-  formData.append('description', document.getElementById('ev-desc').value);
-  const imgFile = document.getElementById('ev-image-file').files[0];
-  if (imgFile) formData.append('image', imgFile);
-  try {
-    const res = await fetch(`${API}/events`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}` },
-      body: formData
-    });
-    if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed'); }
-    showAlert('event-alert', '✅ Event created successfully!', 'success');
-    document.getElementById('event-form').reset();
-    document.getElementById('ev-image-preview').style.display = 'none';
-    hideEventForm(); loadEvents(); loadDashboard();
-  } catch(err) { showAlert('event-alert', err.message || 'Failed to create event.', 'error'); }
-});
-document.getElementById('ev-image-file').addEventListener('change', function() {
-  const file = this.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('ev-img-thumb').src = e.target.result;
-    document.getElementById('ev-image-preview').style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-});
-async function deleteEvent(id) {
-  if (!confirm('Delete this event? This cannot be undone.')) return;
-  try { await apiFetch(`/events/${id}`, { method: 'DELETE' }); loadEvents(); loadDashboard(); }
-  catch(e) { alert('Failed to delete event.'); }
-}
-
-
-// â”€â”€ NEWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function loadNews() {
-  try {
-    const list = await apiFetch('/news/all');
-    document.getElementById('news-body').innerHTML = list.length ? list.map(n => `
-      <tr>
-        <td><strong>${n.title}</strong></td>
-        <td>${n.category || '-'}</td>
-        <td>${n.published ? '<span class="badge badge-active">Published</span>' : '<span class="badge badge-pending">Draft</span>'}</td>
-        <td>${fmtDate(n.created_at)}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">🗑️ Delete</button></td>
-      </tr>`).join('')
-      : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No articles yet.</td></tr>';
-    if (list.length) dtInit('dt-news', { columnDefs: [{ orderable: false, targets: 4 }] });
-  } catch(e) {
-    document.getElementById('news-body').innerHTML =
-      '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading news.</td></tr>';
-  }
-}
-document.getElementById('news-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData();
-  formData.append('title',     document.getElementById('news-title').value);
-  formData.append('category',  document.getElementById('news-category').value);
-  formData.append('summary',   document.getElementById('news-summary').value);
-  formData.append('content',   document.getElementById('news-content').value);
-  formData.append('published', 'true');
-  const imgFile = document.getElementById('news-image-file').files[0];
-  if (imgFile) formData.append('image', imgFile);
-  try {
-    const res = await fetch(`${API}/news`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}` },
-      body: formData
-    });
-    if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed'); }
-    showAlert('news-alert', '✅ Article published!', 'success');
-    document.getElementById('news-form').reset();
-    document.getElementById('news-image-preview').style.display = 'none';
-    document.getElementById('news-form-panel').style.display = 'none';
-    loadNews();
-  } catch(err) { showAlert('news-alert', err.message || 'Failed to publish.', 'error'); }
-});
-document.getElementById('news-image-file').addEventListener('change', function() {
-  const file = this.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('news-img-thumb').src = e.target.result;
-    document.getElementById('news-image-preview').style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-});
-async function deleteNews(id) {
-  if (!confirm('Delete this article?')) return;
-  try { await apiFetch(`/news/${id}`, { method: 'DELETE' }); loadNews(); }
-  catch(e) { alert('Failed to delete article.'); }
-}
-
-// â”€â”€ GALLERY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function loadGallery() {
-  try {
-    const list = await apiFetch('/gallery');
-    const grid = document.getElementById('admin-gallery-grid');
-    grid.innerHTML = list.length ? list.map(img => `
-      <div class="gallery-admin-item">
-        <img src="${img.image_url}" alt="${img.title || 'image'}" onerror="this.src='/assets/images/placeholder.png'"/>
-        <button class="del-btn" onclick="deleteGallery(${img.id})">✕</button>
-      </div>`).join('')
-      : '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">🖼️</div><p>No images yet.</p></div>';
-  } catch(e) {
-    document.getElementById('admin-gallery-grid').innerHTML =
-      '<div class="empty-state" style="grid-column:1/-1;"><p>Error loading gallery.</p></div>';
-  }
-}
-document.getElementById('gallery-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData();
-  formData.append('title',    document.getElementById('gal-title').value);
-  formData.append('category', document.getElementById('gal-category').value);
-  formData.append('caption',  document.getElementById('gal-caption').value);
-  formData.append('image',    document.getElementById('gal-file').files[0]);
-  try {
-    const res = await fetch(`${API}/gallery`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}` },
-      body: formData
-    });
-    if (!res.ok) throw new Error('Upload failed');
-    showAlert('gallery-alert', '✅ Image uploaded!', 'success');
-    document.getElementById('gallery-form').reset();
-    document.getElementById('gallery-form-panel').style.display = 'none';
-    loadGallery();
-  } catch(err) { showAlert('gallery-alert', 'Upload failed. Check file size or format.', 'error'); }
-});
-async function deleteGallery(id) {
-  if (!confirm('Remove this image?')) return;
-  try { await apiFetch(`/gallery/${id}`, { method: 'DELETE' }); loadGallery(); }
-  catch(e) { alert('Failed to delete image.'); }
-}
-
-
-// â”€â”€ MESSAGES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function loadMessages() {
-  try {
-    const list = await apiFetch('/contact');
-    document.getElementById('messages-body').innerHTML = list.length ? list.map(m => `
-      <tr>
-        <td><strong>${m.sender_name || m.name || '-'}</strong></td>
-        <td>${m.email}</td>
-        <td>${m.subject || '-'}</td>
-        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${m.message}">${m.message}</td>
-        <td>${fmtDate(m.received_at || m.created_at)}</td>
-      </tr>`).join('')
-      : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No messages yet.</td></tr>';
-    dtInit('dt-messages', { columnDefs: [{ orderable: false, targets: 3 }] });
-  } catch(e) {
-    document.getElementById('messages-body').innerHTML =
-      '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading messages.</td></tr>';
-  }
-}
-
-// â”€â”€ NOTIFICATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-let notifications = [];
-async function loadNotifications() {
-  try {
-    const [members, messages] = await Promise.all([
-      apiFetch('/members'), apiFetch('/contact')
-    ]);
-    notifications = [];
-    members.filter(m => m.status === 'pending').forEach(m =>
-      notifications.push({ text: `New member pending approval: ${m.full_name}`, time: m.joined_at, read: false })
-    );
-    messages.forEach(msg =>
-      notifications.push({ text: `New message from ${msg.sender_name || msg.name || 'visitor'}`, time: msg.received_at || msg.created_at, read: false })
-    );
-    renderNotifications();
-  } catch(e) { console.error('Notifications error:', e); }
-}
-function renderNotifications() {
-  const badgeEl = document.getElementById('notif-count');
-  const unread = notifications.filter(n => !n.read).length;
-  if (badgeEl) badgeEl.textContent = unread;
-  const body = document.getElementById('notifications-list');
-  if (!body) return;
-  body.innerHTML = notifications.length
-    ? notifications.map(n => `
-        <div class="notif-item">
-          <div class="notif-dot${n.read ? ' read' : ''}"></div>
-          <div class="notif-text">
-            <p>${n.text}</p>
-            <span>${n.time ? new Date(n.time).toLocaleString() : ''}</span>
-          </div>
-        </div>`).join('')
-    : '<div class="empty-state"><div class="empty-icon">🔔</div><p>No new notifications.</p></div>';
-}
-function markAllRead() {
-  notifications.forEach(n => n.read = true);
-  renderNotifications();
-}
-
-// â”€â”€ TEAM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function loadTeam() {
-  try {
-    const list = await apiFetch('/team');
-    const grid = document.getElementById('admin-team-grid');
-    grid.innerHTML = list.length ? list.map(m => `
-      <div class="gallery-admin-item" style="aspect-ratio:unset;">
-        <img src="${m.photo || ''}" alt="${m.name}" style="width:100%;height:140px;object-fit:cover;"
-          onerror="this.style.display='none'"/>
-        <div style="padding:8px;">
-          <strong style="font-size:0.85rem;">${m.name}</strong><br/>
-          <span style="font-size:0.75rem;color:#2d6a4f;">${m.position}</span>
-        </div>
-        <button class="del-btn" onclick="deleteTeam(${m.id})">&#10005;</button>
-      </div>`).join('')
-      : '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">&#128101;</div><p>No team members yet.</p></div>';
-  } catch(e) {
-    document.getElementById('admin-team-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><p>Error loading team.</p></div>';
-  }
-}
-document.getElementById('team-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData();
-  formData.append('name',       document.getElementById('tm-name').value);
-  formData.append('position',   document.getElementById('tm-position').value);
-  formData.append('bio',        document.getElementById('tm-bio').value);
-  formData.append('sort_order', document.getElementById('tm-order').value);
-  const photo = document.getElementById('tm-photo').files[0];
-  if (photo) formData.append('photo', photo);
-  try {
-    const res = await fetch(`${API}/team`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}` },
-      body: formData
-    });
-    if (!res.ok) throw new Error('Failed');
-    showAlert('team-alert', '&#10003; Team member added!', 'success');
-    document.getElementById('team-form').reset();
-    document.getElementById('team-form-panel').style.display = 'none';
-    loadTeam();
-  } catch(err) { showAlert('team-alert', 'Failed to add team member.', 'error'); }
-});
-async function deleteTeam(id) {
-  if (!confirm('Remove this team member?')) return;
-  try { await apiFetch(`/team/${id}`, { method: 'DELETE' }); loadTeam(); }
-  catch(e) { alert('Failed to remove.'); }
-}
-
-// â”€â”€ SYSTEM CONFIG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function loadDonations() {
-  try {
-    const list = await apiFetch('/donations');
-    document.getElementById('donations-body').innerHTML = list.length ? list.map(d => `
-      <tr>
-        <td>${d.donor_name || '-'}</td>
-        <td>${d.email || '-'}</td>
-        <td>$${parseFloat(d.amount || 0).toFixed(2)}</td>
-        <td>${d.purpose || '-'}</td>
-        <td>${d.transaction_ref || '-'}</td>
-        <td>${fmtDate(d.donated_at)}</td>
-      </tr>`).join('')
-      : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No donations yet.</td></tr>';
-    dtInit('dt-donations', {});
-  } catch(e) {
-    document.getElementById('donations-body').innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading donations.</td></tr>';
-  }
-}
-
-// â”€â”€ REPORTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function loadReports() {
-  try {
-    const [members, events, donations, scholarships] = await Promise.all([
-      apiFetch('/members'), apiFetch('/events'), apiFetch('/donations'),
-      apiFetch('/scholarships').catch(() => [])
-    ]);
-    const now = new Date();
-    document.getElementById('rpt-total').textContent     = members.length;
-    document.getElementById('rpt-active').textContent    = members.filter(m => m.status === 'active').length;
-    document.getElementById('rpt-pending').textContent   = members.filter(m => m.status === 'pending').length;
-    document.getElementById('rpt-suspended').textContent = members.filter(m => m.status === 'suspended').length;
-    document.getElementById('rpt-apps').textContent      = scholarships.length;
-    document.getElementById('rpt-submitted').textContent = scholarships.filter(s => s.status === 'submitted').length;
-    document.getElementById('rpt-review').textContent    = scholarships.filter(s => s.status === 'under_review').length;
-    document.getElementById('rpt-approved').textContent  = scholarships.filter(s => s.status === 'approved').length;
-    document.getElementById('rpt-rejected').textContent  = scholarships.filter(s => s.status === 'rejected').length;
-    document.getElementById('rpt-don-count').textContent = donations.length;
-    document.getElementById('rpt-don-total').textContent = '$' + donations.reduce((s, d) => s + parseFloat(d.amount || 0), 0).toFixed(2);
-    document.getElementById('rpt-ev-total').textContent   = events.length;
-    document.getElementById('rpt-ev-upcoming').textContent = events.filter(e => new Date(e.event_date) >= now).length;
-    document.getElementById('rpt-ev-past').textContent     = events.filter(e => new Date(e.event_date) < now).length;
-  } catch(e) { console.error('Reports error:', e); }
-}
-
-// â”€â”€ USERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function loadUsers() {
-  try {
-    const list = await apiFetch('/members');
-    document.getElementById('users-body').innerHTML = list.length ? list.map(m => `
-      <tr>
-        <td><strong>${m.full_name}</strong></td>
-        <td>${m.email}</td>
-        <td>${badge(m.role)}</td>
-        <td>${badge(m.status)}</td>
-        <td>${fmtDate(m.joined_at)}</td>
-        <td>
-          <select onchange="changeRole(${m.id}, this.value)" style="padding:5px 8px;border-radius:6px;border:1px solid #d0d5dd;font-size:0.82rem;">
-            <option value="member"     ${m.role==='member'     ?'selected':''}>Member</option>
-            <option value="executive"  ${m.role==='executive'  ?'selected':''}>Executive</option>
-            <option value="admin"      ${m.role==='admin'      ?'selected':''}>Admin</option>
-            <option value="super_admin"${m.role==='super_admin'?'selected':''}>Super Admin</option>
-          </select>
-        </td>
-      </tr>`).join('')
-      : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No users found.</td></tr>';
-    dtInit('dt-users', { columnDefs: [{ orderable: false, targets: 5 }] });
-  } catch(e) {
-    document.getElementById('users-body').innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading users.</td></tr>';
-  }
-}
-async function changeRole(id, role) {
-  try {
-    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ role }) });
-  } catch(e) { alert('Failed to update role: ' + (e.message || 'Unknown error')); loadUsers(); }
-}
-
-// â”€â”€ SETTINGS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-document.getElementById('settings-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const np = document.getElementById('set-new-pass').value;
-  const cp = document.getElementById('set-confirm-pass').value;
-  if (np !== cp) { showAlert('settings-alert', 'New passwords do not match.', 'error'); return; }
-  if (np.length < 6) { showAlert('settings-alert', 'Password must be at least 6 characters.', 'error'); return; }
-  try {
-    await apiFetch('/members/password', { method: 'PUT', body: JSON.stringify({
-      currentPassword: document.getElementById('set-current-pass').value,
-      newPassword: np
-    })});
-    showAlert('settings-alert', '✅ Password updated successfully!', 'success');
-    document.getElementById('settings-form').reset();
-  } catch(err) { showAlert('settings-alert', err.message || 'Failed to update password.', 'error'); }
-});
-
-// -- ID CARD --
-let idcLogoUrl = '';
-function loadIDCard() {
-  renderIDCard();
-  const saved = JSON.parse(localStorage.getItem('guygd_idcard') || 'null');
-  if (!saved) return;
-  document.getElementById('idc-bg').value      = saved.bg      || '#1a6b3c';
-  document.getElementById('idc-text').value    = saved.text    || '#ffffff';
-  document.getElementById('idc-accent').value  = saved.accent  || '#d4a017';
-  document.getElementById('idc-org').value     = saved.org     || '';
-  document.getElementById('idc-acronym').value = saved.acronym || 'GUYGD';
-  document.getElementById('idc-footer').value  = saved.footer  || '';
-  document.getElementById('idc-validity').value= saved.validity|| 12;
-  idcLogoUrl = saved.logo || '';
-  renderIDCard();
-}
-function loadLogo(input) {
-  const file = input.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => { idcLogoUrl = e.target.result; renderIDCard(); };
-  reader.readAsDataURL(file);
-}
-function getIDCValues() {
-  return {
-    bg:      document.getElementById('idc-bg').value,
-    text:    document.getElementById('idc-text').value,
-    accent:  document.getElementById('idc-accent').value,
-    org:     document.getElementById('idc-org').value,
-    acronym: document.getElementById('idc-acronym').value,
-    footer:  document.getElementById('idc-footer').value,
-    validity:parseInt(document.getElementById('idc-validity').value)||12,
-    showPhoto:  document.getElementById('idc-show-photo').checked,
-    showId:     document.getElementById('idc-show-id').checked,
-    showRole:   document.getElementById('idc-show-role').checked,
-    showExpiry: document.getElementById('idc-show-expiry').checked,
-    logo: idcLogoUrl
-  };
-}
-function renderIDCard() {
-  const c = getIDCValues();
-  const expiry = new Date(); expiry.setMonth(expiry.getMonth() + c.validity);
-  document.getElementById('idc-preview').innerHTML = `
-    <div style="background:${c.bg};color:${c.text};font-family:'Segoe UI',sans-serif;">
-      <div style="background:rgba(0,0,0,0.25);padding:14px 18px;display:flex;align-items:center;gap:12px;">
-        ${c.logo ? `<img src="${c.logo}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid ${c.accent};"/>` : `<div style="width:38px;height:38px;border-radius:50%;background:${c.accent};display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:1rem;">${c.acronym.charAt(0)}</div>`}
-        <div>
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:1px;opacity:0.85;">${c.acronym}</div>
-          <div style="font-size:0.58rem;opacity:0.65;">${c.org}</div>
-        </div>
-      </div>
-      <div style="padding:16px 18px;display:flex;gap:14px;align-items:flex-start;">
-        ${c.showPhoto ? `<div style="width:64px;height:64px;border-radius:10px;background:rgba(255,255,255,0.15);border:2px solid ${c.accent};display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">&#128100;</div>` : ''}
-        <div style="flex:1;">
-          <div style="font-size:1rem;font-weight:800;margin-bottom:4px;">James K. Doe</div>
-          <div style="font-size:0.72rem;background:${c.accent};color:#000;display:inline-block;padding:2px 10px;border-radius:20px;font-weight:700;margin-bottom:8px;">Member</div>
-          ${c.showId     ? `<div style="font-size:0.7rem;opacity:0.75;">ID: <strong>GUYGD-2025-001</strong></div>` : ''}
-          ${c.showExpiry ? `<div style="font-size:0.7rem;opacity:0.75;">Expires: <strong>${expiry.toLocaleDateString()}</strong></div>` : ''}
-        </div>
-      </div>
-      <div style="background:rgba(0,0,0,0.2);padding:8px 18px;font-size:0.6rem;text-align:center;opacity:0.75;">${c.footer}</div>
-    </div>`;
-}
-function saveIDCard() {
-  const c = getIDCValues();
-  try { localStorage.setItem('guygd_idcard', JSON.stringify(c)); } catch(e) { const s={...c,logo:''}; localStorage.setItem('guygd_idcard',JSON.stringify(s)); }
-  showAlert('idcard-alert','\u2705 Template saved!','success');
-}
-function printIDCard() {
-  const html = document.getElementById('idc-preview').innerHTML;
-  const w = window.open('','_blank','width=400,height=300');
-  w.document.write(`<!DOCTYPE html><html><head><title>ID Card</title><style>body{margin:0;background:#e5e7eb;display:flex;align-items:center;justify-content:center;min-height:100vh;} .card{width:320px;border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.25);} @media print{body{background:#fff;} .card{box-shadow:none;}}</style></head><body><div class="card">${html}</div></body></html>`);
-  w.document.close(); w.focus(); setTimeout(()=>w.print(),500);
-}
-</script>
-</body>
-</html>
