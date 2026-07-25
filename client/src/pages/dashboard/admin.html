@@ -924,15 +924,18 @@ async function appDelete(id, name) {
 // â”€â”€ MEMBERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let allMembers = [];
 async function loadMembers() {
-  document.getElementById('members-body').innerHTML =
-    '<tr><td colspan="7" style="text-align:center;color:#6b7280;">Loading...</td></tr>';
+  const tbody = document.getElementById('members-body');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#6b7280;">Loading...</td></tr>';
   try {
     const data = await apiFetch('/members');
     allMembers = Array.isArray(data) ? data : [];
+    if (!allMembers.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#6b7280;">No members registered yet.</td></tr>';
+      return;
+    }
     renderMembers(allMembers);
   } catch(e) {
-    document.getElementById('members-body').innerHTML =
-      `<tr><td colspan="7" style="text-align:center;color:#e74c3c;">Error: ${e.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#e74c3c;padding:16px;">&#9888; ${e.message}<br><small>Try logging out and back in.</small></td></tr>`;
   }
 }
 function renderMembers(list) {
