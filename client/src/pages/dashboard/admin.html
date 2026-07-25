@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -435,6 +435,52 @@
       </div>
 
 
+      <!-- EDIT MEMBER MODAL -->
+      <div id="edit-member-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center;padding:20px;">
+        <div style="background:#fff;border-radius:16px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.3);">
+          <div style="background:linear-gradient(135deg,#1a1f36,#2d6a4f);padding:20px 28px;border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between;">
+            <h2 style="color:#fff;margin:0;font-size:1.1rem;">&#9998; Edit Member</h2>
+            <button onclick="closeEditMemberModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;">&#10005;</button>
+          </div>
+          <div style="padding:24px 28px;">
+            <form id="edit-member-form" class="form-grid">
+              <input type="hidden" id="em-id"/>
+              <div class="form-group full"><label>Full Name</label><input type="text" id="em-full-name" placeholder="Full name" required/></div>
+              <div class="form-group"><label>Phone</label><input type="text" id="em-phone" placeholder="Phone number"/></div>
+              <div class="form-group"><label>Gender</label>
+                <select id="em-gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select>
+              </div>
+              <div class="form-group"><label>Date of Birth</label><input type="date" id="em-dob"/></div>
+              <div class="form-group"><label>County</label><input type="text" id="em-county" placeholder="County"/></div>
+              <div class="form-group"><label>District</label><input type="text" id="em-district" placeholder="District"/></div>
+              <div class="form-group"><label>Town</label><input type="text" id="em-town" placeholder="Town"/></div>
+              <div class="form-group"><label>Occupation</label><input type="text" id="em-occupation" placeholder="Occupation"/></div>
+              <div class="form-group"><label>Education Level</label>
+                <select id="em-education"><option value="">Select</option><option>Primary</option><option>Junior High</option><option>Senior High</option><option>Vocational</option><option>Undergraduate</option><option>Postgraduate</option></select>
+              </div>
+              <div class="form-group"><label>Membership Type</label>
+                <select id="em-membership"><option>Regular Member</option><option>Associate Member</option><option>Veteran Member</option></select>
+              </div>
+              <div class="form-group full"><label>Address</label><input type="text" id="em-address" placeholder="Address"/></div>
+              <div class="form-actions full">
+                <button type="submit" class="btn btn-primary">&#128190; Save Changes</button>
+                <button type="button" class="btn btn-outline" onclick="closeEditMemberModal()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMBER VIEW MODAL -->
+      <div id="member-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center;padding:20px;">
+        <div style="background:#fff;border-radius:16px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.3);">
+          <div style="background:linear-gradient(135deg,#1a1f36,#2d6a4f);padding:20px 28px;border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between;">
+            <h2 style="color:#fff;margin:0;font-size:1.1rem;">&#128100; Member Details</h2>
+            <button onclick="closeMemberModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;">&#10005;</button>
+          </div>
+          <div style="padding:24px 28px;" id="modal-member-content"></div>
+        </div>
+      </div>
       <!-- â•â•â•â• EVENTS â•â•â•â• -->
       <div id="section-events" class="tab-section">
         <div class="panel" id="event-form-panel" style="display:none;margin-bottom:20px;">
@@ -994,7 +1040,7 @@ function searchApplications() {
 
 function renderApplications(filter, q) {
   const u = getUser();
-  const isAdmin = u && ['admin','super_admin'].includes(u.role);
+  const isAdmin = u && ['admin','executive','super_admin'].includes(u.role);
   let list = filter === 'all' ? allApplications : allApplications.filter(a => a.status === filter);
   if (q) {
     const lq = q.toLowerCase();
@@ -1061,7 +1107,7 @@ function viewApplication(id) {
   const actions = document.getElementById('app-modal-actions');
   actions.innerHTML = '';
   const u2 = getUser();
-  const isAdmin2 = u2 && ['admin','super_admin'].includes(u2.role);
+  const isAdmin2 = u2 && ['admin','executive','super_admin'].includes(u2.role);
   if (a.status === 'pending' && isAdmin2) {
     const btnA = document.createElement('button');
     btnA.className = 'btn btn-success'; btnA.innerHTML = '&#10003; Approve';
@@ -1128,7 +1174,7 @@ async function loadMembers() {
 }
 function renderMembers(list) {
   const u = getUser();
-  const isAdmin = u && ['admin','super_admin'].includes(u.role);
+  const isAdmin = u && ['admin','executive','super_admin'].includes(u.role);
   if (!list.length) {
     document.getElementById('members-body').innerHTML =
       '<tr><td colspan="12" style="text-align:center;color:#6b7280;">No members found.</td></tr>';
@@ -1229,7 +1275,7 @@ function viewMember(id) {
   const m = allMembers.find(x => x.id === id);
   if (!m) return;
   const u = getUser();
-  const isAdmin = u && ['admin','super_admin'].includes(u.role);
+  const isAdmin = u && ['admin','executive','super_admin'].includes(u.role);
   const row = (label, val) => val ? `<div><strong style="font-size:0.78rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">${label}</strong><p style="margin:3px 0 0;color:#1a1f36;">${val}</p></div>` : '';
   document.getElementById('modal-member-content').innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;font-size:0.88rem;margin-bottom:20px;">
