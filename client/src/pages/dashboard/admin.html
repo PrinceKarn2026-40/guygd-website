@@ -1084,9 +1084,11 @@ async function appApprove(id) {
 }
 
 async function appReject(id) {
+  const reason = prompt('Rejection reason (optional — will be included in the email to the applicant):');
+  if (reason === null) return; // cancelled
   if (!confirm('Reject this application? The applicant will be notified by email.')) return;
   try {
-    await apiFetch(`/applications/${id}/reject`, { method: 'POST' });
+    await apiFetch(`/applications/${id}/reject`, { method: 'POST', body: JSON.stringify({ reason: reason.trim() || null }) });
     await loadApplications(); loadDashboard(); loadNotifications();
   } catch(e) { alert('Failed to reject: ' + (e.message || 'Unknown error')); }
 }
