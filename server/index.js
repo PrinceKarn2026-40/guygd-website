@@ -22,6 +22,7 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/team', require('./routes/team'));
 app.use('/api/programs', require('./routes/programs'));
+app.use('/api/applications', require('./routes/applications'));
 
 const staticOpts = { setHeaders: (res, filePath) => {
   if (filePath.endsWith('.html')) res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -47,6 +48,7 @@ const PORT = process.env.PORT || 3000;
 
 async function migrate() {
   await db.query(`ALTER TABLE members ALTER COLUMN password_hash DROP NOT NULL`).catch(() => {});
+  await db.query(`ALTER TABLE members ADD COLUMN IF NOT EXISTS member_id VARCHAR(30) UNIQUE`).catch(() => {});
   await db.query(`
     CREATE TABLE IF NOT EXISTS programs (
       id SERIAL PRIMARY KEY,
@@ -59,6 +61,34 @@ async function migrate() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `).catch(e => console.error('Migration error:', e.message));
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS applications (
+      id SERIAL PRIMARY KEY,
+      full_name VARCHAR(100) NOT NULL,
+      first_name VARCHAR(50),
+      last_name VARCHAR(50),
+      email VARCHAR(100) NOT NULL,
+      phone VARCHAR(20),
+      gender VARCHAR(10),
+      date_of_birth DATE,
+      address TEXT,
+      county VARCHAR(100),
+      district VARCHAR(100),
+      town VARCHAR(100),
+      occupation VARCHAR(100),
+      education_level VARCHAR(50),
+      nationality VARCHAR(50) DEFAULT 'Liberian',
+      emergency_contact_name VARCHAR(100),
+      emergency_contact_phone VARCHAR(20),
+      reason_for_joining TEXT,
+      membership_type VARCHAR(50) DEFAULT 'Regular Member',
+      photo_url VARCHAR(255),
+      status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+      member_id INT REFERENCES members(id) ON DELETE SET NULL,
+      reviewed_at TIMESTAMP,
+      submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `).catch(e => console.error('Applications table error:', e.message));
 }
 
 migrate().then(async () => {

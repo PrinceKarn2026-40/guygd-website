@@ -484,13 +484,19 @@
             </div>
 
             <div class="form-section-title">🪪 Membership Type</div>
-            <div class="form-group" style="margin-bottom:4px;">
-              <label>Membership Type <span class="req">*</span></label>
-              <select id="reg-membership-type" required>
-                <option value="Regular Member">Regular Member</option>
-                <option value="Associate Member">Associate Member</option>
-                <option value="Veteran Member">Veteran Member</option>
-              </select>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Membership Type <span class="req">*</span></label>
+                <select id="reg-membership-type" required>
+                  <option value="Regular Member">Regular Member</option>
+                  <option value="Associate Member">Associate Member</option>
+                  <option value="Veteran Member">Veteran Member</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label>Why do you want to join GUYGD? <span class="req">*</span></label>
+                <textarea id="reg-reason" placeholder="Tell us your motivation for joining..." required></textarea>
+              </div>
             </div>
 
             <button type="submit" class="submit-btn">🚀 Submit Membership Application</button>
@@ -596,16 +602,35 @@
       const btn = e.target.querySelector('.submit-btn');
       btn.disabled = true; btn.textContent = '⏳ Submitting...';
       try {
-        await apiFetch('/auth/register', { method:'POST', body: JSON.stringify({
-          full_name:`${first} ${last}`, email:document.getElementById('reg-email').value,
-          phone:document.getElementById('reg-phone').value,
-          gender:document.getElementById('reg-gender').value,
-          date_of_birth:document.getElementById('reg-dob').value,
-          address:document.getElementById('reg-address').value,
-          membership_type: document.getElementById('reg-membership-type').value,
-        })});
+        const fd = new FormData();
+        fd.append('full_name', `${first} ${last}`);
+        fd.append('first_name', first);
+        fd.append('last_name', last);
+        fd.append('email', document.getElementById('reg-email').value);
+        fd.append('phone', document.getElementById('reg-phone').value);
+        fd.append('gender', document.getElementById('reg-gender').value);
+        fd.append('date_of_birth', document.getElementById('reg-dob').value);
+        fd.append('address', document.getElementById('reg-address').value);
+        fd.append('county', document.getElementById('reg-county').value);
+        fd.append('district', document.getElementById('reg-district').value);
+        fd.append('town', document.getElementById('reg-town').value);
+        fd.append('occupation', document.getElementById('reg-occupation').value);
+        fd.append('education_level', document.getElementById('reg-education').value);
+        fd.append('nationality', document.getElementById('reg-nationality').value);
+        fd.append('emergency_contact_name', document.getElementById('reg-emergency-name').value);
+        fd.append('emergency_contact_phone', document.getElementById('reg-emergency-phone').value);
+        fd.append('membership_type', document.getElementById('reg-membership-type').value);
+        fd.append('reason_for_joining', document.getElementById('reg-reason').value);
+        const photoFile = document.getElementById('reg-photo').files[0];
+        if (photoFile) fd.append('photo', photoFile);
+        const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
+        const res = await fetch(`${API}/applications`, { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Submission failed');
         showAlert('register-alert','✅ Application submitted! An admin will review your application and you will receive an email once approved.','success');
         e.target.reset();
+        document.getElementById('photo-preview').style.display = 'none';
+        document.getElementById('photo-placeholder').style.display = 'flex';
         btn.textContent = '✅ Application Submitted';
       } catch(err) {
         showAlert('register-alert', err.message || 'Registration failed.', 'error');

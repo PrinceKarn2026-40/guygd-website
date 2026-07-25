@@ -350,7 +350,7 @@
         </div>
         <div class="panel">
           <div class="panel-header"><h3>&#127891; Membership Applications</h3><span id="dash-app-count" style="font-size:0.82rem;color:#8b9bb4;"></span></div>
-          <div class="table-wrap"><table class="admin-dt" style="width:100%"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="dash-applications-body"></tbody></table></div>
+          <div class="table-wrap"><table class="admin-dt" style="width:100%"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead><tbody id="dash-applications-body"></tbody></table></div>
         </div>
         <div class="panel">
           <div class="panel-header"><h3>&#128197; All Events</h3><span id="dash-events-count" style="font-size:0.82rem;color:#8b9bb4;"></span></div>
@@ -371,11 +371,13 @@
       </div>
 
       <div id="section-applications" class="tab-section">
-        <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
           <button class="btn btn-primary btn-sm" id="app-tab-all"      onclick="filterApplications('all')">All</button>
-          <button class="btn btn-outline btn-sm" id="app-tab-pending"  onclick="filterApplications('pending')">â³ Pending</button>
-          <button class="btn btn-outline btn-sm" id="app-tab-approved" onclick="filterApplications('approved')">✅ Approved</button>
-          <button class="btn btn-outline btn-sm" id="app-tab-rejected" onclick="filterApplications('rejected')">❌ Rejected</button>
+          <button class="btn btn-outline btn-sm" id="app-tab-pending"  onclick="filterApplications('pending')">&#9203; Pending</button>
+          <button class="btn btn-outline btn-sm" id="app-tab-approved" onclick="filterApplications('approved')">&#10003; Approved</button>
+          <button class="btn btn-outline btn-sm" id="app-tab-rejected" onclick="filterApplications('rejected')">&#10007; Rejected</button>
+          <input type="text" id="app-search" placeholder="Search name, email or phone..." oninput="searchApplications()"
+            style="margin-left:auto;padding:7px 12px;border-radius:8px;border:1px solid #d0d5dd;font-size:0.82rem;width:240px;"/>
         </div>
         <div class="panel">
           <div class="panel-header">
@@ -385,10 +387,31 @@
           <div class="table-wrap">
             <table id="dt-applications" class="admin-dt" style="width:100%">
               <thead>
-                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Gender</th><th>Applied</th><th>Status</th><th>Actions</th></tr>
+                <tr><th>Photo</th><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>Applied</th><th>Status</th><th>Actions</th></tr>
               </thead>
               <tbody id="applications-body"></tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPLICATION DETAIL MODAL -->
+      <div id="app-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center;padding:20px;">
+        <div style="background:#fff;border-radius:16px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.3);">
+          <div style="background:linear-gradient(135deg,#1a1f36,#2d6a4f);padding:24px 28px;border-radius:16px 16px 0 0;display:flex;align-items:center;gap:18px;">
+            <div id="app-modal-photo" style="width:72px;height:72px;border-radius:50%;border:3px solid rgba(255,255,255,0.3);overflow:hidden;flex-shrink:0;background:#374151;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#fff;">&#128100;</div>
+            <div style="flex:1;">
+              <h2 id="app-modal-name" style="color:#fff;margin:0;font-size:1.25rem;"></h2>
+              <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                <span id="app-modal-type" style="background:rgba(255,255,255,0.15);color:#fff;font-size:0.75rem;padding:3px 10px;border-radius:20px;"></span>
+                <span id="app-modal-status"></span>
+              </div>
+            </div>
+            <button onclick="closeAppModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;flex-shrink:0;">&#10005;</button>
+          </div>
+          <div style="padding:24px 28px;">
+            <div id="app-modal-body" style="display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;font-size:0.88rem;"></div>
+            <div id="app-modal-actions" style="display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid #f0f2f5;flex-wrap:wrap;"></div>
           </div>
         </div>
       </div>
@@ -836,7 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // â”€â”€ NAVIGATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const sectionTitles = {
   dashboard: 'Dashboard', programs: 'Programs',
-  applications: 'Scholarship Applications',
+  applications: 'Membership Applications',
   members: 'Members', events: 'Events', news: 'News',
   gallery: 'Gallery', team: 'Our Team', donations: 'Donations', messages: 'Messages',
   notifications: 'Notifications', reports: 'Reports',
@@ -885,23 +908,28 @@ async function loadDashboard() {
       apiFetch('/members'), apiFetch('/events'), apiFetch('/donations'),
       apiFetch('/news/all').catch(()=>[]), apiFetch('/team').catch(()=>[]), apiFetch('/programs').catch(()=>[])
     ]);
+    // Note: applications loaded separately below
     document.getElementById('stat-members').textContent   = members.length;
     document.getElementById('stat-events').textContent    = events.length;
     document.getElementById('stat-donations').textContent = donations.length;
     document.getElementById('stat-news').textContent      = newsList.length;
     document.getElementById('stat-programs').textContent  = programs.length;
 
-    // Applications
-    document.getElementById('dash-app-count').textContent = members.length + ' record' + (members.length!==1?'s':'');
-    document.getElementById('dash-applications-body').innerHTML = members.length ? members.map(m => `
+    // Applications — load from /applications endpoint
+    const applications = await apiFetch('/applications').catch(() => []);
+    document.getElementById('dash-app-count').textContent = applications.length + ' record' + (applications.length!==1?'s':'');
+    document.getElementById('dash-applications-body').innerHTML = applications.length ? applications.map(a => `
       <tr>
-        <td><strong>${m.full_name}</strong></td><td>${m.email}</td><td>${m.phone||'-'}</td>
-        <td>${badge(m.status)}</td><td>${fmtDate(m.joined_at)}</td>
+        <td><strong>${a.full_name}</strong></td><td>${a.email}</td><td>${a.phone||'-'}</td>
+        <td>${a.membership_type||'Regular Member'}</td>
+        <td>${badge(a.status)}</td><td>${fmtDate(a.submitted_at)}</td>
         <td style="display:flex;gap:4px;flex-wrap:wrap;">
-          ${m.status!=='active'    ? `<button class="btn btn-sm btn-success" onclick="appAction(${m.id},'active')">&#10003; Approve</button>` : '<span class="badge badge-active">Approved</span>'}
-          ${m.status!=='suspended' ? `<button class="btn btn-sm btn-danger"  onclick="appAction(${m.id},'suspended')">&#10007; Reject</button>`  : '<span class="badge badge-suspended">Rejected</span>'}
+          ${a.status==='pending' ? `<button class="btn btn-sm btn-success" onclick="appApprove(${a.id})">&#10003; Approve</button>` : ''}
+          ${a.status==='pending' ? `<button class="btn btn-sm btn-danger"  onclick="appReject(${a.id})">&#10007; Reject</button>` : ''}
+          ${a.status==='approved' ? '<span class="badge badge-approved">Approved</span>' : ''}
+          ${a.status==='rejected' ? '<span class="badge badge-rejected">Rejected</span>' : ''}
         </td>
-      </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No applications yet.</td></tr>';
+      </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No applications yet.</td></tr>';
 
     // Events
     document.getElementById('dash-events-count').textContent = events.length + ' event' + (events.length!==1?'s':'');
@@ -930,9 +958,12 @@ async function loadDashboard() {
     console.error('Dashboard load error:', e);
     ['stat-members','stat-events','stat-donations','stat-news','stat-programs'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent='!'; });
   }
-}async function loadApplications() {
+}
+
+let allApplications = [], currentAppFilter = 'all';
+async function loadApplications() {
   try {
-    allApplications = await apiFetch('/members');
+    allApplications = await apiFetch('/applications');
     filterApplications(currentAppFilter);
   } catch(e) {
     document.getElementById('applications-body').innerHTML =
@@ -946,48 +977,123 @@ function filterApplications(filter) {
     const btn = document.getElementById('app-tab-' + f);
     if (btn) btn.className = 'btn btn-sm ' + (f === filter ? 'btn-primary' : 'btn-outline');
   });
-  const statusMap = { pending: 'pending', approved: 'active', rejected: 'suspended' };
-  const list = filter === 'all' ? allApplications
-    : allApplications.filter(a => a.status === statusMap[filter]);
-  const titles = { all: 'All Applications', pending: 'Pending Applications', approved: 'Approved Applications', rejected: 'Rejected Applications' };
-  document.getElementById('app-panel-title').textContent = titles[filter];
-  document.getElementById('app-count').textContent = `${list.length} record${list.length !== 1 ? 's' : ''}`;
-  document.getElementById('applications-body').innerHTML = list.length ? list.map(m => `
-    <tr>
-      <td><strong>${m.full_name}</strong></td>
-      <td>${m.email}</td>
-      <td>${m.phone || '-'}</td>
-      <td>${m.gender || '-'}</td>
-      <td>${fmtDate(m.joined_at)}</td>
-      <td>${badge(m.status)}</td>
-      <td style="display:flex;gap:4px;flex-wrap:wrap;">
-        ${m.status !== 'active'    ? `<button class="btn btn-sm btn-success" onclick="appAction(${m.id},'active')">✅ Approve</button>` : '<span class="badge badge-active">Approved</span>'}
-        ${m.status !== 'suspended' ? `<button class="btn btn-sm btn-danger"  onclick="appAction(${m.id},'suspended')">❌ Reject</button>` : '<span class="badge badge-suspended">Rejected</span>'}
-        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="appDelete(${m.id},'${m.full_name.replace(/'/g,'')}')">🗑️ Delete</button>
-      </td>
-    </tr>`).join('')
-    : `<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
-  dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: 6 }] });
+  const q = (document.getElementById('app-search') || {}).value || '';
+  renderApplications(filter, q);
 }
 
-async function appAction(id, status) {
+function searchApplications() {
+  const q = document.getElementById('app-search').value;
+  renderApplications(currentAppFilter, q);
+}
+
+function renderApplications(filter, q) {
+  let list = filter === 'all' ? allApplications : allApplications.filter(a => a.status === filter);
+  if (q) {
+    const lq = q.toLowerCase();
+    list = list.filter(a => (a.full_name||'').toLowerCase().includes(lq) || (a.email||'').toLowerCase().includes(lq) || (a.phone||'').toLowerCase().includes(lq));
+  }
+  const titles = { all: 'All Applications', pending: 'Pending Applications', approved: 'Approved Applications', rejected: 'Rejected Applications' };
+  document.getElementById('app-panel-title').textContent = titles[filter];
+  document.getElementById('app-count').textContent = list.length + ' record' + (list.length !== 1 ? 's' : '');
+  const thumb = a => a.photo_url
+    ? `<img src="${a.photo_url}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #e5e7eb;" onerror="this.style.display='none'">`
+    : `<div style="width:36px;height:36px;border-radius:50%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.85rem;">${(a.full_name||'?')[0].toUpperCase()}</div>`;
+  document.getElementById('applications-body').innerHTML = list.length ? list.map(a => `
+    <tr>
+      <td>${thumb(a)}</td>
+      <td><strong>${a.full_name}</strong></td>
+      <td>${a.email}</td>
+      <td>${a.phone || '-'}</td>
+      <td>${a.membership_type || 'Regular Member'}</td>
+      <td>${fmtDate(a.submitted_at)}</td>
+      <td>${badge(a.status)}</td>
+      <td style="display:flex;gap:4px;flex-wrap:wrap;">
+        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewApplication(${a.id})">&#128065; View</button>
+        ${a.status === 'pending' ? `<button class="btn btn-sm btn-success" onclick="appApprove(${a.id})">&#10003; Approve</button>` : ''}
+        ${a.status === 'pending' ? `<button class="btn btn-sm btn-danger"  onclick="appReject(${a.id})">&#10007; Reject</button>` : ''}
+        ${a.status === 'approved' ? '<span class="badge badge-approved">Approved</span>' : ''}
+        ${a.status === 'rejected' ? '<span class="badge badge-rejected">Rejected</span>' : ''}
+        <button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="appDelete(${a.id},'${a.full_name.replace(/'/g,'')}')">&#128465; Delete</button>
+      </td>
+    </tr>`).join('')
+    : `<tr><td colspan="8" style="text-align:center;color:#8b9bb4;">No ${filter === 'all' ? '' : filter + ' '}applications.</td></tr>`;
+  dtInit('dt-applications', { columnDefs: [{ orderable: false, targets: [0, 7] }] });
+}
+
+function viewApplication(id) {
+  const a = allApplications.find(x => x.id === id);
+  if (!a) return;
+  const photoEl = document.getElementById('app-modal-photo');
+  if (a.photo_url) {
+    photoEl.innerHTML = `<img src="${a.photo_url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='&#128100;'">`;
+  } else {
+    photoEl.innerHTML = '&#128100;';
+  }
+  document.getElementById('app-modal-name').textContent = a.full_name;
+  document.getElementById('app-modal-type').textContent = a.membership_type || 'Regular Member';
+  document.getElementById('app-modal-status').innerHTML = badge(a.status);
+  const field = (label, val) => val ? `<div><p style="margin:0;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#9ca3af;">${label}</p><p style="margin:4px 0 0;color:#1a1f36;font-weight:500;">${val}</p></div>` : '';
+  document.getElementById('app-modal-body').innerHTML = [
+    field('Email', a.email),
+    field('Phone', a.phone),
+    field('Gender', a.gender),
+    field('Date of Birth', a.date_of_birth ? new Date(a.date_of_birth).toLocaleDateString() : null),
+    field('Nationality', a.nationality),
+    field('Occupation', a.occupation),
+    field('Education', a.education_level),
+    field('County', a.county),
+    field('District', a.district),
+    field('Town', a.town),
+    field('Address', a.address),
+    field('Emergency Contact', a.emergency_contact_name),
+    field('Emergency Phone', a.emergency_contact_phone),
+    field('Applied On', fmtDate(a.submitted_at)),
+    a.reason_for_joining ? `<div style="grid-column:1/-1"><p style="margin:0;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#9ca3af;">Reason for Joining</p><p style="margin:4px 0 0;color:#1a1f36;line-height:1.6;">${a.reason_for_joining}</p></div>` : '',
+  ].join('');
+  const actions = document.getElementById('app-modal-actions');
+  actions.innerHTML = '';
+  if (a.status === 'pending') {
+    const btnA = document.createElement('button');
+    btnA.className = 'btn btn-success'; btnA.innerHTML = '&#10003; Approve';
+    btnA.onclick = () => { closeAppModal(); appApprove(a.id); };
+    const btnR = document.createElement('button');
+    btnR.className = 'btn btn-danger'; btnR.innerHTML = '&#10007; Reject';
+    btnR.onclick = () => { closeAppModal(); appReject(a.id); };
+    actions.appendChild(btnA); actions.appendChild(btnR);
+  }
+  const btnD = document.createElement('button');
+  btnD.className = 'btn'; btnD.style.cssText = 'background:#dc2626;color:#fff;';
+  btnD.innerHTML = '&#128465; Delete';
+  btnD.onclick = () => { closeAppModal(); appDelete(a.id, a.full_name); };
+  actions.appendChild(btnD);
+  document.getElementById('app-modal').style.display = 'flex';
+}
+
+function closeAppModal() { document.getElementById('app-modal').style.display = 'none'; }
+
+async function appApprove(id) {
+  if (!confirm('Approve this application? A member account will be created and the applicant notified by email.')) return;
   try {
-    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
-    await loadApplications();
-    loadDashboard();
-  } catch(e) { alert('Failed to update: ' + (e.message || 'Unknown error')); }
+    await apiFetch(`/applications/${id}/approve`, { method: 'POST' });
+    await loadApplications(); loadDashboard(); loadNotifications();
+  } catch(e) { alert('Failed to approve: ' + (e.message || 'Unknown error')); }
+}
+
+async function appReject(id) {
+  if (!confirm('Reject this application? The applicant will be notified by email.')) return;
+  try {
+    await apiFetch(`/applications/${id}/reject`, { method: 'POST' });
+    await loadApplications(); loadDashboard(); loadNotifications();
+  } catch(e) { alert('Failed to reject: ' + (e.message || 'Unknown error')); }
 }
 
 async function appDelete(id, name) {
   if (!confirm(`Permanently delete "${name}"? This cannot be undone.`)) return;
   try {
-    await apiFetch(`/members/${id}`, { method: 'DELETE' });
-    await loadApplications();
-    loadDashboard();
+    await apiFetch(`/applications/${id}`, { method: 'DELETE' });
+    await loadApplications(); loadDashboard(); loadNotifications();
   } catch(e) { alert('Failed to delete: ' + (e.message || 'Unknown error')); }
 }
-
-// â”€â”€ MEMBERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let allMembers = [];
 async function loadMembers() {
   const tbody = document.getElementById('members-body');
@@ -1330,12 +1436,12 @@ async function loadMessages() {
 let notifications = [];
 async function loadNotifications() {
   try {
-    const [members, messages] = await Promise.all([
-      apiFetch('/members'), apiFetch('/contact')
+    const [applications, messages] = await Promise.all([
+      apiFetch('/applications'), apiFetch('/contact')
     ]);
     notifications = [];
-    members.filter(m => m.status === 'pending').forEach(m =>
-      notifications.push({ text: `New member pending approval: ${m.full_name}`, time: m.joined_at, read: false })
+    applications.filter(a => a.status === 'pending').forEach(a =>
+      notifications.push({ text: `New membership application from: ${a.full_name}`, time: a.submitted_at, read: false })
     );
     messages.forEach(msg =>
       notifications.push({ text: `New message from ${msg.sender_name || msg.name || 'visitor'}`, time: msg.received_at || msg.created_at, read: false })
