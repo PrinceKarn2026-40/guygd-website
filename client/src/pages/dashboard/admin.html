@@ -1074,8 +1074,12 @@ function closeAppModal() { document.getElementById('app-modal').style.display = 
 async function appApprove(id) {
   if (!confirm('Approve this application? A member account will be created and the applicant notified by email.')) return;
   try {
-    await apiFetch(`/applications/${id}/approve`, { method: 'POST' });
-    await loadApplications(); loadDashboard(); loadNotifications();
+    const result = await apiFetch(`/applications/${id}/approve`, { method: 'POST' });
+    await loadApplications();
+    await loadMembers();
+    loadDashboard();
+    loadNotifications();
+    alert(`✅ Approved!\n\nMember ID: ${result.member_code}\nTemp Password: ${result.temp_password}\n\nAn email has been sent to the applicant.`);
   } catch(e) { alert('Failed to approve: ' + (e.message || 'Unknown error')); }
 }
 
