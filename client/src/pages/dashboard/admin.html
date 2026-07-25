@@ -426,7 +426,7 @@
           <div class="table-wrap">
             <table id="dt-members" class="admin-dt" style="width:100%">
               <thead>
-                <tr><th>Member ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr>
+                <tr><th>Photo</th><th>Member ID</th><th>Full Name</th><th>Gender</th><th>Phone</th><th>Email</th><th>County</th><th>District</th><th>Occupation</th><th>Status</th><th>Joined</th><th>Actions</th></tr>
               </thead>
               <tbody id="members-body"></tbody>
             </table>
@@ -1127,34 +1127,87 @@ function renderMembers(list) {
   const isAdmin = u && ['admin','super_admin'].includes(u.role);
   if (!list.length) {
     document.getElementById('members-body').innerHTML =
-      '<tr><td colspan="9" style="text-align:center;color:#6b7280;">No members found.</td></tr>';
+      '<tr><td colspan="12" style="text-align:center;color:#6b7280;">No members found.</td></tr>';
     return;
   }
-  document.getElementById('members-body').innerHTML = list.map(m => `
+  document.getElementById('members-body').innerHTML = list.map(m => {
+    const photo = m.profile_photo
+      ? `<img src="${m.profile_photo}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #e5e7eb;" onerror="this.style.display='none'"/>`
+      : `<div style="width:36px;height:36px;border-radius:50%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.85rem;">${(m.full_name||'?')[0].toUpperCase()}</div>`;
+    return `
     <tr>
+      <td>${photo}</td>
       <td><span style="font-family:monospace;font-size:0.8rem;color:#2d6a4f;font-weight:700;">${m.member_id || '-'}</span></td>
       <td><strong>${m.full_name}</strong></td>
-      <td>${m.email}</td>
+      <td>${m.gender || '-'}</td>
       <td>${m.phone || '-'}</td>
-      <td>${m.membership_type || 'Regular Member'}</td>
-      <td>${badge(m.role)}</td>
+      <td>${m.email}</td>
+      <td>${m.county || '-'}</td>
+      <td>${m.district || '-'}</td>
+      <td>${m.occupation || '-'}</td>
       <td>${badge(m.status)}</td>
       <td>${fmtDate(m.joined_at)}</td>
       <td style="display:flex;gap:4px;flex-wrap:wrap;">
         <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewMember(${m.id})">&#128065; View</button>
+        ${isAdmin ? `<button class="btn btn-sm" style="background:#f59e0b;color:#fff;" onclick="editMember(${m.id})">&#9998; Edit</button>` : ''}
         ${isAdmin ? `<button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">&#10003; Activate</button>` : ''}
         ${isAdmin ? `<button class="btn btn-sm btn-danger" onclick="updateMemberStatus(${m.id},'suspended')">&#10007; Suspend</button>` : ''}
         ${isAdmin ? `<button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name.replace(/'/g,'')}')">&#128465; Delete</button>` : ''}
       </td>
-    </tr>`).join('');
-  dtInit('dt-members', { columnDefs: [{ orderable: false, targets: 8 }] });
+    </tr>`;
+  }).join('');
+  dtInit('dt-members', { columnDefs: [{ orderable: false, targets: [0, 11] }] });
 }
 function searchMembers() {
   const q = document.getElementById('member-search').value.toLowerCase();
   renderMembers(allMembers.filter(m =>
-    m.full_name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q)
+    (m.full_name||'').toLowerCase().includes(q) ||
+    (m.email||'').toLowerCase().includes(q) ||
+    (m.county||'').toLowerCase().includes(q) ||
+    (m.member_id||'').toLowerCase().includes(q)
   ));
 }
+
+function editMember(id) {
+  const m = allMembers.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('em-id').value            = m.id;
+  document.getElementById('em-full-name').value     = m.full_name || '';
+  document.getElementById('em-phone').value         = m.phone || '';
+  document.getElementById('em-gender').value        = m.gender || '';
+  document.getElementById('em-dob').value           = m.date_of_birth ? m.date_of_birth.split('T')[0] : '';
+  document.getElementById('em-county').value        = m.county || '';
+  document.getElementById('em-district').value      = m.district || '';
+  document.getElementById('em-town').value          = m.town || '';
+  document.getElementById('em-occupation').value    = m.occupation || '';
+  document.getElementById('em-education').value     = m.education_level || '';
+  document.getElementById('em-address').value       = m.address || '';
+  document.getElementById('em-membership').value    = m.membership_type || 'Regular Member';
+  document.getElementById('edit-member-modal').style.display = 'flex';
+}
+function closeEditMemberModal() { document.getElementById('edit-member-modal').style.display = 'none'; }
+document.getElementById('edit-member-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('em-id').value;
+  const body = {
+    full_name:       document.getElementById('em-full-name').value,
+    phone:           document.getElementById('em-phone').value,
+    gender:          document.getElementById('em-gender').value,
+    date_of_birth:   document.getElementById('em-dob').value || null,
+    county:          document.getElementById('em-county').value,
+    district:        document.getElementById('em-district').value,
+    town:            document.getElementById('em-town').value,
+    occupation:      document.getElementById('em-occupation').value,
+    education_level: document.getElementById('em-education').value,
+    address:         document.getElementById('em-address').value,
+    membership_type: document.getElementById('em-membership').value,
+  };
+  try {
+    await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+    closeEditMemberModal();
+    await loadMembers();
+  } catch(err) { alert('Failed to update: ' + err.message); }
+});
 async function updateMemberStatus(id, status) {
   try {
     await apiFetch(`/members/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
@@ -1395,8 +1448,21 @@ function printMemberCard(id) {
             <div style="margin-top:8px;font-size:0.65rem;color:#9ca3af;font-style:italic;">This card is the property of GUYGD. If found, please return.</div>
           </div>
         </div>
-      </div>
 
+        <!-- Signature -->
+        <div style="display:flex;justify-content:space-between;margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;">
+          <div style="text-align:center;">
+            <div style="width:140px;border-bottom:1px solid #374151;margin-bottom:6px;height:32px;"></div>
+            <div style="font-size:0.68rem;color:#6b7280;">Member Signature</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:140px;border-bottom:1px solid #374151;margin-bottom:6px;height:32px;"></div>
+            <div style="font-size:0.68rem;color:#6b7280;">Authorized Signature</div>
+            <div style="font-size:0.62rem;color:#9ca3af;">GUYGD Administration</div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>`;
 
@@ -1981,6 +2047,40 @@ function printIDCard() {
     <button onclick="closeMemberModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#6b7280;">&#10005;</button>
     <h3 style="margin:0 0 20px;color:#1a1f36;">Member Details</h3>
     <div id="modal-member-content"></div>
+  </div>
+</div>
+
+<!-- Edit Member Modal -->
+<div id="edit-member-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;position:relative;">
+    <div style="background:linear-gradient(135deg,#1a1f36,#2d6a4f);padding:20px 28px;border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:space-between;">
+      <h3 style="color:#fff;margin:0;font-size:1.05rem;">&#9998; Edit Member</h3>
+      <button onclick="closeEditMemberModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;">&#10005;</button>
+    </div>
+    <form id="edit-member-form" style="padding:24px 28px;">
+      <input type="hidden" id="em-id"/>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-group" style="grid-column:1/-1;"><label>Full Name</label><input type="text" id="em-full-name" required/></div>
+        <div class="form-group"><label>Phone</label><input type="text" id="em-phone"/></div>
+        <div class="form-group"><label>Gender</label>
+          <select id="em-gender"><option value="">-- Select --</option><option>Male</option><option>Female</option><option>Other</option></select>
+        </div>
+        <div class="form-group"><label>Date of Birth</label><input type="date" id="em-dob"/></div>
+        <div class="form-group"><label>County</label><input type="text" id="em-county"/></div>
+        <div class="form-group"><label>District</label><input type="text" id="em-district"/></div>
+        <div class="form-group"><label>Town</label><input type="text" id="em-town"/></div>
+        <div class="form-group"><label>Occupation</label><input type="text" id="em-occupation"/></div>
+        <div class="form-group"><label>Education Level</label><input type="text" id="em-education"/></div>
+        <div class="form-group"><label>Membership Type</label>
+          <select id="em-membership"><option>Regular Member</option><option>Associate Member</option><option>Honorary Member</option></select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;"><label>Address</label><input type="text" id="em-address"/></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="btn btn-primary">&#10003; Save Changes</button>
+        <button type="button" class="btn btn-outline" onclick="closeEditMemberModal()">Cancel</button>
+      </div>
+    </form>
   </div>
 </div>
 </body></html>`);
