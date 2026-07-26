@@ -1783,14 +1783,16 @@ async function loadTeam() {
     const list = await apiFetch('/team');
     const grid = document.getElementById('admin-team-grid');
     grid.innerHTML = list.length ? list.map(m => `
-      <div class="gallery-admin-item" style="aspect-ratio:unset;">
-        <img src="${m.photo || ''}" alt="${m.name}" style="width:100%;height:140px;object-fit:cover;"
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+        <img src="${m.photo || ''}" alt="${m.name}" style="width:100%;height:140px;object-fit:cover;display:block;"
           onerror="this.style.display='none'"/>
-        <div style="padding:8px;">
-          <strong style="font-size:0.85rem;">${m.name}</strong><br/>
-          <span style="font-size:0.75rem;color:#2d6a4f;">${m.position}</span>
+        <div style="padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <div>
+            <strong style="font-size:0.88rem;color:#1a1f36;">${m.name}</strong><br/>
+            <span style="font-size:0.75rem;color:#2d6a4f;">${m.position}</span>
+          </div>
+          <button class="btn btn-sm btn-danger" onclick="deleteTeam(${m.id})">&#128465; Delete</button>
         </div>
-        <button class="del-btn" onclick="deleteTeam(${m.id})">&#10005;</button>
       </div>`).join('')
       : '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">&#128101;</div><p>No team members yet.</p></div>';
   } catch(e) {
