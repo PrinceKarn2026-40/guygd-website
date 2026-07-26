@@ -282,7 +282,7 @@
         <span class="icon">🖼️</span> Gallery
       </a>
       <a onclick="showSection('programs', this)">
-        <span class="icon">📋</span> Programs
+        <span class="icon">📋</span> Projects
       </a>
       <a onclick="showSection('team', this)">
         <span class="icon">👥</span> Our Team
@@ -346,7 +346,7 @@
           <div class="stat-card"><div class="stat-icon orange">&#128197;</div><div class="stat-info"><h3 id="stat-events">-</h3><p>Events</p></div></div>
           <div class="stat-card"><div class="stat-icon purple">&#128176;</div><div class="stat-info"><h3 id="stat-donations">-</h3><p>Donations</p></div></div>
           <div class="stat-card"><div class="stat-icon blue">&#128240;</div><div class="stat-info"><h3 id="stat-news">-</h3><p>News Articles</p></div></div>
-          <div class="stat-card"><div class="stat-icon green">&#128203;</div><div class="stat-info"><h3 id="stat-programs">-</h3><p>Programs</p></div></div>
+          <div class="stat-card"><div class="stat-icon green">&#128203;</div><div class="stat-info"><h3 id="stat-programs">-</h3><p>Projects</p></div></div>
         </div>
 
       </div>
@@ -612,13 +612,13 @@
       <div id="section-programs" class="tab-section">
         <div class="panel">
           <div class="panel-header">
-            <h3>Programs</h3>
+            <h3>Projects</h3>
           </div>
           <form id="program-form" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
             <input type="hidden" id="prog-id"/>
             <div style="grid-column:1/-1;display:flex;gap:10px;align-items:center;">
               <input type="text" id="prog-icon" placeholder="Icon (emoji)" style="width:80px;padding:8px;border-radius:8px;border:1px solid #d0d5dd;font-size:1.2rem;text-align:center;"/>
-              <input type="text" id="prog-title" placeholder="Program Title *" required style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid #d0d5dd;"/>
+              <input type="text" id="prog-title" placeholder="Project Title *" required style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid #d0d5dd;"/>
             </div>
             <textarea id="prog-desc" placeholder="Description *" required rows="3" style="grid-column:1/-1;padding:8px 12px;border-radius:8px;border:1px solid #d0d5dd;resize:vertical;"></textarea>
             <textarea id="prog-bullets" placeholder="Bullet points (one per line)" rows="3" style="grid-column:1/-1;padding:8px 12px;border-radius:8px;border:1px solid #d0d5dd;resize:vertical;"></textarea>
@@ -628,7 +628,7 @@
               <img id="prog-preview" src="" alt="" style="display:none;margin-top:8px;max-height:120px;border-radius:8px;object-fit:cover;"/>
             </div>
             <div style="grid-column:1/-1;display:flex;gap:8px;">
-              <button type="submit" class="btn btn-primary">💾 Save Program</button>
+              <button type="submit" class="btn btn-primary">💾 Save Project</button>
               <button type="button" class="btn" onclick="resetProgramForm()" style="background:#f3f4f6;color:#374151;">✕ Cancel</button>
             </div>
           </form>
@@ -933,7 +933,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // â”€â”€ NAVIGATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const sectionTitles = {
-  dashboard: 'Dashboard', programs: 'Programs',
+  dashboard: 'Dashboard', programs: 'Projects',
   applications: 'Membership Applications',
   members: 'Members', events: 'Events', news: 'News',
   gallery: 'Gallery', team: 'Our Team', donations: 'Donations', messages: 'Messages',
@@ -1540,7 +1540,7 @@ async function loadPrograms() {
     allPrograms = await apiFetch('/programs');
     renderProgramsTable(allPrograms);
   } catch(e) {
-    document.getElementById('programs-body').innerHTML = '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading programs.</td></tr>';
+    document.getElementById('programs-body').innerHTML = '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading projects.</td></tr>';
   }
 }
 function renderProgramsTable(list) {
@@ -1552,7 +1552,7 @@ function renderProgramsTable(list) {
       <td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.description}</td>
       <td><button class="btn btn-sm btn-danger" onclick="deleteProgram(${p.id})">🗑️ Delete</button></td>
     </tr>`).join('')
-    : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No programs yet.</td></tr>';
+    : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No projects yet.</td></tr>';
 
 
 }
@@ -1573,9 +1573,9 @@ function resetProgramForm() {
   const img = document.getElementById('prog-preview'); img.src = ''; img.style.display = 'none';
 }
 async function deleteProgram(id) {
-  if (!confirm('Delete this program?')) return;
+  if (!confirm('Delete this project?')) return;
   try { await apiFetch(`/programs/${id}`, { method: 'DELETE' }); loadPrograms(); loadDashboard(); }
-  catch(e) { alert('Failed to delete program.'); }
+  catch(e) { alert('Failed to delete project.'); }
 }
 document.getElementById('prog-image').addEventListener('change', function() {
   const f = this.files[0]; if (!f) return;
