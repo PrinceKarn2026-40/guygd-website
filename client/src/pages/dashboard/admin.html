@@ -1503,10 +1503,7 @@ function renderProgramsTable(list) {
       <td><strong>${p.title}</strong></td>
       <td>${p.image_url ? `<img src="${p.image_url}" style="height:48px;border-radius:6px;object-fit:cover;"/>` : '<span style="color:#9ca3af;">No photo</span>'}</td>
       <td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.description}</td>
-      <td style="display:flex;gap:4px;">
-        <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="editProgram(${p.id})">✏️ Edit</button>
-      <td>
-      </td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteProgram(${p.id})">🗑️ Delete</button></td>
     </tr>`).join('')
     : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No programs yet.</td></tr>';
 
