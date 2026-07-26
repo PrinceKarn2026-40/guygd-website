@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GUYGD – Programs</title>
+  <title>GUYGD – Projects</title>
   <link rel="stylesheet" href="/src/css/main.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
 </head>
@@ -17,23 +17,23 @@
   </nav>
 
   <div class="page-hero">
-    <h1>Our Programs</h1>
+    <h1>Our Projects</h1>
     <p>Initiatives designed to empower, educate, and uplift our community.</p>
   </div>
 
   <section class="section">
     <div class="container" id="programs-container">
-      <div style="text-align:center;padding:40px;color:#6b7280;">Loading programs...</div>
+      <div style="text-align:center;padding:40px;color:#6b7280;">Loading projects...</div>
     </div>
   </section>
 
   <section class="section bg-light">
     <div class="container cta-box">
       <h2>Get Involved</h2>
-      <p>Join us as a member, volunteer, or donor and help us expand these programs.</p>
+      <p>Join us as a member, volunteer, or donor and help us expand these projects.</p>
       <div class="hero-btns">
         <a href="/membership.html" class="btn btn-primary">Become a Member</a>
-        <a href="/donate.html" class="btn btn-green">Support a Program</a>
+        <a href="/donate.html" class="btn btn-green">Support a Project</a>
       </div>
     </div>
   </section>
@@ -52,7 +52,7 @@
 
     function renderPrograms(list) {
       const c = document.getElementById('programs-container');
-      if (!list.length) { c.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;">No programs yet.</div>'; return; }
+      if (!list.length) { c.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;">No projects yet.</div>'; return; }
       c.innerHTML = list.map((p, i) => `
         <div class="program-block ${i % 2 !== 0 ? 'reverse' : ''}">
           ${p.image_url
