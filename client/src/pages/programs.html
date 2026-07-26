@@ -43,8 +43,6 @@
   <footer id="footer"></footer>
   <script src="/src/js/main.js"></script>
   <script>
-    const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
-
     function renderPrograms(list) {
       const c = document.getElementById('programs-container');
       if (!list.length) {
@@ -62,7 +60,7 @@
         </div>`).join('');
     }
 
-    async function loadPrograms() {
+    document.addEventListener('DOMContentLoaded', async () => {
       const c = document.getElementById('programs-container');
       try {
         const res = await fetch(`${API}/programs`);
@@ -72,9 +70,7 @@
       } catch(err) {
         c.innerHTML = `<div style="text-align:center;padding:40px;color:#e74c3c;grid-column:1/-1;">Could not load projects: ${err.message}</div>`;
       }
-    }
-
-    loadPrograms();
+    });
   </script>
 </body>
 </html>
