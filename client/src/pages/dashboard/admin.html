@@ -1270,7 +1270,12 @@ function printMemberProfile(id) {
 
     <!-- Header -->
     <div style="background:linear-gradient(135deg,#052e16,#15803d);border-radius:12px;padding:24px 28px;display:flex;align-items:center;gap:20px;margin-bottom:24px;">
-      <div style="width:52px;height:52px;border-radius:50%;background:#d4a017;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.3rem;color:#052e16;flex-shrink:0;">G</div>
+      <div style="width:56px;height:56px;border-radius:50%;background:#d4a017;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.3rem;color:#052e16;flex-shrink:0;overflow:hidden;"><img src="/assets/images/guygd-logo.png" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='G'"/></div>
+        <div>
+          <div style="color:#fff;font-size:1.4rem;font-weight:800;letter-spacing:2px;">GUYGD</div>
+          <div style="color:rgba(255,255,255,0.75);font-size:0.72rem;margin-top:2px;">Gbeh-lay United Youths for Growth and Development</div>
+          <div style="color:#d4a017;font-size:0.68rem;margin-top:2px;font-style:italic;">Voice of the Voiceless &mdash; Est. May 14, 2023</div>
+        </div>
       <div style="flex:1;">
         <div style="color:#fff;font-size:1.3rem;font-weight:800;letter-spacing:2px;">GUYGD</div>
         <div style="color:rgba(255,255,255,0.7);font-size:0.7rem;">Gbeh-lay United Youths for Growth and Development</div>
@@ -1388,12 +1393,7 @@ function printMemberCard(id) {
 
       <!-- Header -->
       <div style="background:linear-gradient(135deg,#052e16,#15803d);border-radius:16px 16px 0 0;padding:28px 32px;display:flex;align-items:center;gap:20px;">
-        <div style="width:56px;height:56px;border-radius:50%;background:#d4a017;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.3rem;color:#052e16;flex-shrink:0;">G</div>
-        <div>
-          <div style="color:#fff;font-size:1.4rem;font-weight:800;letter-spacing:2px;">GUYGD</div>
-          <div style="color:rgba(255,255,255,0.75);font-size:0.72rem;margin-top:2px;">Gbeh-lay United Youths for Growth and Development</div>
-          <div style="color:#d4a017;font-size:0.68rem;margin-top:2px;font-style:italic;">Voice of the Voiceless &mdash; Est. May 14, 2023</div>
-        </div>
+        <div style="width:56px;height:56px;border-radius:50%;background:#d4a017;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.3rem;color:#052e16;flex-shrink:0;overflow:hidden;"><img src="/assets/images/guygd-logo.png" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='G'"/></div>
         <div style="margin-left:auto;text-align:right;">
           <div style="color:rgba(255,255,255,0.6);font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;">Membership Card</div>
           <div style="color:#d4a017;font-weight:800;font-size:0.9rem;font-family:monospace;margin-top:4px;">${memberId}</div>
@@ -1924,7 +1924,7 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
 });
 
 // -- ID CARD --
-let idcLogoUrl = '';
+let idcLogoUrl = '/assets/images/guygd-logo.png';
 async function loadIDCard() {
   const saved = JSON.parse(localStorage.getItem('guygd_idcard') || 'null');
   if (saved) {
@@ -1935,7 +1935,7 @@ async function loadIDCard() {
     document.getElementById('idc-acronym').value  = saved.acronym  || 'GUYGD';
     document.getElementById('idc-footer').value   = saved.footer   || 'Voice of the Voiceless - Est. May 14, 2023';
     document.getElementById('idc-validity').value = saved.validity || 12;
-    idcLogoUrl = saved.logo || '';
+    idcLogoUrl = saved.logo || '/assets/images/guygd-logo.png';
   }
   renderIDCard();
   try {
