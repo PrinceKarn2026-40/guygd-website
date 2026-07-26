@@ -12,15 +12,18 @@ exports.send = async (req, res) => {
       try {
         const nodemailer = require('nodemailer');
         const transporter = nodemailer.createTransport({
-          host: process.env.EMAIL_HOST,
-          port: process.env.EMAIL_PORT,
+          host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+          port: parseInt(process.env.EMAIL_PORT || '587'),
+          secure: false,
           auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+          tls: { rejectUnauthorized: false }
         });
         await transporter.sendMail({
-          from: process.env.EMAIL_USER,
+          from: `"GUYGD" <${process.env.EMAIL_USER}>`,
           to: process.env.EMAIL_USER,
+          replyTo: `${sender_name} <${email}>`,
           subject: `[GUYGD Contact] ${subject}`,
-          text: `From: ${sender_name} <${email}>\n\n${message}`,
+          html: `<p><strong>From:</strong> ${sender_name} &lt;${email}&gt;</p><p><strong>Subject:</strong> ${subject}</p><hr/><p>${message.replace(/\n/g,'<br/>')}</p>`,
         });
       } catch (emailErr) {
         console.error('Email send failed:', emailErr.message);
