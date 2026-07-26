@@ -78,9 +78,9 @@
   border-color: rgba(255,255,255,0.08);
   color: #e8f5e9;
 }
-[data-theme="dark"] .program-info h2 { color: #4ade80; }
-[data-theme="dark"] .program-info p,
-[data-theme="dark"] .program-info ul li { color: #9ca3af; }
+[data-theme="dark"] .program-block-body h2 { color: #4ade80; }
+[data-theme="dark"] .program-block-body p,
+[data-theme="dark"] .program-block-body ul li { color: #9ca3af; }
 
 [data-theme="dark"] .form-container {
   background: #1a2e1f;
@@ -710,12 +710,24 @@ tr:hover td { background: var(--g50); }
 .timeline-content p { color: var(--gray); font-size: 0.88rem; }
 
 /* ── PROGRAMS PAGE ── */
-.program-block { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: start; background: var(--white); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-sm); margin-bottom: 24px; border: 1px solid var(--g100); }
-.program-icon { font-size: 3rem; }
-.program-info h2 { color: var(--g700); margin-bottom: 10px; font-weight: 800; }
-.program-info p { color: var(--gray); margin-bottom: 10px; }
-.program-info ul { padding-left: 18px; list-style: disc; margin-bottom: 16px; }
-.program-info ul li { color: var(--gray); font-size: 0.88rem; margin-bottom: 4px; }
+.programs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+.program-block {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--g100);
+  overflow: hidden;
+  transition: var(--transition);
+}
+.program-block:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.program-block img {
+  width: 100%; height: 200px; object-fit: cover; display: block;
+}
+.program-block-body { padding: 22px 24px 26px; }
+.program-block-body h2 { color: var(--g700); margin-bottom: 10px; font-size: 1.1rem; font-weight: 800; }
+.program-block-body p { color: var(--gray); margin-bottom: 10px; font-size: 0.9rem; line-height: 1.6; }
+.program-block-body ul { padding-left: 18px; list-style: disc; margin-bottom: 16px; }
+.program-block-body ul li { color: var(--gray); font-size: 0.85rem; margin-bottom: 4px; }
 
 /* ── GALLERY GRID ── */
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
