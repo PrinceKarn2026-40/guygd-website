@@ -51,6 +51,8 @@ async function migrate() {
   await db.query(`ALTER TABLE members ADD COLUMN IF NOT EXISTS member_id VARCHAR(30) UNIQUE`).catch(() => {});
   await db.query(`ALTER TABLE members ADD COLUMN IF NOT EXISTS membership_type VARCHAR(50) DEFAULT 'Regular Member'`).catch(() => {});
   await db.query(`ALTER TABLE donations ADD COLUMN IF NOT EXISTS screenshot_url VARCHAR(255)`).catch(() => {});
+  // Clear old ephemeral disk paths that no longer exist on Railway
+  await db.query(`UPDATE donations SET screenshot_url = NULL WHERE screenshot_url LIKE '/uploads/%' OR screenshot_url LIKE '/assets/images/uploads/%'`).catch(() => {});
   await db.query(`ALTER TABLE applications ADD COLUMN IF NOT EXISTS rejection_reason TEXT`).catch(() => {});
   await db.query(`
     CREATE TABLE IF NOT EXISTS programs (
