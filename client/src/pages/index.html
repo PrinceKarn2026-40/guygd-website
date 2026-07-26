@@ -31,25 +31,15 @@
     .what-we-do .card li { color: rgba(255,255,255,0.7) !important; }
     .what-we-do .card-icon { filter: none; }
 
-    /* TEAM CAROUSEL */
+    /* TEAM GRID */
     .team-section { background: var(--g50); }
-    .team-carousel-wrap {
-      overflow: hidden;
-      position: relative;
-      width: 100%;
-      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-    }
+    .team-carousel-wrap { width: 100%; }
     .team-carousel-track {
-      display: flex;
-      gap: 20px;
-      width: max-content;
-      animation: teamScroll 28s linear infinite;
-    }
-    .team-carousel-track:hover { animation-play-state: paused; }
-    @keyframes teamScroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      max-width: 560px;
+      margin: 0 auto;
     }
     .team-card {
       background: #fff;
@@ -58,8 +48,6 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       transition: transform 0.2s, box-shadow 0.2s;
       cursor: pointer;
-      flex-shrink: 0;
-      width: 220px;
     }
     .team-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.14); }
     .team-card-photo { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
@@ -327,7 +315,7 @@
                 <span>${m.position}</span>
               </div>
             </div>`).join('');
-          tc.innerHTML = cards + cards;
+          tc.innerHTML = cards;
         }
       } catch { document.getElementById('home-team').innerHTML = '<p style="color:var(--gray);padding:20px;">Could not load team.</p>'; }
 
