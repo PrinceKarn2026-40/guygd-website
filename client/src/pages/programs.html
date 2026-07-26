@@ -63,7 +63,8 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const c = document.getElementById('programs-container');
       try {
-        const res = await fetch(`${API}/programs`);
+        const url = (typeof API !== 'undefined' ? API : '/api') + '/programs';
+        const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         renderPrograms(Array.isArray(data) ? data : []);
