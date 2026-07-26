@@ -905,8 +905,20 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('topbar-role').textContent  = user.role.replace('_', ' ');
   const initials = (user.full_name || 'A').split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
   document.getElementById('topbar-avatar').textContent = initials;
-  loadDashboard();
-  loadNotifications();
+
+  // Role-based sidebar: executive only sees Donations
+  if (user.role === 'executive') {
+    document.querySelectorAll('.sidebar-nav a[onclick]').forEach(a => {
+      const match = a.getAttribute('onclick').match(/showSection\('(\w+)'/);
+      if (match && match[1] !== 'donations') a.style.display = 'none';
+    });
+    document.querySelectorAll('.sidebar-nav .divider').forEach(d => d.style.display = 'none');
+    showSection('donations', document.querySelector('.sidebar-nav a[onclick*="donations"]'));
+    loadDonations();
+  } else {
+    loadDashboard();
+    loadNotifications();
+  }
 });
 
 // â”€â”€ NAVIGATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
