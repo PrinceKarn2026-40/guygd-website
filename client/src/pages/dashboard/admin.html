@@ -648,7 +648,7 @@
           <div class="table-wrap">
             <table id="dt-donations" class="admin-dt" style="width:100%">
               <thead>
-                <tr><th>Donor</th><th>Email</th><th>Amount</th><th>Purpose</th><th>Reference</th><th>Screenshot</th><th>Date</th></tr>
+                <tr><th>Donor</th><th>Email</th><th>Amount</th><th>Purpose</th><th>Reference</th><th>Screenshot</th><th>Date</th><th>Action</th></tr>
               </thead>
               <tbody id="donations-body"></tbody>
             </table>
@@ -1878,6 +1878,12 @@ async function deleteTeam(id) {
 }
 
 // â”€â”€ SYSTEM CONFIG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function deleteDonation(id, name) {
+  if (!confirm(`Delete donation from "${name}"? This cannot be undone.`)) return;
+  try { await apiFetch(`/donations/${id}`, { method: 'DELETE' }); loadDonations(); loadDashboard(); }
+  catch(e) { alert('Failed to delete donation.'); }
+}
+
 async function loadDonations() {
   try {
     const list = await apiFetch('/donations');
@@ -1890,6 +1896,7 @@ async function loadDonations() {
         <td>${d.transaction_ref || '-'}</td>
         <td>${d.screenshot_url ? (d.screenshot_url.startsWith('data:') ? `<a href="${d.screenshot_url}" target="_blank"><img src="${d.screenshot_url}" style="height:40px;border-radius:4px;object-fit:cover;border:1px solid #e5e7eb;cursor:pointer;" title="Click to view full screenshot" onerror="this.parentElement.innerHTML='<span style=color:#9ca3af;font-size:0.78rem;>Expired</span>'"/></a>` : `<a href="${d.screenshot_url}" target="_blank" style="font-size:0.78rem;color:#2d6a4f;">Click to view full screenshot</a>`) : '<span style="color:#9ca3af;font-size:0.78rem;">None</span>'}</td>
         <td>${fmtDate(d.donated_at)}</td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteDonation(${d.id},'${(d.donor_name||'').replace(/'/g,'')}')">🗑️ Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No donations yet.</td></tr>';
 
