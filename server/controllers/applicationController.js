@@ -25,13 +25,14 @@ function generateMemberId(id) {
 
 async function sendEmail(to, subject, html) {
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"GUYGD" <${process.env.EMAIL_USER}>`,
       to, subject, html
     });
-    console.log(`Email sent to ${to}: ${subject}`);
+    console.log(`✅ Email sent to ${to}: ${subject} [${info.messageId}]`);
   } catch (e) {
-    console.error('Email error:', e.message);
+    console.error('❌ Email send FAILED:', e.message);
+    console.error('Email config — HOST:', process.env.EMAIL_HOST, 'PORT:', process.env.EMAIL_PORT, 'USER:', process.env.EMAIL_USER, 'PASS set:', !!process.env.EMAIL_PASS);
   }
 }
 
