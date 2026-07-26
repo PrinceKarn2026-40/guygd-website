@@ -906,8 +906,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const initials = (user.full_name || 'A').split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
   document.getElementById('topbar-avatar').textContent = initials;
 
-  // Role-based sidebar: executive only sees Donations
+  // Role-based sidebar visibility
   if (user.role === 'executive') {
+    // Executive: only Donations
     document.querySelectorAll('.sidebar-nav a[onclick]').forEach(a => {
       const match = a.getAttribute('onclick').match(/showSection\('(\w+)'/);
       if (match && match[1] !== 'donations') a.style.display = 'none';
@@ -915,7 +916,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.sidebar-nav .divider').forEach(d => d.style.display = 'none');
     showSection('donations', document.querySelector('.sidebar-nav a[onclick*="donations"]'));
     loadDonations();
+  } else if (user.role === 'admin') {
+    // Admin: full access except Users section
+    document.querySelectorAll('.sidebar-nav a[onclick]').forEach(a => {
+      const match = a.getAttribute('onclick').match(/showSection\('(\w+)'/);
+      if (match && match[1] === 'users') a.style.display = 'none';
+    });
+    loadDashboard();
+    loadNotifications();
   } else {
+    // super_admin: full access
     loadDashboard();
     loadNotifications();
   }
