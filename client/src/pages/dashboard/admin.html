@@ -1879,7 +1879,15 @@ async function deleteTeam(id) {
 
 // â”€â”€ SYSTEM CONFIG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function deleteDonation(id, name) {
-  if (!confirm(`Delete donation from "${name}"? This cannot be undone.`)) return;
+  const u = getUser();
+  if (!confirm(`Remove donation from "${name}"?`)) return;
+  if (u && u.role === 'executive') {
+    // Executive: hide from view only, no DB delete
+    document.querySelectorAll('#donations-body tr').forEach(tr => {
+      if (tr.innerHTML.includes(`deleteDonation(${id},`)) tr.remove();
+    });
+    return;
+  }
   try { await apiFetch(`/donations/${id}`, { method: 'DELETE' }); loadDonations(); loadDashboard(); }
   catch(e) { alert('Failed to delete donation.'); }
 }
