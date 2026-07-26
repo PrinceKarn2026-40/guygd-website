@@ -433,7 +433,7 @@
               <img id="photo-preview" class="photo-preview-img" src="" alt="Preview"/>
               <div class="photo-circle" id="photo-placeholder" onclick="document.getElementById('reg-photo').click()">📷</div>
               <input type="file" id="reg-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)"/>
-              <p style="font-size:0.74rem;color:#9ca3af;margin-top:2px;">Click to upload (optional)</p>
+              <p style="font-size:0.74rem;color:#9ca3af;margin-top:2px;">Click to upload <span style="color:#ef4444;font-weight:700;">*</span> (required)</p>
             </div>
 
             <div class="form-section-title">👤 Personal Information</div>
@@ -599,6 +599,16 @@
       e.preventDefault();
       const first = document.getElementById('reg-firstname').value.trim();
       const last  = document.getElementById('reg-lastname').value.trim();
+
+      // Require photo
+      const photoFile = document.getElementById('reg-photo').files[0];
+      if (!photoFile) {
+        showAlert('register-alert', '📷 Please upload a profile photo before submitting.', 'error');
+        document.getElementById('photo-placeholder').style.border = '3px dashed #ef4444';
+        document.getElementById('photo-placeholder').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
       const btn = e.target.querySelector('.submit-btn');
       btn.disabled = true; btn.textContent = '⏳ Submitting...';
       try {
@@ -621,8 +631,7 @@
         fd.append('emergency_contact_phone', document.getElementById('reg-emergency-phone').value);
         fd.append('membership_type', document.getElementById('reg-membership-type').value);
         fd.append('reason_for_joining', document.getElementById('reg-reason').value);
-        const photoFile = document.getElementById('reg-photo').files[0];
-        if (photoFile) fd.append('photo', photoFile);
+        fd.append('photo', photoFile);
         const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
         const res = await fetch(`${API}/applications`, { method: 'POST', body: fd });
         const data = await res.json();
@@ -631,6 +640,7 @@
         e.target.reset();
         document.getElementById('photo-preview').style.display = 'none';
         document.getElementById('photo-placeholder').style.display = 'flex';
+        document.getElementById('photo-placeholder').style.border = '3px dashed #16a34a';
         btn.textContent = '✅ Application Submitted';
       } catch(err) {
         showAlert('register-alert', err.message || 'Registration failed.', 'error');

@@ -161,6 +161,13 @@ exports.submit = async (req, res) => {
     if (exists.rows.length)
       return res.status(409).json({ message: 'A pending application already exists for this email. Please wait for it to be reviewed.' });
 
+    // Block email already registered as a member
+    const memberExists = await db.query(
+      "SELECT id FROM members WHERE email=$1", [email]
+    );
+    if (memberExists.rows.length)
+      return res.status(409).json({ message: 'This email is already registered as a GUYGD member.' });
+
     const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
     const r = await db.query(
       `INSERT INTO applications
