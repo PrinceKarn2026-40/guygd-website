@@ -11,7 +11,9 @@ exports.getAll = async (req, res) => {
 
 exports.upload = async (req, res) => {
   const { title, caption, category, event_id } = req.body;
-  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+  const image_url = req.file
+    ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
+    : null;
   if (!image_url) return res.status(400).json({ message: 'Image file required' });
   try {
     await db.query(

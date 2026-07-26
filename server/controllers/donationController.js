@@ -2,7 +2,9 @@ const db = require('../config/db');
 
 exports.donate = async (req, res) => {
   const { donor_name, email, amount, purpose, transaction_ref } = req.body;
-  const screenshot_url = req.file ? `/uploads/${req.file.filename}` : null;
+  const screenshot_url = req.file
+    ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
+    : null;
   try {
     await db.query(
       'INSERT INTO donations (donor_name, email, amount, purpose, transaction_ref, screenshot_url) VALUES ($1,$2,$3,$4,$5,$6)',

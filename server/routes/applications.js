@@ -1,15 +1,10 @@
 const router = require('express').Router();
 const multer = require('multer');
-const path = require('path');
 const auth = require('../middleware/authMiddleware');
 const role = require('../middleware/roleMiddleware');
 const ctrl = require('../controllers/applicationController');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, '../../client/public/assets/images/uploads')),
-  filename: (req, file, cb) => cb(null, `app-${Date.now()}${path.extname(file.originalname)}`)
-});
-const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 router.post('/', upload.single('photo'), ctrl.submit);
 router.get('/', auth, role('admin', 'executive', 'super_admin'), ctrl.getAll);

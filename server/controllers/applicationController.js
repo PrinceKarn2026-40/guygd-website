@@ -168,7 +168,7 @@ exports.submit = async (req, res) => {
     if (memberExists.rows.length)
       return res.status(409).json({ message: 'This email is already registered as a GUYGD member.' });
 
-    const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
+    const photo_url = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : null;
     const r = await db.query(
       `INSERT INTO applications
         (full_name,first_name,last_name,email,phone,gender,date_of_birth,

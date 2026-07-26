@@ -22,7 +22,7 @@ exports.getAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   const { title, content, summary, category, published } = req.body;
-  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+  const image_url = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : null;
   try {
     await db.query(
       'INSERT INTO news (title, content, summary, category, image_url, author_id, published) VALUES ($1,$2,$3,$4,$5,$6,$7)',

@@ -9,7 +9,7 @@ exports.getAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   const { name, position, bio, sort_order } = req.body;
-  const photo = req.file ? `/uploads/${req.file.filename}` : null;
+  const photo = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : null;
   if (!name || !position) return res.status(400).json({ message: 'Name and position required' });
   try {
     await db.query(

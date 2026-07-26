@@ -9,7 +9,7 @@ exports.getAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   const { title, icon, description, bullets } = req.body;
-  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+  const image_url = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : null;
   try {
     await db.query(
       'INSERT INTO programs (title, icon, description, bullets, image_url) VALUES ($1,$2,$3,$4,$5)',
@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   const { title, icon, description, bullets } = req.body;
-  const image_url = req.file ? `/uploads/${req.file.filename}` : req.body.image_url || null;
+  const image_url = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : req.body.image_url || null;
   try {
     await db.query(
       'UPDATE programs SET title=$1, icon=$2, description=$3, bullets=$4, image_url=$5 WHERE id=$6',

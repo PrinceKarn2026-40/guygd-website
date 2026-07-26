@@ -43,35 +43,29 @@
   <footer id="footer"></footer>
   <script src="/src/js/main.js"></script>
   <script>
-    function renderPrograms(list) {
-      const c = document.getElementById('programs-container');
-      if (!list.length) {
-        c.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;grid-column:1/-1;">No projects have been added yet.</div>';
-        return;
-      }
-      c.innerHTML = list.map(p => `
-        <div class="program-block">
-          ${p.image_url ? `<img src="${p.image_url}" alt="${p.title}"/>` : ''}
-          <div class="program-block-body">
-            <h2>${p.icon ? p.icon + ' ' : ''}${p.title}</h2>
-            <p>${p.description || ''}</p>
-            ${p.bullets ? `<ul>${p.bullets.split('\n').map(b => b.trim() ? `<li>${b.trim()}</li>` : '').join('')}</ul>` : ''}
-          </div>
-        </div>`).join('');
-    }
-
-    document.addEventListener('DOMContentLoaded', async () => {
+    (async function loadProjects() {
       const c = document.getElementById('programs-container');
       try {
-        const url = (typeof API !== 'undefined' ? API : '/api') + '/programs';
-        const res = await fetch(url);
+        const res = await fetch('/api/programs');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        renderPrograms(Array.isArray(data) ? data : []);
+        if (!data.length) {
+          c.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;grid-column:1/-1;">No projects have been added yet.</div>';
+          return;
+        }
+        c.innerHTML = data.map(p => `
+          <div class="program-block">
+            ${p.image_url ? `<img src="${p.image_url}" alt="${p.title}"/>` : ''}
+            <div class="program-block-body">
+              <h2>${p.icon ? p.icon + ' ' : ''}${p.title}</h2>
+              <p>${p.description || ''}</p>
+              ${p.bullets ? `<ul>${p.bullets.split('\n').map(b => b.trim() ? `<li>${b.trim()}</li>` : '').join('')}</ul>` : ''}
+            </div>
+          </div>`).join('');
       } catch(err) {
         c.innerHTML = `<div style="text-align:center;padding:40px;color:#e74c3c;grid-column:1/-1;">Could not load projects: ${err.message}</div>`;
       }
-    });
+    })();
   </script>
 </body>
 </html>
