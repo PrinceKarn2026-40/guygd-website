@@ -85,6 +85,13 @@ exports.updatePassword = async (req, res) => {
 
 exports.deleteMember = async (req, res) => {
   try {
+    const target = await db.query('SELECT role FROM members WHERE id=$1', [req.params.id]);
+    if (!target.rows.length) return res.status(404).json({ message: 'Member not found' });
+    const targetRole = target.rows[0].role;
+    const requesterRole = req.user.role;
+    // Only super_admin can delete super_admin accounts
+    if (targetRole === 'super_admin' && requesterRole !== 'super_admin')
+      return res.status(403).json({ message: 'Only super_admin can delete another super_admin' });
     await db.query('DELETE FROM members WHERE id=$1', [req.params.id]);
     res.json({ message: 'Member deleted' });
   } catch (e) { res.status(500).json({ message: e.message }); }

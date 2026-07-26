@@ -749,7 +749,7 @@
           </div>
           <div class="table-wrap">
             <table id="dt-users" class="admin-dt" style="width:100%">
-              <thead><tr><th>Name</th><th>Email</th><th>Current Role</th><th>Status</th><th>Joined</th><th>Change Role</th></tr></thead>
+              <thead><tr><th>Name</th><th>Email</th><th>Current Role</th><th>Status</th><th>Joined</th><th>Change Role</th><th>Delete</th></tr></thead>
               <tbody id="users-body"></tbody>
             </table>
           </div>
@@ -1927,7 +1927,11 @@ async function loadReports() {
 async function loadUsers() {
   try {
     const list = await apiFetch('/members');
-    document.getElementById('users-body').innerHTML = list.length ? list.map(m => `
+    const u = getUser();
+    document.getElementById('users-body').innerHTML = list.length ? list.map(m => {
+      const canDelete = u.role === 'super_admin' || (u.role === 'admin' && m.role !== 'super_admin');
+      const isSelf = m.id === u.id;
+      return `
       <tr>
         <td><strong>${m.full_name}</strong></td>
         <td>${m.email}</td>
@@ -1936,19 +1940,29 @@ async function loadUsers() {
         <td>${fmtDate(m.joined_at)}</td>
         <td>
           <select onchange="changeRole(${m.id}, this.value)" style="padding:5px 8px;border-radius:6px;border:1px solid #d0d5dd;font-size:0.82rem;">
-            <option value="member"     ${m.role==='member'     ?'selected':''}>Member</option>
-            <option value="executive"  ${m.role==='executive'  ?'selected':''}>Executive</option>
-            <option value="admin"      ${m.role==='admin'      ?'selected':''}>Admin</option>
-            <option value="super_admin"${m.role==='super_admin'?'selected':''}>Super Admin</option>
+            <option value="member"      ${m.role==='member'     ?'selected':''}>Member</option>
+            <option value="executive"   ${m.role==='executive'  ?'selected':''}>Executive</option>
+            <option value="admin"       ${m.role==='admin'      ?'selected':''}>Admin</option>
+            <option value="super_admin" ${m.role==='super_admin'?'selected':''}>Super Admin</option>
           </select>
         </td>
-      </tr>`).join('')
-      : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No users found.</td></tr>';
-
+        <td>
+          ${canDelete && !isSelf
+            ? `<button class="btn btn-sm btn-danger" onclick="deleteUser(${m.id},'${m.full_name.replace(/'/g,'')}')">&#128465; Delete</button>`
+            : `<span style="font-size:0.75rem;color:#9ca3af;">${isSelf ? 'You' : 'Protected'}</span>`}
+        </td>
+      </tr>`;
+    }).join('')
+      : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No users found.</td></tr>';
   } catch(e) {
     document.getElementById('users-body').innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading users.</td></tr>';
+      '<tr><td colspan="7" style="text-align:center;color:#e74c3c;">Error loading users.</td></tr>';
   }
+}
+async function deleteUser(id, name) {
+  if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+  try { await apiFetch(`/members/${id}`, { method: 'DELETE' }); loadUsers(); loadDashboard(); }
+  catch(e) { alert('Error: ' + (e.message || 'Failed to delete user.')); }
 }
 async function changeRole(id, role) {
   try {
