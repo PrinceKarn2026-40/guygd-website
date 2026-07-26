@@ -1510,7 +1510,7 @@ function renderProgramsTable(list) {
     </tr>`).join('')
     : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No programs yet.</td></tr>';
 
-  if (list.length) dtInit('dt-programs', { columnDefs: [{ orderable: false, targets: [0,2,4] }] });
+
 }
 function editProgram(id) {
   const p = allPrograms.find(x => x.id === id);
@@ -1572,7 +1572,7 @@ async function loadEvents() {
         <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">🗑️ Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
-    if (list.length) dtInit('dt-events', { columnDefs: [{ orderable: false, targets: 4 }] });
+
   } catch(e) {
     document.getElementById('events-body').innerHTML =
       '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading events.</td></tr>';
@@ -1633,7 +1633,7 @@ async function loadNews() {
         <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">🗑️ Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No articles yet.</td></tr>';
-    if (list.length) dtInit('dt-news', { columnDefs: [{ orderable: false, targets: 4 }] });
+
   } catch(e) {
     document.getElementById('news-body').innerHTML =
       '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading news.</td></tr>';
@@ -1734,7 +1734,7 @@ async function loadMessages() {
         <td>${fmtDate(m.received_at || m.created_at)}</td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No messages yet.</td></tr>';
-    dtInit('dt-messages', { columnDefs: [{ orderable: false, targets: 3 }] });
+
   } catch(e) {
     document.getElementById('messages-body').innerHTML =
       '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading messages.</td></tr>';
@@ -1842,7 +1842,7 @@ async function loadDonations() {
         <td>${fmtDate(d.donated_at)}</td>
       </tr>`).join('')
       : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No donations yet.</td></tr>';
-    dtInit('dt-donations', {});
+
   } catch(e) {
     document.getElementById('donations-body').innerHTML =
       '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading donations.</td></tr>';
@@ -1895,7 +1895,7 @@ async function loadUsers() {
         </td>
       </tr>`).join('')
       : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No users found.</td></tr>';
-    dtInit('dt-users', { columnDefs: [{ orderable: false, targets: 5 }] });
+
   } catch(e) {
     document.getElementById('users-body').innerHTML =
       '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading users.</td></tr>';

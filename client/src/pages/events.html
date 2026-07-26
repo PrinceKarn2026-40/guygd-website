@@ -39,8 +39,8 @@
     function filterEvents(type) {
       const now = new Date();
       const filtered = type === 'upcoming'
-        ? allEvents.filter(e => new Date(e.date) >= now)
-        : allEvents.filter(e => new Date(e.date) < now);
+        ? allEvents.filter(e => new Date(e.event_date || e.date) >= now)
+        : allEvents.filter(e => new Date(e.event_date || e.date) < now);
       renderEvents(filtered, type);
       document.getElementById('btn-upcoming').className = type === 'upcoming' ? 'btn btn-primary' : 'btn btn-green';
       document.getElementById('btn-past').className = type === 'past' ? 'btn btn-primary' : 'btn btn-green';
@@ -53,10 +53,10 @@
         <div class="card">
           ${e.image ? `<img src="${e.image}" alt="${e.title}" style="width:calc(100% + 50px);height:180px;object-fit:cover;border-radius:10px 10px 0 0;margin:-25px -25px 20px;"/>` : '<div class="card-icon">📅</div>'}
           <h3>${e.title}</h3>
-          <p class="card-meta">📅 ${new Date(e.date).toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
+          <p class="card-meta">📅 ${new Date(e.event_date || e.date).toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
           ${e.location ? `<p class="card-meta">📍 ${e.location}</p>` : ''}
           <p>${e.description ? e.description.substring(0, 100) + '...' : ''}</p>
-          ${new Date(e.date) >= new Date() ? `<span class="badge" style="background:rgba(212,160,23,0.15);color:#856404;">Upcoming</span>` : `<span class="badge">Past</span>`}
+          ${new Date(e.event_date || e.date) >= new Date() ? `<span class="badge" style="background:rgba(212,160,23,0.15);color:#856404;">Upcoming</span>` : `<span class="badge">Past</span>`}
         </div>`).join('');
     }
 
