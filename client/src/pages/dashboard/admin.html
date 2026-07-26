@@ -1888,7 +1888,7 @@ async function loadDonations() {
         <td>$${parseFloat(d.amount || 0).toFixed(2)}</td>
         <td>${d.purpose || '-'}</td>
         <td>${d.transaction_ref || '-'}</td>
-        <td>${d.screenshot_url ? `<a href="${d.screenshot_url}" target="_blank"><img src="${d.screenshot_url}" style="height:40px;border-radius:4px;object-fit:cover;border:1px solid #e5e7eb;cursor:pointer;" title="Click to view full screenshot"/></a>` : '<span style="color:#9ca3af;font-size:0.78rem;">None</span>'}</td>
+        <td>${d.screenshot_url ? (d.screenshot_url.startsWith('data:') ? `<a href="${d.screenshot_url}" target="_blank"><img src="${d.screenshot_url}" style="height:40px;border-radius:4px;object-fit:cover;border:1px solid #e5e7eb;cursor:pointer;" title="Click to view full screenshot" onerror="this.parentElement.innerHTML='<span style=color:#9ca3af;font-size:0.78rem;>Expired</span>'"/></a>` : `<a href="${d.screenshot_url}" target="_blank" style="font-size:0.78rem;color:#2d6a4f;">Click to view full screenshot</a>`) : '<span style="color:#9ca3af;font-size:0.78rem;">None</span>'}</td>
         <td>${fmtDate(d.donated_at)}</td>
       </tr>`).join('')
       : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No donations yet.</td></tr>';
