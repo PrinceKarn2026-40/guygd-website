@@ -80,6 +80,14 @@
               <label>Transaction Reference</label>
               <input type="text" id="transaction_ref" placeholder="Mobile money / bank reference number" required/>
             </div>
+            <div class="form-group">
+              <label>Payment Screenshot <span style="color:#6b7280;font-weight:400;font-size:0.82rem;">(optional but recommended)</span></label>
+              <input type="file" id="screenshot" accept="image/*" style="padding:6px;"/>
+              <p style="font-size:0.78rem;color:var(--gray);margin-top:4px;">Take a screenshot of your mobile money transaction and upload it here.</p>
+              <div id="screenshot-preview" style="display:none;margin-top:8px;">
+                <img id="screenshot-thumb" style="max-height:160px;max-width:100%;border-radius:8px;border:1px solid #d0d5dd;object-fit:contain;"/>
+              </div>
+            </div>
             <p style="font-size:0.85rem;color:var(--gray);margin-bottom:15px;">
               Please send your donation via Mobile Money or Bank Transfer, then enter the reference number above.
               <br/><br/>
@@ -112,23 +120,41 @@
       document.getElementById('amount').value = val;
     }
 
+    document.getElementById('screenshot').addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        document.getElementById('screenshot-thumb').src = e.target.result;
+        document.getElementById('screenshot-preview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
+
     document.getElementById('donate-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Submitting...';
       try {
-        await apiFetch('/donations', {
-          method: 'POST',
-          body: JSON.stringify({
-            donor_name: document.getElementById('donor_name').value,
-            email: document.getElementById('donor_email').value,
-            amount: document.getElementById('amount').value,
-            purpose: document.getElementById('purpose').value,
-            transaction_ref: document.getElementById('transaction_ref').value,
-          }),
-        });
-        showAlert('donate-alert', 'Thank you for your donation! We will verify and confirm shortly.', 'success');
+        const fd = new FormData();
+        fd.append('donor_name',     document.getElementById('donor_name').value);
+        fd.append('email',          document.getElementById('donor_email').value);
+        fd.append('amount',         document.getElementById('amount').value);
+        fd.append('purpose',        document.getElementById('purpose').value);
+        fd.append('transaction_ref',document.getElementById('transaction_ref').value);
+        const file = document.getElementById('screenshot').files[0];
+        if (file) fd.append('screenshot', file);
+        const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
+        const res = await fetch(`${API}/donations`, { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Submission failed');
+        showAlert('donate-alert', '\u2705 Thank you for your donation! We will verify and confirm shortly.', 'success');
         document.getElementById('donate-form').reset();
+        document.getElementById('screenshot-preview').style.display = 'none';
       } catch (err) {
         showAlert('donate-alert', err.message || 'Submission failed. Please try again.', 'error');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Submit Donation';
       }
     });
   </script>

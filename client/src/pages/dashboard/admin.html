@@ -648,7 +648,7 @@
           <div class="table-wrap">
             <table id="dt-donations" class="admin-dt" style="width:100%">
               <thead>
-                <tr><th>Donor</th><th>Email</th><th>Amount</th><th>Purpose</th><th>Reference</th><th>Date</th></tr>
+                <tr><th>Donor</th><th>Email</th><th>Amount</th><th>Purpose</th><th>Reference</th><th>Screenshot</th><th>Date</th></tr>
               </thead>
               <tbody id="donations-body"></tbody>
             </table>
@@ -1875,13 +1875,14 @@ async function loadDonations() {
         <td>$${parseFloat(d.amount || 0).toFixed(2)}</td>
         <td>${d.purpose || '-'}</td>
         <td>${d.transaction_ref || '-'}</td>
+        <td>${d.screenshot_url ? `<a href="${d.screenshot_url}" target="_blank"><img src="${d.screenshot_url}" style="height:40px;border-radius:4px;object-fit:cover;border:1px solid #e5e7eb;cursor:pointer;" title="Click to view full screenshot"/></a>` : '<span style="color:#9ca3af;font-size:0.78rem;">None</span>'}</td>
         <td>${fmtDate(d.donated_at)}</td>
       </tr>`).join('')
-      : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No donations yet.</td></tr>';
+      : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No donations yet.</td></tr>';
 
   } catch(e) {
     document.getElementById('donations-body').innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error loading donations.</td></tr>';
+      '<tr><td colspan="7" style="text-align:center;color:#e74c3c;">Error loading donations.</td></tr>';
   }
 }
 
