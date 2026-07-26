@@ -1414,7 +1414,7 @@ function printMemberProfile(id) {
   </div>
   <script>
     var qrEl = document.getElementById('profile-qr');
-    new QRCode(qrEl, { text: '${memberId}', width: 80, height: 80, colorDark: '#052e16', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+    new QRCode(qrEl, { text: '${origin}', width: 80, height: 80, colorDark: '#052e16', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
   <\/script>
   </body></html>`);
   w.document.close();
@@ -1526,7 +1526,7 @@ function printMemberCard(id) {
 
   <script>
     var qrEl = document.getElementById('card-qr');
-    new QRCode(qrEl, { text: '${memberId}', width: 100, height: 100, colorDark: '#052e16', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+    new QRCode(qrEl, { text: '${origin}', width: 100, height: 100, colorDark: '#052e16', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
   <\/script>
   </body></html>`);
   w.document.close();
