@@ -89,3 +89,28 @@ exports.deleteMember = async (req, res) => {
     res.json({ message: 'Member deleted' });
   } catch (e) { res.status(500).json({ message: e.message }); }
 };
+
+exports.createAdmin = async (req, res) => {
+  const { full_name, email, password, role: userRole, phone } = req.body;
+  if (!full_name || !email || !password)
+    return res.status(400).json({ message: 'Full name, email and password are required' });
+  const allowedRoles = ['admin', 'executive', 'super_admin'];
+  const assignedRole = allowedRoles.includes(userRole) ? userRole : 'admin';
+  try {
+    const exists = await db.query('SELECT id FROM members WHERE email=$1', [email]);
+    if (exists.rows.length) return res.status(409).json({ message: 'Email already in use' });
+    const hash = await bcrypt.hash(password, 10);
+    const year = new Date().getFullYear();
+    const count = await db.query('SELECT COUNT(*) FROM members');
+    const seq = String(parseInt(count.rows[0].count) + 1).padStart(4, '0');
+    const member_id = `GUYGD-${year}-${seq}`;
+    await db.query(
+      `INSERT INTO members (full_name, email, password_hash, phone, role, status, member_id, joined_at)
+       VALUES ($1,$2,$3,$4,$5,'active',$6,NOW())`,
+      [full_name, email, hash, phone || null, assignedRole, member_id]
+    );
+    sendEmail(email, '✅ Your GUYGD Admin Account',
+      `<p>Dear ${full_name},</p><p>Your GUYGD admin account has been created.</p><p><strong>Email:</strong> ${email}<br/><strong>Password:</strong> ${password}<br/><strong>Role:</strong> ${assignedRole}</p><p>Please log in and change your password.</p>`);
+    res.status(201).json({ message: 'Admin user created', member_id });
+  } catch (e) { res.status(500).json({ message: e.message }); }
+};
