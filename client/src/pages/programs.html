@@ -43,16 +43,12 @@
   <script>
     const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
 
-    const STATIC_PROGRAMS = [
-      { icon: '🛠️', title: 'Skills Development', description: 'We run vocational and skills training workshops to equip youths with practical abilities that translate into employment and entrepreneurship opportunities.', bullets: 'Computer literacy and digital skills\nEntrepreneurship and business training\nAgricultural and trade skills workshops', image_url: null },
-      { icon: '🌍', title: 'Community Service', description: 'Our members regularly engage in community service activities that improve the quality of life in Gbeh-lay and surrounding areas.', bullets: 'Community clean-up campaigns\nTree planting and environmental awareness\nHealth and sanitation drives', image_url: null },
-      { icon: '🏆', title: 'Leadership Development', description: 'We invest in developing the next generation of leaders through structured training, mentorship, and opportunities to lead real projects.', bullets: 'Youth leadership summits\nPublic speaking and debate training\nMentorship with community elders and professionals', image_url: null },
-      { icon: '⚽', title: 'Sports & Recreation', description: 'We organize sports tournaments and recreational activities to promote teamwork, discipline, and healthy living among youths.', bullets: 'Annual football tournament\nIndoor games and cultural activities\nYouth talent showcases', image_url: null },
-    ];
-
     function renderPrograms(list) {
       const c = document.getElementById('programs-container');
-      if (!list.length) { c.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;">No projects yet.</div>'; return; }
+      if (!list.length) {
+        c.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;">No projects have been added yet.</div>';
+        return;
+      }
       c.innerHTML = list.map((p, i) => `
         <div class="program-block ${i % 2 !== 0 ? 'reverse' : ''}">
           <div class="program-img">
@@ -62,19 +58,21 @@
           </div>
           <div class="program-info">
             <h2>${p.icon ? p.icon + ' ' : ''}${p.title}</h2>
-            <p>${p.description}</p>
+            <p>${p.description || ''}</p>
             ${p.bullets ? `<ul>${p.bullets.split('\n').map(b => b.trim() ? `<li>${b.trim()}</li>` : '').join('')}</ul>` : ''}
           </div>
         </div>`).join('');
     }
 
     async function loadPrograms() {
+      const c = document.getElementById('programs-container');
       try {
         const res = await fetch(`${API}/programs`);
+        if (!res.ok) throw new Error('Failed');
         const data = await res.json();
-        renderPrograms(Array.isArray(data) && data.length ? data : STATIC_PROGRAMS);
+        renderPrograms(Array.isArray(data) ? data : []);
       } catch {
-        renderPrograms(STATIC_PROGRAMS);
+        c.innerHTML = '<div style="text-align:center;padding:40px;color:#e74c3c;">Could not load projects. Please try again later.</div>';
       }
     }
 
