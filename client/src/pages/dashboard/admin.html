@@ -1133,16 +1133,16 @@ function renderMembers(list) {
       <td>${m.occupation || '-'}</td>
       <td>${badge(m.status)}</td>
       <td>${fmtDate(m.joined_at)}</td>
-      <td style="display:flex;gap:4px;flex-wrap:wrap;">
+      <td><div style="display:flex;gap:4px;flex-wrap:wrap;">
         <button class="btn btn-sm" style="background:#3b82f6;color:#fff;" onclick="viewMember(${m.id})">&#128065; View</button>
         ${isAdmin ? `<button class="btn btn-sm" style="background:#f59e0b;color:#fff;" onclick="editMember(${m.id})">&#9998; Edit</button>` : ''}
         ${isAdmin ? `<button class="btn btn-sm btn-success" onclick="updateMemberStatus(${m.id},'active')">&#10003; Activate</button>` : ''}
         ${isAdmin ? `<button class="btn btn-sm btn-danger" onclick="updateMemberStatus(${m.id},'suspended')">&#10007; Suspend</button>` : ''}
         ${isAdmin ? `<button class="btn btn-sm" style="background:#dc2626;color:#fff;" onclick="deleteMember(${m.id},'${m.full_name.replace(/'/g,'')}')">&#128465; Delete</button>` : ''}
-      </td>
+      </div></td>
     </tr>`;
   }).join('');
-  dtInit('dt-members', { columnDefs: [{ orderable: false, targets: [0, 11] }] });
+
 }
 function searchMembers() {
   const q = document.getElementById('member-search').value.toLowerCase();
