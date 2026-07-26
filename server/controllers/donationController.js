@@ -16,18 +16,19 @@ exports.donate = async (req, res) => {
   }
 };
 
-exports.remove = async (req, res) => {
+exports.getAll = async (req, res) => {
   try {
-    await db.query('DELETE FROM donations WHERE id=$1', [req.params.id]);
-    res.json({ message: 'Donation deleted' });
+    const result = await db.query('SELECT * FROM donations ORDER BY donated_at DESC');
+    res.json(result.rows);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
+exports.remove = async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM donations ORDER BY donated_at DESC');
-    res.json(result.rows);
+    await db.query('DELETE FROM donations WHERE id=$1', [req.params.id]);
+    res.json({ message: 'Donation deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
