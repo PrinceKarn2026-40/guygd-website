@@ -1378,76 +1378,96 @@ function printMemberCard(id) {
   const m = allMembers.find(x => x.id === id);
   if (!m) return;
   const memberId = m.member_id || `GUYGD-${new Date().getFullYear()}-${String(m.id).padStart(4,'0')}`;
+  const expiry = new Date(); expiry.setFullYear(expiry.getFullYear() + 1);
+  const expiryStr = expiry.toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'});
+
   const photoHtml = m.profile_photo
-    ? `<img src="${m.profile_photo}" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #d4a017;"/>`
-    : `<div style="width:90px;height:90px;border-radius:50%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:#fff;border:3px solid #d4a017;">&#128100;</div>`;
+    ? `<img src="${m.profile_photo}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #d4a017;display:block;"/>`
+    : `<div style="width:80px;height:80px;border-radius:50%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;border:3px solid #d4a017;">&#128100;</div>`;
 
+  // Front card: 320px wide × auto height — fits all info
   const cardHtml = `
-  <div id="member-card-print" style="width:210mm;min-height:297mm;background:#fff;font-family:'Segoe UI',Arial,sans-serif;display:flex;align-items:flex-start;justify-content:center;padding:20mm;box-sizing:border-box;">
-    <div style="width:100%;max-width:170mm;">
+  <div id="member-card-print" style="width:680px;background:#f3f4f6;font-family:'Segoe UI',Arial,sans-serif;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:32px;">
 
-      <!-- Header -->
-      <div style="background:linear-gradient(135deg,#052e16,#15803d);border-radius:16px 16px 0 0;padding:28px 32px;display:flex;align-items:center;gap:20px;">
-        <div style="width:56px;height:56px;border-radius:50%;background:#d4a017;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.3rem;color:#052e16;flex-shrink:0;overflow:hidden;"><img src="/assets/images/guygd-logo.png" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='G'"/></div>
-        <div style="margin-left:auto;text-align:right;">
-          <div style="color:rgba(255,255,255,0.6);font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;">Membership Card</div>
-          <div style="color:#d4a017;font-weight:800;font-size:0.9rem;font-family:monospace;margin-top:4px;">${memberId}</div>
+    <!-- FRONT -->
+    <div style="width:600px;border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.18);">
+      <!-- Header bar -->
+      <div style="background:linear-gradient(135deg,#052e16,#15803d);padding:16px 20px;display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid #d4a017;flex-shrink:0;background:#d4a017;display:flex;align-items:center;justify-content:center;">
+          <img src="/assets/images/guygd-logo.png" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=font-weight:900;color:#052e16;font-size:1rem>G</span>'"/>
+        </div>
+        <div style="flex:1;">
+          <div style="color:#fff;font-size:0.85rem;font-weight:800;letter-spacing:1.5px;">GUYGD</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:0.6rem;">Gbeh-lay United Youths for Growth and Development</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="color:rgba(255,255,255,0.55);font-size:0.55rem;text-transform:uppercase;letter-spacing:1px;">Membership Card</div>
+          <div style="color:#d4a017;font-weight:800;font-size:0.75rem;font-family:monospace;margin-top:2px;">${memberId}</div>
         </div>
       </div>
 
       <!-- Body -->
-      <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 16px 16px;padding:32px;">
-        <div style="display:flex;gap:28px;align-items:flex-start;margin-bottom:28px;">
-          <div style="flex-shrink:0;text-align:center;">
-            ${photoHtml}
-            <div style="margin-top:10px;background:${m.status==='active'?'#d4edda':'#fff3cd'};color:${m.status==='active'?'#155724':'#856404'};padding:4px 14px;border-radius:20px;font-size:0.72rem;font-weight:700;text-transform:uppercase;display:inline-block;">${m.status}</div>
-          </div>
-          <div style="flex:1;">
-            <div style="font-size:1.5rem;font-weight:800;color:#052e16;margin-bottom:4px;">${m.full_name}</div>
-            <div style="color:#15803d;font-size:0.85rem;font-weight:600;margin-bottom:16px;">${m.membership_type || 'Regular Member'}</div>
-            <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
-              <tr><td style="color:#6b7280;padding:5px 0;width:38%;">Member ID</td><td style="font-weight:700;font-family:monospace;color:#052e16;">${memberId}</td></tr>
-              <tr><td style="color:#6b7280;padding:5px 0;">Gender</td><td>${m.gender || '-'}</td></tr>
-              <tr><td style="color:#6b7280;padding:5px 0;">Phone</td><td>${m.phone || '-'}</td></tr>
-              <tr><td style="color:#6b7280;padding:5px 0;">County</td><td>${m.county || '-'}</td></tr>
-              <tr><td style="color:#6b7280;padding:5px 0;">Date Joined</td><td>${fmtDate(m.joined_at)}</td></tr>
-              <tr><td style="color:#6b7280;padding:5px 0;">Role</td><td style="text-transform:capitalize;">${(m.role||'').replace('_',' ')}</td></tr>
-            </table>
-          </div>
+      <div style="background:#fff;padding:20px 24px;display:flex;gap:20px;align-items:flex-start;">
+        <!-- Photo + status -->
+        <div style="flex-shrink:0;text-align:center;">
+          ${photoHtml}
+          <div style="margin-top:8px;background:${m.status==='active'?'#d4edda':'#fff3cd'};color:${m.status==='active'?'#155724':'#856404'};padding:3px 10px;border-radius:20px;font-size:0.62rem;font-weight:700;text-transform:uppercase;display:inline-block;">${m.status}</div>
         </div>
-
-        <!-- QR + Footer -->
-        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:20px;border-top:1px dashed #d1fae5;">
-          <div>
-            <div id="card-qr-${m.id}" style="width:80px;height:80px;"></div>
-            <div style="font-size:0.62rem;color:#9ca3af;margin-top:4px;text-align:center;">Scan to verify</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:0.7rem;color:#6b7280;">Issued by GUYGD Administration</div>
-            <div style="font-size:0.7rem;color:#6b7280;margin-top:2px;">Gbeh-lay, Liberia</div>
-            <div style="font-size:0.7rem;color:#6b7280;margin-top:2px;">info@guygd.org</div>
-            <div style="margin-top:8px;font-size:0.65rem;color:#9ca3af;font-style:italic;">This card is the property of GUYGD. If found, please return.</div>
-          </div>
+        <!-- Info -->
+        <div style="flex:1;">
+          <div style="font-size:1.15rem;font-weight:800;color:#052e16;line-height:1.2;">${m.full_name}</div>
+          <div style="color:#15803d;font-size:0.72rem;font-weight:600;margin:3px 0 12px;">${m.membership_type || 'Regular Member'}</div>
+          <table style="width:100%;border-collapse:collapse;font-size:0.75rem;">
+            <tr><td style="color:#6b7280;padding:4px 0;width:40%;white-space:nowrap;">Member ID</td><td style="font-weight:700;font-family:monospace;color:#052e16;word-break:break-all;">${memberId}</td></tr>
+            <tr><td style="color:#6b7280;padding:4px 0;">Gender</td><td>${m.gender || '-'}</td></tr>
+            <tr><td style="color:#6b7280;padding:4px 0;">Phone</td><td>${m.phone || '-'}</td></tr>
+            <tr><td style="color:#6b7280;padding:4px 0;">County</td><td>${m.county || '-'}</td></tr>
+            <tr><td style="color:#6b7280;padding:4px 0;">Date Joined</td><td>${fmtDate(m.joined_at)}</td></tr>
+            <tr><td style="color:#6b7280;padding:4px 0;">Role</td><td style="text-transform:capitalize;">${(m.role||'').replace('_',' ')}</td></tr>
+            <tr><td style="color:#6b7280;padding:4px 0;">Expires</td><td style="color:#dc2626;font-weight:600;">${expiryStr}</td></tr>
+          </table>
         </div>
+      </div>
 
-        <!-- Signature -->
-        <div style="display:flex;justify-content:space-between;margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;">
-          <div style="text-align:center;">
-            <div style="width:140px;border-bottom:1px solid #374151;margin-bottom:6px;height:32px;"></div>
-            <div style="font-size:0.68rem;color:#6b7280;">Member Signature</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="width:140px;border-bottom:1px solid #374151;margin-bottom:6px;height:32px;"></div>
-            <div style="font-size:0.68rem;color:#6b7280;">Authorized Signature</div>
-            <div style="font-size:0.62rem;color:#9ca3af;">GUYGD Administration</div>
-          </div>
-        </div>
-
+      <!-- Footer bar -->
+      <div style="background:linear-gradient(135deg,#052e16,#15803d);padding:8px 20px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:0.58rem;color:rgba(255,255,255,0.6);font-style:italic;">Voice of the Voiceless — Est. May 14, 2023</div>
+        <div style="font-size:0.58rem;color:rgba(255,255,255,0.5);">info@guygd.org</div>
       </div>
     </div>
+
+    <!-- BACK -->
+    <div style="width:600px;border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.18);">
+      <div style="background:linear-gradient(135deg,#052e16,#15803d);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;">
+        <div style="text-align:center;">
+          <div style="background:#fff;padding:8px;border-radius:8px;display:inline-block;">
+            <div id="card-qr-${m.id}" style="width:90px;height:90px;"></div>
+          </div>
+          <div style="font-size:0.55rem;color:rgba(255,255,255,0.55);margin-top:6px;">Scan to verify</div>
+        </div>
+        <div style="flex:1;text-align:right;">
+          <div style="color:#d4a017;font-weight:800;font-size:0.85rem;font-family:monospace;">${memberId}</div>
+          <div style="color:rgba(255,255,255,0.7);font-size:0.65rem;margin-top:6px;">Issued by GUYGD Administration</div>
+          <div style="color:rgba(255,255,255,0.55);font-size:0.6rem;margin-top:3px;">Gbeh-lay, Liberia</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.58rem;margin-top:10px;font-style:italic;">This card is the property of GUYGD.<br/>If found, please return to info@guygd.org</div>
+        </div>
+      </div>
+      <!-- Signature strip -->
+      <div style="background:#fff;padding:16px 24px;display:flex;justify-content:space-between;">
+        <div style="text-align:center;">
+          <div style="width:160px;border-bottom:1px solid #374151;height:28px;"></div>
+          <div style="font-size:0.62rem;color:#6b7280;margin-top:4px;">Member Signature</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:160px;border-bottom:1px solid #374151;height:28px;"></div>
+          <div style="font-size:0.62rem;color:#6b7280;margin-top:4px;">Authorized Signature</div>
+          <div style="font-size:0.58rem;color:#9ca3af;">GUYGD Administration</div>
+        </div>
+      </div>
+    </div>
+
   </div>`;
 
-  // Render card in hidden container, generate QR, then export PDF
   let container = document.getElementById('card-print-container');
   if (!container) {
     container = document.createElement('div');
@@ -1457,22 +1477,20 @@ function printMemberCard(id) {
   }
   container.innerHTML = cardHtml;
 
-  // Generate QR code
   new QRCode(document.getElementById(`card-qr-${m.id}`), {
     text: memberId,
-    width: 80, height: 80,
+    width: 90, height: 90,
     colorDark: '#052e16', colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.M
   });
 
-  // Wait for QR render then export
   setTimeout(() => {
     html2pdf()
       .set({
-        margin: 0,
+        margin: [10, 15, 10, 15],
         filename: `GUYGD-Card-${memberId}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
+        html2canvas: { scale: 1.5, useCORS: true, width: 680 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       })
       .from(document.getElementById('member-card-print'))
