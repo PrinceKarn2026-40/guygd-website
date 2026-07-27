@@ -493,10 +493,6 @@
                   <option value="Veteran Member">Veteran Member</option>
                 </select>
               </div>
-              <div class="form-group full">
-                <label>Why do you want to join GUYGD? <span class="req">*</span></label>
-                <textarea id="reg-reason" placeholder="Tell us your motivation for joining..." required></textarea>
-              </div>
             </div>
 
             <button type="submit" class="submit-btn">🚀 Submit Membership Application</button>
@@ -630,7 +626,6 @@
         fd.append('emergency_contact_name', document.getElementById('reg-emergency-name').value);
         fd.append('emergency_contact_phone', document.getElementById('reg-emergency-phone').value);
         fd.append('membership_type', document.getElementById('reg-membership-type').value);
-        fd.append('reason_for_joining', document.getElementById('reg-reason').value);
         fd.append('photo', photoFile);
         const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
         const res = await fetch(`${API}/applications`, { method: 'POST', body: fd });
