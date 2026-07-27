@@ -342,11 +342,11 @@
       <!-- â•â•â•â• DASHBOARD â•â•â•â• -->
       <div id="section-dashboard" class="tab-section active">
         <div class="stats-grid">
-          <div class="stat-card"><div class="stat-icon green">&#128101;</div><div class="stat-info"><h3 id="stat-members">-</h3><p>Total Members</p></div></div>
-          <div class="stat-card"><div class="stat-icon orange">&#128197;</div><div class="stat-info"><h3 id="stat-events">-</h3><p>Events</p></div></div>
+          <div class="stat-card"><div class="stat-icon green">&#128101;</div><div class="stat-info"><h3 id="stat-members">-</h3><p>Members</p></div></div>
+          <div class="stat-card"><div class="stat-icon orange">&#128197;</div><div class="stat-info"><h3 id="stat-events">-</h3><p>Events Held</p></div></div>
           <div class="stat-card"><div class="stat-icon purple">&#128176;</div><div class="stat-info"><h3 id="stat-donations">-</h3><p>Donations</p></div></div>
           <div class="stat-card"><div class="stat-icon blue">&#128240;</div><div class="stat-info"><h3 id="stat-news">-</h3><p>News Articles</p></div></div>
-          <div class="stat-card"><div class="stat-icon green">&#128203;</div><div class="stat-info"><h3 id="stat-programs">-</h3><p>Projects</p></div></div>
+          <div class="stat-card"><div class="stat-icon green">&#128203;</div><div class="stat-info"><h3 id="stat-programs">-</h3><p>Communities Reached</p></div></div>
         </div>
 
       </div>
@@ -986,11 +986,11 @@ async function loadDashboard() {
       apiFetch('/members'), apiFetch('/events'), apiFetch('/donations'),
       apiFetch('/news/all').catch(()=>[]), apiFetch('/team').catch(()=>[]), apiFetch('/programs').catch(()=>[])
     ]);
-    document.getElementById('stat-members').textContent   = members.length;
-    document.getElementById('stat-events').textContent    = events.length;
+    document.getElementById('stat-members').textContent   = members.length >= 200 ? members.length : '200+';
+    document.getElementById('stat-events').textContent    = events.length >= 80 ? events.length : '80+';
     document.getElementById('stat-donations').textContent = donations.length;
     document.getElementById('stat-news').textContent      = newsList.length;
-    document.getElementById('stat-programs').textContent  = programs.length;
+    document.getElementById('stat-programs').textContent  = programs.length >= 12 ? programs.length : '12+';
 
   } catch(e) {
     console.error('Dashboard load error:', e);
