@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS applications (
   emergency_contact_phone VARCHAR(20),
   reason_for_joining TEXT,
   membership_type VARCHAR(50) DEFAULT 'Regular Member',
-  photo_url VARCHAR(255),
+  photo_url TEXT,
   status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
   member_id INT REFERENCES members(id) ON DELETE SET NULL,
   rejection_reason TEXT,
