@@ -986,11 +986,11 @@ async function loadDashboard() {
       apiFetch('/members'), apiFetch('/events'), apiFetch('/donations'),
       apiFetch('/news/all').catch(()=>[]), apiFetch('/team').catch(()=>[]), apiFetch('/programs').catch(()=>[])
     ]);
-    document.getElementById('stat-members').textContent   = members.length >= 200 ? members.length : '200+';
-    document.getElementById('stat-events').textContent    = events.length >= 80 ? events.length : '80+';
+    document.getElementById('stat-members').textContent   = members.length;
+    document.getElementById('stat-events').textContent    = events.length;
     document.getElementById('stat-donations').textContent = donations.length;
     document.getElementById('stat-news').textContent      = newsList.length;
-    document.getElementById('stat-programs').textContent  = programs.length >= 12 ? programs.length : '12+';
+    document.getElementById('stat-programs').textContent  = programs.length;
 
   } catch(e) {
     console.error('Dashboard load error:', e);
