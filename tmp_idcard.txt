@@ -1,0 +1,26 @@
+function printIDCard() {
+  const html = document.getElementById('idc-preview').innerHTML;
+  const siteUrl = window.location.origin;
+  const w = window.open('','_blank','width=420,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><title>ID Card</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+  <style>
+    body{margin:0;background:#e5e7eb;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:0;}
+    .card{width:320px;border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.25);}
+    @media print{body{background:#fff;} .card{box-shadow:none;}}
+  </style></head><body>
+  <div class="card">${html}</div>
+  <script>
+    // Re-render QR in print window since the canvas doesn't clone
+    var qrEl = document.getElementById('idc-qr-container');
+    if (qrEl) { qrEl.innerHTML=''; new QRCode(qrEl,{text:'${siteUrl}',width:90,height:90,colorDark:'#052e16',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); }
+    window.onload = function(){ window.print(); };
+    window.onafterprint = function(){ window.close(); };
+  <\/script>
+  </body></html>`);
+  w.document.close();
+}
+</script>
+</body>
+</html>
+
