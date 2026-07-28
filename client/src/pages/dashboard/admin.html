@@ -939,10 +939,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const match = a.getAttribute('onclick').match(/showSection\('(\w+)'/);
       if (match && match[1] === 'users') a.style.display = 'none';
     });
+    showSection('dashboard', document.querySelector('.sidebar-nav a[onclick*="dashboard"]'));
     loadDashboard();
     loadNotifications();
   } else {
     // super_admin: full access
+    showSection('dashboard', document.querySelector('.sidebar-nav a[onclick*="dashboard"]'));
     loadDashboard();
     loadNotifications();
   }
