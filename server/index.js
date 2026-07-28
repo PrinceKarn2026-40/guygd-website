@@ -56,6 +56,8 @@ async function migrate() {
   await db.query(`ALTER TABLE applications ADD COLUMN IF NOT EXISTS rejection_reason TEXT`).catch(() => {});
   await db.query(`ALTER TABLE applications ALTER COLUMN photo_url TYPE TEXT`).catch(() => {});
   await db.query(`ALTER TABLE members ALTER COLUMN profile_photo TYPE TEXT`).catch(() => {});
+  await db.query(`ALTER TABLE programs ALTER COLUMN image_url TYPE TEXT`).catch(() => {});
+  await db.query(`ALTER TABLE donations ALTER COLUMN screenshot_url TYPE TEXT`).catch(() => {});
   await db.query(`
     CREATE TABLE IF NOT EXISTS programs (
       id SERIAL PRIMARY KEY,
