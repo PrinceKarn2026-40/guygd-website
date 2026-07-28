@@ -1328,6 +1328,20 @@ function toBlob(dataUrl) {
   } catch(e) { return dataUrl; }
 }
 
+// ── PRINT HELPER (iframe, never freezes parent) ──
+function printHTML(html) {
+  let fr = document.getElementById('_print_frame');
+  if (fr) fr.remove();
+  fr = document.createElement('iframe');
+  fr.id = '_print_frame';
+  fr.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;';
+  document.body.appendChild(fr);
+  const doc = fr.contentDocument || fr.contentWindow.document;
+  doc.open(); doc.write(html); doc.close();
+  fr.contentWindow.focus();
+  setTimeout(() => { fr.contentWindow.print(); setTimeout(() => fr.remove(), 2000); }, 600);
+}
+
 function printMemberProfile(id) {
   const m = allMembers.find(x => x.id === id);
   if (!m) return;
@@ -1353,8 +1367,7 @@ function printMemberProfile(id) {
       <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-top:none;">${rows}</table>
     </div>` : '';
 
-  const w = window.open('', '_blank', 'width=800,height=1000');
-  w.document.write(`<!DOCTYPE html><html><head><title>GUYGD Profile - ${m.full_name}</title>
+  const _html1 = `<!DOCTYPE html><html><head><title>GUYGD Profile - ${m.full_name}</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
@@ -1456,7 +1469,7 @@ function printMemberProfile(id) {
     new QRCode(qrEl, { text: '${origin}', width: 80, height: 80, colorDark: '#052e16', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
   <\/script>
   </body></html>`);
-  w.document.close();
+  printHTML(_html1);
   setTimeout(() => { if (blobUrl && blobUrl.startsWith('blob:')) URL.revokeObjectURL(blobUrl); }, 60000);
 }
 
@@ -1472,8 +1485,7 @@ function printMemberCard(id) {
     : `<div style="width:80px;height:80px;border-radius:50%;background:#2d6a4f;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;border:3px solid #d4a017;">&#128100;</div>`;
   const origin = window.location.origin;
 
-  const w = window.open('', '_blank', 'width=700,height:900');
-  w.document.write(`<!DOCTYPE html><html><head><title>GUYGD ID Card - ${m.full_name}</title>
+  const _html2 = `<!DOCTYPE html><html><head><title>GUYGD ID Card - ${m.full_name}</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
@@ -1958,8 +1970,7 @@ async function loadDonations() {
 function printReport() {
   const content = document.getElementById('reports-grid').innerHTML;
   const user = getUser();
-  const w = window.open('', '_blank', 'width=900,height=700');
-  w.document.write(`<!DOCTYPE html><html><head><title>GUYGD Report</title>
+  const _html3 = `<!DOCTYPE html><html><head><title>GUYGD Report</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Segoe UI',sans-serif;padding:28px;background:#fff;}
@@ -1987,8 +1998,7 @@ function printReport() {
     <span>GUYGD &bull; Gbeh-lay, Liberia &bull; info@guygd.org</span>
   </div>
   </body></html>`);
-  w.document.close();
-  w.onafterprint = () => { w.close(); window.focus(); };
+  printHTML(_html3);
 }
 
 async function loadReports() {
@@ -2227,8 +2237,7 @@ function generateMemberCard(id, name, role) {
 function printIDCard() {
   const html = document.getElementById('idc-preview').innerHTML;
   const siteUrl = window.location.origin;
-  const w = window.open('','_blank','width=420,height=700');
-  w.document.write(`<!DOCTYPE html><html><head><title>ID Card</title>
+  const _html4 = `<!DOCTYPE html><html><head><title>ID Card</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
   <style>
     body{margin:0;background:#e5e7eb;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:0;}
@@ -2244,7 +2253,7 @@ function printIDCard() {
     window.onafterprint = function(){ window.close(); };
   <\/script>
   </body></html>`);
-  w.document.close();
+  printHTML(_html4);
 }
 </script>
 </body>
