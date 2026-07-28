@@ -140,8 +140,8 @@
 
     // Redirect if already logged in as admin
     try {
-      const u = JSON.parse(localStorage.getItem('guygd_user') || 'null');
-      const t = localStorage.getItem('guygd_token');
+      const u = JSON.parse(localStorage.getItem('guygd_user') || sessionStorage.getItem('guygd_user') || 'null');
+      const t = localStorage.getItem('guygd_token') || sessionStorage.getItem('guygd_token');
       if (u && t && ['admin','executive','super_admin'].includes(u.role)) {
         window.location.href = '/dashboard/admin.html';
       }
@@ -169,8 +169,8 @@
         if (!['admin','executive','super_admin'].includes(data.user.role)) {
           throw new Error('Access denied. Admin accounts only.');
         }
-        localStorage.setItem('guygd_token', data.token);
-        localStorage.setItem('guygd_user', JSON.stringify(data.user));
+        try { localStorage.setItem('guygd_token', data.token); localStorage.setItem('guygd_user', JSON.stringify(data.user)); } catch(e) {}
+        try { sessionStorage.setItem('guygd_token', data.token); sessionStorage.setItem('guygd_user', JSON.stringify(data.user)); } catch(e) {}
         alertEl.textContent = '✅ Login successful! Redirecting...';
         alertEl.className = 'alert success';
         setTimeout(() => { window.location.href = '/dashboard/admin.html'; }, 1000);

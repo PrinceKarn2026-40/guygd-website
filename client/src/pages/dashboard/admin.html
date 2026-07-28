@@ -867,8 +867,17 @@
 <script>
 document.documentElement.removeAttribute('data-theme');
 const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
-function getToken() { return localStorage.getItem('guygd_token'); }
-function getUser()  { return JSON.parse(localStorage.getItem('guygd_user') || 'null'); }
+function getToken() {
+  try { return localStorage.getItem('guygd_token') || sessionStorage.getItem('guygd_token'); }
+  catch(e) { return sessionStorage.getItem('guygd_token'); }
+}
+function getUser() {
+  try {
+    return JSON.parse(localStorage.getItem('guygd_user') || sessionStorage.getItem('guygd_user') || 'null');
+  } catch(e) {
+    try { return JSON.parse(sessionStorage.getItem('guygd_user') || 'null'); } catch(e2) { return null; }
+  }
+}
 async function apiFetch(endpoint, options = {}) {
   const token = getToken();
   const res = await fetch(`${API}${endpoint}`, {
@@ -986,8 +995,8 @@ function closeSidebar() {
   document.getElementById('sidebar-overlay').classList.remove('open');
 }
 function logout() {
-  localStorage.removeItem('guygd_token');
-  localStorage.removeItem('guygd_user');
+  try { localStorage.removeItem('guygd_token'); localStorage.removeItem('guygd_user'); } catch(e) {}
+  try { sessionStorage.removeItem('guygd_token'); sessionStorage.removeItem('guygd_user'); } catch(e) {}
   window.location.href = '/dashboard/admin-login.html';
 }
 
