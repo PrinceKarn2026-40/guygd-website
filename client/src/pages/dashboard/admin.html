@@ -1404,7 +1404,7 @@ function printMemberProfile(id) {
     </div>` : '';
 
   const _html1 = `<!DOCTYPE html><html><head><title>GUYGD Profile - ${m.full_name}</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/scr"+"ipt>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{background:#f3f4f6;font-family:'Segoe UI',Arial,sans-serif;padding:24px;}
@@ -1503,7 +1503,7 @@ function printMemberProfile(id) {
   <scr"+"ipt>
     var qrEl = document.getElementById('profile-qr');
     new QRCode(qrEl, { text: '${origin}', width: 80, height: 80, colorDark: '#052e16', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
-  <\/script>
+  <\/scr"+"ipt>
   </body></html>`);
   printHTML(_html1);
   setTimeout(() => { if (blobUrl && blobUrl.startsWith('blob:')) URL.revokeObjectURL(blobUrl); }, 60000);
@@ -1522,7 +1522,7 @@ function printMemberCard(id) {
   const origin = window.location.origin;
 
   const _html2 = `<!DOCTYPE html><html><head><title>GUYGD ID Card - ${m.full_name}</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/scr"+"ipt>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{background:#e5e7eb;font-family:'Segoe UI',Arial,sans-serif;display:flex;flex-direction:column;align-items:center;padding:30px 20px;gap:24px;}
@@ -1617,7 +1617,7 @@ function printMemberCard(id) {
   <scr"+"ipt>
     var qrEl = document.getElementById('card-qr');
     new QRCode(qrEl, { text: '${origin}', width: 100, height: 100, colorDark: '#052e16', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
-  <\/script>
+  <\/scr"+"ipt>
   </body></html>`);
   printHTML(_html2);
   setTimeout(() => { if (blobUrl2 && blobUrl2.startsWith('blob:')) URL.revokeObjectURL(blobUrl2); }, 60000);
@@ -2274,7 +2274,7 @@ function printIDCard() {
   const html = document.getElementById('idc-preview').innerHTML;
   const siteUrl = window.location.origin;
   const _html4 = `<!DOCTYPE html><html><head><title>ID Card</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/scr"+"ipt>
   <style>
     body{margin:0;background:#e5e7eb;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:0;}
     .card{width:320px;border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.25);}
@@ -2287,7 +2287,7 @@ function printIDCard() {
     if (qrEl) { qrEl.innerHTML=''; new QRCode(qrEl,{text:'${siteUrl}',width:90,height:90,colorDark:'#052e16',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); }
     window.onload = function(){ window.print(); };
     window.onafterprint = function(){ window.close(); };
-  <\/script>
+  <\/scr"+"ipt>
   </body></html>`);
   printHTML(_html4);
 }
