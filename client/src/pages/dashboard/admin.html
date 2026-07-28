@@ -1572,6 +1572,7 @@ function printMemberCard(id) {
   <\/script>
   </body></html>`);
   w.document.close();
+  w.onafterprint = () => { w.close(); window.focus(); };
 }
 
 
@@ -1987,6 +1988,7 @@ function printReport() {
   </div>
   </body></html>`);
   w.document.close();
+  w.onafterprint = () => { w.close(); window.focus(); };
 }
 
 async function loadReports() {
@@ -2238,7 +2240,8 @@ function printIDCard() {
     // Re-render QR in print window since the canvas doesn't clone
     var qrEl = document.getElementById('idc-qr-container');
     if (qrEl) { qrEl.innerHTML=''; new QRCode(qrEl,{text:'${siteUrl}',width:90,height:90,colorDark:'#052e16',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); }
-    setTimeout(function(){ window.focus(); window.print(); }, 800);
+    window.onload = function(){ window.print(); };
+    window.onafterprint = function(){ window.close(); };
   <\/script>
   </body></html>`);
   w.document.close();
