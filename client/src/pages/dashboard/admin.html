@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>GUYGD â€“ Admin Dashboard</title>
+  <title>GUYGD – Admin Dashboard</title>
   <link rel="stylesheet" href="/src/css/dashboard.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
   <!-- DataTables -->
@@ -17,7 +17,7 @@
     body { margin: 0; background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
     .admin-layout { display: flex; min-height: 100vh; }
 
-    /* â”€â”€ SIDEBAR â”€â”€ */
+    /* ── SIDEBAR ── */
     .admin-sidebar {
       width: 240px; height: 100vh; background: #1a1f36;
       display: flex; flex-direction: column; position: fixed; left: 0; top: 0; z-index: 100;
@@ -52,7 +52,7 @@
     .sidebar-nav a.logout-link { color: #ff6b6b; }
     .sidebar-nav a.logout-link:hover { background: rgba(255,107,107,0.1); }
 
-    /* â”€â”€ MAIN â”€â”€ */
+    /* ── MAIN ── */
     .admin-main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
     .admin-topbar {
       background: #fff; padding: 14px 28px; display: flex; align-items: center;
@@ -85,11 +85,11 @@
     .topbar-user-details .t-login { font-size: 0.7rem; color: #8b9bb4; }
     .admin-content { padding: 28px; flex: 1; }
 
-    /* â”€â”€ SECTIONS â”€â”€ */
+    /* ── SECTIONS ── */
     .tab-section { display: none; }
     .tab-section.active { display: block; }
 
-    /* â”€â”€ STAT CARDS â”€â”€ */
+    /* ── STAT CARDS ── */
     .stats-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; margin-bottom: 28px;
     }
@@ -108,7 +108,7 @@
     .stat-info h3 { margin: 0; font-size: 1.6rem; font-weight: 700; color: #1a1f36; }
     .stat-info p  { margin: 3px 0 0; font-size: 0.78rem; color: #6c757d; }
 
-    /* â”€â”€ PANEL â”€â”€ */
+    /* ── PANEL ── */
     .panel { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; overflow: hidden; }
     .panel-header {
       padding: 16px 22px; border-bottom: 1px solid #f0f2f5;
@@ -117,7 +117,7 @@
     .panel-header h3 { margin: 0; font-size: 1rem; color: #1a1f36; }
     .panel-body { padding: 20px 22px; }
 
-    /* â”€â”€ TABLE â”€â”€ */
+    /* ── TABLE ── */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
     thead th { background: #f8f9fb; padding: 11px 14px; text-align: left; color: #6c757d; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -125,7 +125,7 @@
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: #fafbfc; }
 
-    /* â”€â”€ BADGES â”€â”€ */
+    /* ── BADGES ── */
     .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.73rem; font-weight: 600; text-transform: capitalize; }
     .badge-active, .badge-approved { background: #d4edda; color: #155724; }
     .badge-pending, .badge-submitted { background: #fff3cd; color: #856404; }
@@ -135,7 +135,7 @@
     .badge-member { background: #d1ecf1; color: #0c5460; }
     .badge-executive { background: #fff3cd; color: #856404; }
 
-    /* â”€â”€ BUTTONS â”€â”€ */
+    /* ── BUTTONS ── */
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; text-decoration: none; }
     .btn-primary { background: #2d6a4f; color: #fff; }
     .btn-primary:hover { background: #1b4332; }
@@ -149,7 +149,7 @@
     .btn-warn:hover { background: #856404; color: #fff; }
     .btn-sm { padding: 5px 12px; font-size: 0.78rem; }
 
-    /* â”€â”€ FORM â”€â”€ */
+    /* ── FORM ── */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-grid .full { grid-column: 1 / -1; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
@@ -161,18 +161,18 @@
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2d6a4f; }
     .form-actions { display: flex; gap: 10px; padding-top: 8px; }
 
-    /* â”€â”€ ALERT â”€â”€ */
+    /* ── ALERT ── */
     .alert { padding: 11px 16px; border-radius: 8px; margin-bottom: 14px; font-size: 0.88rem; display: none; }
     .alert.success { background: #d4edda; color: #155724; display: block; }
     .alert.error   { background: #f8d7da; color: #721c24; display: block; }
 
-    /* â”€â”€ GALLERY GRID â”€â”€ */
+    /* ── GALLERY GRID ── */
     .gallery-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; padding: 20px 22px; }
     .gallery-admin-item { border-radius: 10px; overflow: hidden; background: #f0f2f5; position: relative; aspect-ratio: 1; }
     .gallery-admin-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .gallery-admin-item .del-btn { position: absolute; top: 6px; right: 6px; background: rgba(220,38,38,0.85); color: #fff; border: none; border-radius: 6px; padding: 3px 8px; font-size: 0.75rem; cursor: pointer; }
 
-    /* â”€â”€ NOTIFICATION ITEM â”€â”€ */
+    /* ── NOTIFICATION ITEM ── */
     .notif-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
     .notif-item:last-child { border-bottom: none; }
     .notif-dot { width: 10px; height: 10px; border-radius: 50%; background: #2d6a4f; flex-shrink: 0; margin-top: 5px; }
@@ -180,7 +180,7 @@
     .notif-text p { margin: 0; font-size: 0.88rem; color: #344054; }
     .notif-text span { font-size: 0.76rem; color: #8b9bb4; }
 
-    /* â”€â”€ REPORT CARDS â”€â”€ */
+    /* ── REPORT CARDS ── */
     .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
     .report-card { background: #fff; border-radius: 12px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .report-card h4 { margin: 0 0 14px; font-size: 0.95rem; color: #1a1f36; }
@@ -188,16 +188,16 @@
     .report-row:last-child { border-bottom: none; }
     .report-row span:last-child { font-weight: 600; color: #2d6a4f; }
 
-    /* â”€â”€ SETTINGS â”€â”€ */
+    /* ── SETTINGS ── */
     .settings-section { margin-bottom: 28px; }
     .settings-section h3 { font-size: 1rem; color: #1a1f36; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #f0f2f5; }
 
-    /* â”€â”€ EMPTY STATE â”€â”€ */
+    /* ── EMPTY STATE ── */
     .empty-state { text-align: center; padding: 48px 20px; color: #8b9bb4; }
     .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
     .empty-state p { margin: 0; font-size: 0.9rem; }
 
-    /* â”€â”€ DATATABLES OVERRIDES â”€â”€ */
+    /* ── DATATABLES OVERRIDES ── */
     .dataTables_wrapper .dataTables_filter input {
       border: 1px solid #d0d5dd; border-radius: 8px; padding: 6px 12px;
       font-size: 0.85rem; outline: none; margin-left: 6px;
@@ -229,11 +229,11 @@
     }
     .dataTables_wrapper .dt-buttons .dt-button:hover { background: #2d6a4f; color: #fff; border-color: #2d6a4f; }
     table.dataTable thead th { cursor: pointer; user-select: none; }
-    table.dataTable thead th.sorting_asc::after  { content: ' â-²'; font-size: 0.65rem; color: #2d6a4f; }
-    table.dataTable thead th.sorting_desc::after { content: ' â-¼'; font-size: 0.65rem; color: #2d6a4f; }
+    table.dataTable thead th.sorting_asc::after  { content: ' �-�'; font-size: 0.65rem; color: #2d6a4f; }
+    table.dataTable thead th.sorting_desc::after { content: ' �-�'; font-size: 0.65rem; color: #2d6a4f; }
     .dataTables_wrapper { padding: 0 22px 18px; }
 
-    /* â”€â”€ RESPONSIVE â”€â”€ */
+    /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .admin-sidebar { width: 200px; }
       .admin-main { margin-left: 200px; }
@@ -262,14 +262,14 @@
 </div>
 <div class="admin-layout">
 
-  <!-- â•â•â•â• SIDEBAR â•â•â•â• -->
+  <!-- ════ SIDEBAR ════ -->
   <aside class="admin-sidebar">
     <div class="sidebar-brand">
       <h2>GUYGD</h2>
       <p>Admin Panel</p>
     </div>
     <div class="sidebar-user">
-      <div class="sidebar-avatar">👤</div>
+      <div class="sidebar-avatar">??</div>
       <div class="sidebar-user-info">
         <h4 id="sidebar-name">Admin</h4>
         <span id="sidebar-role">admin</span>
@@ -277,59 +277,59 @@
     </div>
     <nav class="sidebar-nav">
       <a class="active" onclick="showSection('dashboard', this)">
-        <span class="icon">📊</span> Dashboard
+        <span class="icon">??</span> Dashboard
       </a>
       <a onclick="showSection('applications', this)">
-        <span class="icon">🎓</span> Applications
+        <span class="icon">??</span> Applications
       </a>
       <a onclick="showSection('members', this)">
-        <span class="icon">👥</span> Members
+        <span class="icon">??</span> Members
       </a>
       <a onclick="showSection('events', this)">
-        <span class="icon">📅</span> Events
+        <span class="icon">??</span> Events
       </a>
       <a onclick="showSection('news', this)">
-        <span class="icon">📰</span> News
+        <span class="icon">??</span> News
       </a>
       <a onclick="showSection('gallery', this)">
-        <span class="icon">🖼️</span> Gallery
+        <span class="icon">???</span> Gallery
       </a>
       <a onclick="showSection('programs', this)">
-        <span class="icon">📋</span> Projects
+        <span class="icon">??</span> Projects
       </a>
       <a onclick="showSection('team', this)">
-        <span class="icon">👥</span> Our Team
+        <span class="icon">??</span> Our Team
       </a>
       <a onclick="showSection('donations', this)">
-        <span class="icon">💰</span> Donations
+        <span class="icon">??</span> Donations
       </a>
       <a onclick="showSection('messages', this)">
-        <span class="icon">✉️</span> Messages
+        <span class="icon">??</span> Messages
       </a>
       <div class="divider"></div>
       <a onclick="showSection('notifications', this)">
-        <span class="icon">🔔</span> Notifications
+        <span class="icon">??</span> Notifications
       </a>
       <a onclick="showSection('reports', this)">
-        <span class="icon">📈</span> Reports
+        <span class="icon">??</span> Reports
       </a>
       <a onclick="showSection('users', this)">
-        <span class="icon">👤</span> Users
+        <span class="icon">??</span> Users
       </a>
       <a onclick="showSection('idcard', this)">
-        <span class="icon">🪹</span> ID Card
+        <span class="icon">??</span> ID Card
       </a>
       <a onclick="showSection('settings', this)">
-        <span class="icon">⚙️</span> Settings
+        <span class="icon">??</span> Settings
       </a>
       <div class="divider"></div>
       <a class="logout-link" onclick="logout()">
-        <span class="icon">🚪</span> Logout
+        <span class="icon">??</span> Logout
       </a>
     </nav>
   </aside>
 
-  <!-- â•â•â•â• MAIN â•â•â•â• -->
+  <!-- ════ MAIN ════ -->
   <div class="admin-main">
 
     <!-- Top Bar -->
@@ -337,23 +337,23 @@
       <span class="topbar-title" id="topbar-title">Dashboard</span>
       <div class="topbar-right">
         <button class="notif-btn" onclick="showSection('notifications', null)" title="Notifications">
-          🔔<span class="notif-badge" id="notif-count">0</span>
+          ??<span class="notif-badge" id="notif-count">0</span>
         </button>
         <div class="topbar-user-info">
-          <div class="topbar-avatar" id="topbar-avatar">👤</div>
+          <div class="topbar-avatar" id="topbar-avatar">??</div>
           <div class="topbar-user-details">
             <span class="t-name" id="topbar-user">Admin</span>
             <span class="t-role" id="topbar-role">super_admin</span>
             
           </div>
         </div>
-        <button onclick="logout()" style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;margin-left:10px;white-space:nowrap;">🚪 Logout</button>
+        <button onclick="logout()" style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;margin-left:10px;white-space:nowrap;">?? Logout</button>
       </div>
     </div>
 
     <div class="admin-content">
 
-      <!-- â•â•â•â• DASHBOARD â•â•â•â• -->
+      <!-- ════ DASHBOARD ════ -->
       <div id="section-dashboard" class="tab-section active">
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-icon green">&#128101;</div><div class="stat-info"><h3 id="stat-members">-</h3><p>Members</p></div></div>
@@ -474,7 +474,7 @@
           <div style="padding:24px 28px;" id="modal-member-content"></div>
         </div>
       </div>
-      <!-- â•â•â•â• EVENTS â•â•â•â• -->
+      <!-- ════ EVENTS ════ -->
       <div id="section-events" class="tab-section">
         <div class="panel" id="event-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3 id="event-form-title">Add New Event</h3></div>
@@ -497,11 +497,11 @@
               <div class="form-group full">
                 <label>Event Photo</label>
                 <input type="file" id="ev-image-file" accept="image/*" style="padding:6px;"/>
-                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG â€” max 10MB)</p>
+                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG — max 10MB)</p>
                 <div id="ev-image-preview" style="display:none;margin-top:8px;"><img id="ev-img-thumb" style="max-height:120px;border-radius:8px;border:1px solid #e0e0e0;"/></div>
               </div>
               <div class="form-actions full">
-                <button type="submit" class="btn btn-primary">💾 Save Event</button>
+                <button type="submit" class="btn btn-primary">?? Save Event</button>
                 <button type="button" class="btn btn-outline" onclick="hideEventForm()">Cancel</button>
               </div>
             </form>
@@ -522,7 +522,7 @@
       </div>
 
 
-      <!-- â•â•â•â• NEWS â•â•â•â• -->
+      <!-- ════ NEWS ════ -->
       <div id="section-news" class="tab-section">
         <div class="panel" id="news-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3>Add News Article</h3></div>
@@ -536,11 +536,11 @@
               <div class="form-group full">
                 <label>Article Photo</label>
                 <input type="file" id="news-image-file" accept="image/*" style="padding:6px;"/>
-                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG â€” max 10MB)</p>
+                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG — max 10MB)</p>
                 <div id="news-image-preview" style="display:none;margin-top:8px;"><img id="news-img-thumb" style="max-height:120px;border-radius:8px;border:1px solid #e0e0e0;"/></div>
               </div>
               <div class="form-actions full">
-                <button type="submit" class="btn btn-primary">ðŸš€ Publish</button>
+                <button type="submit" class="btn btn-primary">🚀 Publish</button>
                 <button type="button" class="btn btn-outline" onclick="document.getElementById('news-form-panel').style.display='none'">Cancel</button>
               </div>
             </form>
@@ -561,7 +561,7 @@
       </div>
 
 
-      <!-- â•â•â•â• TEAM â•â•â•â• -->
+      <!-- ════ TEAM ════ -->
       <div id="section-team" class="tab-section">
         <div class="panel" id="team-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3>Add Team Member</h3></div>
@@ -574,7 +574,7 @@
               <div class="form-group"><label>Photo</label><input type="file" id="tm-photo" accept="image/*"/></div>
               <div class="form-group full"><label>Bio (optional)</label><textarea id="tm-bio" rows="2" placeholder="Short bio..."></textarea></div>
               <div class="form-actions full">
-                <button type="submit" class="btn btn-primary">💾 Save</button>
+                <button type="submit" class="btn btn-primary">?? Save</button>
                 <button type="button" class="btn btn-outline" onclick="document.getElementById('team-form-panel').style.display='none'">Cancel</button>
               </div>
             </form>
@@ -586,12 +586,12 @@
             <button class="btn btn-primary btn-sm" onclick="document.getElementById('team-form-panel').style.display='block'">+ Add Member</button>
           </div>
           <div class="gallery-admin-grid" id="admin-team-grid">
-            <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">👥</div><p>No team members yet.</p></div>
+            <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">??</div><p>No team members yet.</p></div>
           </div>
         </div>
       </div>
 
-      <!-- â•â•â•â• GALLERY â•â•â•â• -->
+      <!-- ════ GALLERY ════ -->
       <div id="section-gallery" class="tab-section">
         <div class="panel" id="gallery-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3>Upload Image</h3></div>
@@ -603,7 +603,7 @@
               <div class="form-group full"><label>Caption</label><input type="text" id="gal-caption" placeholder="Short description"/></div>
               <div class="form-group full"><label>Image File *</label><input type="file" id="gal-file" accept="image/*" required/></div>
               <div class="form-actions full">
-                <button type="submit" class="btn btn-primary">ðŸ“¤ Upload</button>
+                <button type="submit" class="btn btn-primary">📤 Upload</button>
                 <button type="button" class="btn btn-outline" onclick="document.getElementById('gallery-form-panel').style.display='none'">Cancel</button>
               </div>
             </form>
@@ -615,14 +615,14 @@
             <button class="btn btn-primary btn-sm" onclick="document.getElementById('gallery-form-panel').style.display='block'">+ Upload Photo</button>
           </div>
           <div class="gallery-admin-grid" id="admin-gallery-grid">
-            <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">🖼️</div><p>No images yet.</p></div>
+            <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">???</div><p>No images yet.</p></div>
           </div>
         </div>
       </div>
 
 
       
-      <!-- â•â•â•â• PROGRAMS â•â•â•â• -->
+      <!-- ════ PROGRAMS ════ -->
       <div id="section-programs" class="tab-section">
         <div class="panel">
           <div class="panel-header">
@@ -642,8 +642,8 @@
               <img id="prog-preview" src="" alt="" style="display:none;margin-top:8px;max-height:120px;border-radius:8px;object-fit:cover;"/>
             </div>
             <div style="grid-column:1/-1;display:flex;gap:8px;">
-              <button type="submit" class="btn btn-primary">💾 Save Project</button>
-              <button type="button" class="btn" onclick="resetProgramForm()" style="background:#f3f4f6;color:#374151;">✕ Cancel</button>
+              <button type="submit" class="btn btn-primary">?? Save Project</button>
+              <button type="button" class="btn" onclick="resetProgramForm()" style="background:#f3f4f6;color:#374151;">? Cancel</button>
             </div>
           </form>
           <div class="table-wrap">
@@ -655,7 +655,7 @@
         </div>
       </div>
 
-      <!-- â•â•â•â• DONATIONS â•â•â•â• -->
+      <!-- ════ DONATIONS ════ -->
       <div id="section-donations" class="tab-section">
         <div class="panel">
           <div class="panel-header"><h3>Donation Records</h3></div>
@@ -670,7 +670,7 @@
         </div>
       </div>
 
-      <!-- â•â•â•â• MESSAGES â•â•â•â• -->
+      <!-- ════ MESSAGES ════ -->
       <div id="section-messages" class="tab-section">
         <div class="panel">
           <div class="panel-header"><h3>Contact Messages</h3></div>
@@ -683,7 +683,7 @@
         </div>
       </div>
 
-      <!-- â•â•â•â• NOTIFICATIONS â•â•â•â• -->
+      <!-- ════ NOTIFICATIONS ════ -->
       <div id="section-notifications" class="tab-section">
         <div class="panel">
           <div class="panel-header">
@@ -691,27 +691,27 @@
             <button class="btn btn-outline btn-sm" onclick="markAllRead()">Mark all read</button>
           </div>
           <div class="panel-body" id="notifications-list">
-            <div class="empty-state"><div class="empty-icon">🔔</div><p>No notifications yet.</p></div>
+            <div class="empty-state"><div class="empty-icon">??</div><p>No notifications yet.</p></div>
           </div>
         </div>
       </div>
 
 
-      <!-- â•â•â•â• REPORTS â•â•â•â• -->
+      <!-- ════ REPORTS ════ -->
       <div id="section-reports" class="tab-section">
         <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
           <button class="btn btn-primary" onclick="printReport()">&#128424; Print Report</button>
         </div>
         <div class="report-grid" id="reports-grid">
           <div class="report-card">
-            <h4>📋 Membership Summary</h4>
+            <h4>?? Membership Summary</h4>
             <div class="report-row"><span>Total Members</span><span id="rpt-total">-</span></div>
             <div class="report-row"><span>Active</span><span id="rpt-active">-</span></div>
             <div class="report-row"><span>Pending Approval</span><span id="rpt-pending">-</span></div>
             <div class="report-row"><span>Suspended</span><span id="rpt-suspended">-</span></div>
           </div>
           <div class="report-card">
-            <h4>🎓 Scholarship Summary</h4>
+            <h4>?? Scholarship Summary</h4>
             <div class="report-row"><span>Total Applications</span><span id="rpt-apps">-</span></div>
             <div class="report-row"><span>Submitted</span><span id="rpt-submitted">-</span></div>
             <div class="report-row"><span>Under Review</span><span id="rpt-review">-</span></div>
@@ -719,12 +719,12 @@
             <div class="report-row"><span>Rejected</span><span id="rpt-rejected">-</span></div>
           </div>
           <div class="report-card">
-            <h4>💰 Donation Summary</h4>
+            <h4>?? Donation Summary</h4>
             <div class="report-row"><span>Total Donations</span><span id="rpt-don-count">-</span></div>
             <div class="report-row"><span>Total Amount</span><span id="rpt-don-total">-</span></div>
           </div>
           <div class="report-card">
-            <h4>📅 Events Summary</h4>
+            <h4>?? Events Summary</h4>
             <div class="report-row"><span>Total Events</span><span id="rpt-ev-total">-</span></div>
             <div class="report-row"><span>Upcoming</span><span id="rpt-ev-upcoming">-</span></div>
             <div class="report-row"><span>Past Events</span><span id="rpt-ev-past">-</span></div>
@@ -733,7 +733,7 @@
       </div>
 
 
-      <!-- â•â•â•â• USERS â•â•â•â• -->
+      <!-- ════ USERS ════ -->
       <div id="section-users" class="tab-section">
         <div class="panel" style="margin-bottom:20px;">
           <div class="panel-header"><h3>&#10133; Create Admin User</h3></div>
@@ -773,7 +773,7 @@
         </div>
       </div>
 
-      <!-- â•â•â•â• SETTINGS â•â•â•â• -->
+      <!-- ════ SETTINGS ════ -->
       <div id="section-idcard" class="tab-section">
         <div class="panel">
           <div class="panel-header"><h3>&#129979; Member ID Cards</h3></div>
@@ -831,7 +831,7 @@
                 <div class="form-group"><label>New Password</label><input type="password" id="set-new-pass" placeholder="Min 6 characters"/></div>
                 <div class="form-group"><label>Confirm New Password</label><input type="password" id="set-confirm-pass" placeholder="Repeat new password"/></div>
                 <div class="form-actions full">
-                  <button type="submit" class="btn btn-primary">ðŸ”’ Update Password</button>
+                  <button type="submit" class="btn btn-primary">🔒 Update Password</button>
                 </div>
               </form>
             </div>
@@ -890,7 +890,7 @@ async function apiFetch(endpoint, options = {}) {
 }
 </script>
 <script>
-// â”€â”€ DATATABLES HELPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DATATABLES HELPER ────────────────────────────────
 $.fn.DataTable.ext.errMode = 'none';
 function dtInit(id, opts) {
   if ($.fn.DataTable.isDataTable('#' + id)) {
@@ -902,23 +902,23 @@ function dtInit(id, opts) {
     lengthMenu: [5, 10, 25, 50],
     dom: '<"dt-top"Bf>rt>',
     buttons: [
-      { extend: 'excelHtml5', text: '⬇️ Excel', className: 'dt-btn' },
-      { extend: 'csvHtml5',   text: '⬇️ CSV',   className: 'dt-btn' },
-      { extend: 'print',      text: '🖨️ Print',  className: 'dt-btn' }
+      { extend: 'excelHtml5', text: '?? Excel', className: 'dt-btn' },
+      { extend: 'csvHtml5',   text: '?? CSV',   className: 'dt-btn' },
+      { extend: 'print',      text: '??? Print',  className: 'dt-btn' }
     ],
     language: {
       search: '',
       searchPlaceholder: 'Search...',
       emptyTable: 'No data available',
       zeroRecords: 'No matching records found',
-      info: 'Showing _START_â€“_END_ of _TOTAL_ entries',
+      info: 'Showing _START_–_END_ of _TOTAL_ entries',
       infoEmpty: 'No entries',
       lengthMenu: 'Show _MENU_ entries'
     }
   }, opts || {}));
 }
 
-// â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── INIT ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const user = getUser();
   if (!user || !['admin', 'executive', 'super_admin'].includes(user.role)) {
@@ -959,7 +959,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// â”€â”€ NAVIGATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── NAVIGATION ────────────────────────────────────────
 const sectionTitles = {
   dashboard: 'Dashboard', programs: 'Projects',
   applications: 'Membership Applications',
@@ -1000,7 +1000,7 @@ function logout() {
   window.location.href = '/dashboard/admin-login.html';
 }
 
-// â”€â”€ HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── HELPERS ───────────────────────────────────────────
 function badge(status) {
   return `<span class="badge badge-${status}">${status.replace('_', ' ')}</span>`;
 }
@@ -1013,7 +1013,7 @@ function showAlert(id, msg, type) {
 }
 
 
-// â”€â”€ DASHBOARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DASHBOARD ─────────────────────────────────────────
 async function loadDashboard() {
   const setStats = (m, ev, d, n, p) => {
     document.getElementById('stat-members').textContent   = m;
@@ -1051,7 +1051,7 @@ async function loadDashboard() {
       if (dbg) {
         let errDiv = document.getElementById('dash-error');
         if (!errDiv) { errDiv = document.createElement('div'); errDiv.id = 'dash-error'; errDiv.style.cssText = 'background:#fee2e2;color:#dc2626;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:0.88rem;'; dbg.prepend(errDiv); }
-        errDiv.textContent = '⚠️ API Error: ' + e.message + ' — Check your internet connection or try logging out and back in.';
+        errDiv.textContent = '?? API Error: ' + e.message + ' � Check your internet connection or try logging out and back in.';
       }
     }
   }
@@ -1179,12 +1179,12 @@ async function appApprove(id) {
     await loadMembers();
     loadDashboard();
     loadNotifications();
-    alert(`✅ Approved!\n\nMember ID: ${result.member_code}\nTemp Password: ${result.temp_password}\n\nAn email has been sent to the applicant.`);
+    alert(`? Approved!\n\nMember ID: ${result.member_code}\nTemp Password: ${result.temp_password}\n\nAn email has been sent to the applicant.`);
   } catch(e) { alert('Failed to approve: ' + (e.message || 'Unknown error')); }
 }
 
 async function appReject(id) {
-  const reason = prompt('Rejection reason (optional — will be included in the email to the applicant):');
+  const reason = prompt('Rejection reason (optional � will be included in the email to the applicant):');
   if (reason === null) return; // cancelled
   if (!confirm('Reject this application? The applicant will be notified by email.')) return;
   try {
@@ -1364,7 +1364,7 @@ function toBlob(dataUrl) {
   } catch(e) { return dataUrl; }
 }
 
-// ── PRINT HELPER (iframe, never freezes parent) ──
+// -- PRINT HELPER (iframe, never freezes parent) --
 function printHTML(html) {
   let fr = document.getElementById('_print_frame');
   if (fr) fr.remove();
@@ -1500,7 +1500,7 @@ function printMemberProfile(id) {
     </div>
 
   </div>
-  <script>
+  <scr"+"ipt>
     var qrEl = document.getElementById('profile-qr');
     new QRCode(qrEl, { text: '${origin}', width: 80, height: 80, colorDark: '#052e16', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
   <\/script>
@@ -1614,7 +1614,7 @@ function printMemberCard(id) {
     </div>
   </div>
 
-  <script>
+  <scr"+"ipt>
     var qrEl = document.getElementById('card-qr');
     new QRCode(qrEl, { text: '${origin}', width: 100, height: 100, colorDark: '#052e16', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
   <\/script>
@@ -1624,7 +1624,7 @@ function printMemberCard(id) {
 }
 
 
-// â”€â”€ PROGRAMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PROGRAMS ──────────────────────────────────────────
 let allPrograms = [];
 async function loadPrograms() {
   try {
@@ -1637,11 +1637,11 @@ async function loadPrograms() {
 function renderProgramsTable(list) {
   document.getElementById('programs-body').innerHTML = list.length ? list.map(p => `
     <tr>
-      <td style="font-size:1.4rem;">${p.icon || 'ðŸ“Œ'}</td>
+      <td style="font-size:1.4rem;">${p.icon || '📌'}</td>
       <td><strong>${p.title}</strong></td>
       <td>${p.image_url ? `<img src="${p.image_url}" style="height:48px;border-radius:6px;object-fit:cover;"/>` : '<span style="color:#9ca3af;">No photo</span>'}</td>
       <td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.description}</td>
-      <td><button class="btn btn-sm btn-danger" onclick="deleteProgram(${p.id})">🗑️ Delete</button></td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteProgram(${p.id})">??? Delete</button></td>
     </tr>`).join('')
     : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No projects yet.</td></tr>';
 
@@ -1694,7 +1694,7 @@ document.getElementById('program-form').addEventListener('submit', async functio
   } catch(e) { alert('Failed to save program.'); }
 });
 
-// â”€â”€ EVENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── EVENTS ────────────────────────────────────────────
 async function loadEvents() {
   try {
     const list = await apiFetch('/events');
@@ -1704,7 +1704,7 @@ async function loadEvents() {
         <td>${fmtDate(e.event_date)}</td>
         <td>${e.location || '-'}</td>
         <td>${badge(e.category || 'General')}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">🗑️ Delete</button></td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteEvent(${e.id})">??? Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No events yet.</td></tr>';
 
@@ -1733,7 +1733,7 @@ document.getElementById('event-form').addEventListener('submit', async (e) => {
       body: formData
     });
     if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed'); }
-    showAlert('event-alert', '✅ Event created successfully!', 'success');
+    showAlert('event-alert', '? Event created successfully!', 'success');
     document.getElementById('event-form').reset();
     document.getElementById('ev-image-preview').style.display = 'none';
     hideEventForm(); loadEvents(); loadDashboard();
@@ -1755,7 +1755,7 @@ async function deleteEvent(id) {
 }
 
 
-// â”€â”€ NEWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── NEWS ──────────────────────────────────────────────
 async function loadNews() {
   try {
     const list = await apiFetch('/news/all');
@@ -1765,7 +1765,7 @@ async function loadNews() {
         <td>${n.category || '-'}</td>
         <td>${n.published ? '<span class="badge badge-active">Published</span>' : '<span class="badge badge-pending">Draft</span>'}</td>
         <td>${fmtDate(n.created_at)}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">🗑️ Delete</button></td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteNews(${n.id})">??? Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No articles yet.</td></tr>';
 
@@ -1791,7 +1791,7 @@ document.getElementById('news-form').addEventListener('submit', async (e) => {
       body: formData
     });
     if (!res.ok) { const d = await res.json(); throw new Error(d.message || 'Failed'); }
-    showAlert('news-alert', '✅ Article published!', 'success');
+    showAlert('news-alert', '? Article published!', 'success');
     document.getElementById('news-form').reset();
     document.getElementById('news-image-preview').style.display = 'none';
     document.getElementById('news-form-panel').style.display = 'none';
@@ -1813,7 +1813,7 @@ async function deleteNews(id) {
   catch(e) { alert('Failed to delete article.'); }
 }
 
-// â”€â”€ GALLERY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── GALLERY ───────────────────────────────────────────
 async function loadGallery() {
   try {
     const list = await apiFetch('/gallery');
@@ -1821,9 +1821,9 @@ async function loadGallery() {
     grid.innerHTML = list.length ? list.map(img => `
       <div class="gallery-admin-item">
         <img src="${img.image_url}" alt="${img.title || 'image'}" onerror="this.src='/assets/images/placeholder.png'"/>
-        <button class="del-btn" onclick="deleteGallery(${img.id})">✕</button>
+        <button class="del-btn" onclick="deleteGallery(${img.id})">?</button>
       </div>`).join('')
-      : '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">🖼️</div><p>No images yet.</p></div>';
+      : '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">???</div><p>No images yet.</p></div>';
   } catch(e) {
     document.getElementById('admin-gallery-grid').innerHTML =
       '<div class="empty-state" style="grid-column:1/-1;"><p>Error loading gallery.</p></div>';
@@ -1843,7 +1843,7 @@ document.getElementById('gallery-form').addEventListener('submit', async (e) => 
       body: formData
     });
     if (!res.ok) throw new Error('Upload failed');
-    showAlert('gallery-alert', '✅ Image uploaded!', 'success');
+    showAlert('gallery-alert', '? Image uploaded!', 'success');
     document.getElementById('gallery-form').reset();
     document.getElementById('gallery-form-panel').style.display = 'none';
     loadGallery();
@@ -1856,7 +1856,7 @@ async function deleteGallery(id) {
 }
 
 
-// â”€â”€ MESSAGES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── MESSAGES ──────────────────────────────────────────
 async function loadMessages() {
   try {
     const list = await apiFetch('/contact');
@@ -1876,7 +1876,7 @@ async function loadMessages() {
   }
 }
 
-// â”€â”€ NOTIFICATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── NOTIFICATIONS ─────────────────────────────────────
 let notifications = [];
 async function loadNotifications() {
   try {
@@ -1908,14 +1908,14 @@ function renderNotifications() {
             <span>${n.time ? new Date(n.time).toLocaleString() : ''}</span>
           </div>
         </div>`).join('')
-    : '<div class="empty-state"><div class="empty-icon">🔔</div><p>No new notifications.</p></div>';
+    : '<div class="empty-state"><div class="empty-icon">??</div><p>No new notifications.</p></div>';
 }
 function markAllRead() {
   notifications.forEach(n => n.read = true);
   renderNotifications();
 }
 
-// â”€â”€ TEAM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── TEAM ──────────────────────────────────────────────────
 async function loadTeam() {
   try {
     const list = await apiFetch('/team');
@@ -1965,7 +1965,7 @@ async function deleteTeam(id) {
   catch(e) { alert('Failed to remove.'); }
 }
 
-// â”€â”€ SYSTEM CONFIG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SYSTEM CONFIG ─────────────────────────────────────
 async function deleteDonation(id, name) {
   const u = getUser();
   if (!confirm(`Remove donation from "${name}"?`)) return;
@@ -1992,7 +1992,7 @@ async function loadDonations() {
         <td>${d.transaction_ref || '-'}</td>
         <td>${d.screenshot_url ? (d.screenshot_url.startsWith('data:') ? `<a href="${d.screenshot_url}" target="_blank"><img src="${d.screenshot_url}" style="height:40px;border-radius:4px;object-fit:cover;border:1px solid #e5e7eb;cursor:pointer;" title="Click to view full screenshot" onerror="this.parentElement.innerHTML='<span style=color:#9ca3af;font-size:0.78rem;>Expired</span>'"/></a>` : `<a href="${d.screenshot_url}" target="_blank" style="font-size:0.78rem;color:#2d6a4f;">Click to view full screenshot</a>`) : '<span style="color:#9ca3af;font-size:0.78rem;">None</span>'}</td>
         <td>${fmtDate(d.donated_at)}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteDonation(${d.id},'${(d.donor_name||'').replace(/'/g,'')}')">🗑️ Delete</button></td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteDonation(${d.id},'${(d.donor_name||'').replace(/'/g,'')}')">??? Delete</button></td>
       </tr>`).join('')
       : '<tr><td colspan="7" style="text-align:center;color:#8b9bb4;">No donations yet.</td></tr>';
 
@@ -2002,7 +2002,7 @@ async function loadDonations() {
   }
 }
 
-// â”€â”€ REPORTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── REPORTS ───────────────────────────────────────────
 function printReport() {
   const content = document.getElementById('reports-grid').innerHTML;
   const user = getUser();
@@ -2061,7 +2061,7 @@ async function loadReports() {
   } catch(e) { console.error('Reports error:', e); }
 }
 
-// â”€â”€ USERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── USERS ─────────────────────────────────────────────
 async function loadUsers() {
   try {
     const list = await apiFetch('/members');
@@ -2130,7 +2130,7 @@ document.getElementById('create-admin-form').addEventListener('submit', async (e
   } catch(err) { showAlert('create-admin-alert', err.message || 'Failed to create admin.', 'error'); }
 });
 
-// â”€â”€ SETTINGS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SETTINGS ──────────────────────────────────────────
 document.getElementById('settings-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const np = document.getElementById('set-new-pass').value;
@@ -2142,7 +2142,7 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
       currentPassword: document.getElementById('set-current-pass').value,
       newPassword: np
     })});
-    showAlert('settings-alert', '✅ Password updated successfully!', 'success');
+    showAlert('settings-alert', '? Password updated successfully!', 'success');
     document.getElementById('settings-form').reset();
   } catch(err) { showAlert('settings-alert', err.message || 'Failed to update password.', 'error'); }
 });
@@ -2281,7 +2281,7 @@ function printIDCard() {
     @media print{body{background:#fff;} .card{box-shadow:none;}}
   </style></head><body>
   <div class="card">${html}</div>
-  <script>
+  <scr"+"ipt>
     // Re-render QR in print window since the canvas doesn't clone
     var qrEl = document.getElementById('idc-qr-container');
     if (qrEl) { qrEl.innerHTML=''; new QRCode(qrEl,{text:'${siteUrl}',width:90,height:90,colorDark:'#052e16',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); }
