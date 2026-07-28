@@ -294,9 +294,18 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      animateCount('stat-members', 200);
-      animateCount('stat-events', 80);
-      animateCount('stat-communities', 12);
+      try {
+        const [members, events, programs] = await Promise.all([
+          apiFetch('/members'), apiFetch('/events'), apiFetch('/programs').catch(()=>[])
+        ]);
+        animateCount('stat-members', members.length);
+        animateCount('stat-events', events.length);
+        animateCount('stat-communities', programs.length);
+      } catch {
+        animateCount('stat-members', 0);
+        animateCount('stat-events', 0);
+        animateCount('stat-communities', 0);
+      }
 
       // Team
       try {
