@@ -1005,16 +1005,32 @@ function showAlert(id, msg, type) {
 
 // â”€â”€ DASHBOARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadDashboard() {
-  const safe = (p) => p.catch(e => { console.warn('stat fetch failed:', e.message); return []; });
-  const [members, events, donations, newsList, programs] = await Promise.all([
-    safe(apiFetch('/members')), safe(apiFetch('/events')), safe(apiFetch('/donations')),
-    safe(apiFetch('/news/all')), safe(apiFetch('/programs'))
-  ]);
-  document.getElementById('stat-members').textContent   = Array.isArray(members)   ? members.length   : '?';
-  document.getElementById('stat-events').textContent    = Array.isArray(events)    ? events.length    : '?';
-  document.getElementById('stat-donations').textContent = Array.isArray(donations) ? donations.length : '?';
-  document.getElementById('stat-news').textContent      = Array.isArray(newsList)  ? newsList.length  : '?';
-  document.getElementById('stat-programs').textContent  = Array.isArray(programs)  ? programs.length  : '?';
+  const setStats = (m, ev, d, n, p) => {
+    document.getElementById('stat-members').textContent   = m;
+    document.getElementById('stat-events').textContent    = ev;
+    document.getElementById('stat-donations').textContent = d;
+    document.getElementById('stat-news').textContent      = n;
+    document.getElementById('stat-programs').textContent  = p;
+  };
+  try {
+    const token = getToken();
+    if (!token) { window.location.href = '/dashboard/admin-login.html'; return; }
+    const [members, events, donations, newsList, programs] = await Promise.all([
+      apiFetch('/members'),
+      apiFetch('/events').catch(() => []),
+      apiFetch('/donations').catch(() => []),
+      apiFetch('/news/all').catch(() => []),
+      apiFetch('/programs').catch(() => [])
+    ]);
+    setStats(members.length, events.length, donations.length, newsList.length, programs.length);
+  } catch(e) {
+    console.error('loadDashboard error:', e);
+    if (e.message && (e.message.toLowerCase().includes('token') || e.message.includes('401'))) {
+      window.location.href = '/dashboard/admin-login.html';
+    } else {
+      setStats('!', '!', '!', '!', '!');
+    }
+  }
 }
 
 let allApplications = [], currentAppFilter = 'all';
