@@ -150,11 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.classList.add('open');
     hamburger.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
-    // Add nav header if not present
     if (!navLinks.querySelector('.nav-mobile-header')) {
       const header = document.createElement('div');
       header.className = 'nav-mobile-header';
-      header.innerHTML = '<span>🌿 GUYGD</span>';
+      header.innerHTML = '<span>🌿 GUYGD</span><button onclick="closeMenu()" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;line-height:1;">✕</button>';
       navLinks.insertBefore(header, navLinks.firstChild);
     }
   }
