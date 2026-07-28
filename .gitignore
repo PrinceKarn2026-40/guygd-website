@@ -3,3 +3,4 @@ node_modules/
 *.log
 .DS_Store
 client/public/assets/images/uploads/
+tmp_*.txt
