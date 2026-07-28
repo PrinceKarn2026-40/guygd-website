@@ -39,6 +39,21 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/src/pages/index.html'));
 });
 
+// Explicit HTML page routes
+const pages = ['about','programs','membership','scholarships','news','events','gallery','contact','donate','campaign','leadership'];
+pages.forEach(p => {
+  app.get(`/${p}`, (req, res) => res.sendFile(path.join(__dirname, `../client/src/pages/${p}.html`)));
+  app.get(`/${p}.html`, (req, res) => res.sendFile(path.join(__dirname, `../client/src/pages/${p}.html`)));
+});
+
+// Dashboard routes
+app.get('/dashboard/admin', (req, res) => res.sendFile(path.join(__dirname, '../client/src/pages/dashboard/admin.html')));
+app.get('/dashboard/admin.html', (req, res) => res.sendFile(path.join(__dirname, '../client/src/pages/dashboard/admin.html')));
+app.get('/dashboard/member', (req, res) => res.sendFile(path.join(__dirname, '../client/src/pages/dashboard/member.html')));
+app.get('/dashboard/member.html', (req, res) => res.sendFile(path.join(__dirname, '../client/src/pages/dashboard/member.html')));
+app.get('/dashboard/admin-login', (req, res) => res.sendFile(path.join(__dirname, '../client/src/pages/dashboard/admin-login.html')));
+app.get('/dashboard/admin-login.html', (req, res) => res.sendFile(path.join(__dirname, '../client/src/pages/dashboard/admin-login.html')));
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Internal server error' });
