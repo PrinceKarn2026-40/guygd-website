@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>GUYGD – Admin Dashboard</title>
+  <title>GUYGD � Admin Dashboard</title>
   <link rel="stylesheet" href="/src/css/dashboard.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
   <!-- DataTables -->
@@ -17,7 +17,7 @@
     body { margin: 0; background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
     .admin-layout { display: flex; min-height: 100vh; }
 
-    /* ── SIDEBAR ── */
+    /* -- SIDEBAR -- */
     .admin-sidebar {
       width: 240px; height: 100vh; background: #1a1f36;
       display: flex; flex-direction: column; position: fixed; left: 0; top: 0; z-index: 100;
@@ -52,7 +52,7 @@
     .sidebar-nav a.logout-link { color: #ff6b6b; }
     .sidebar-nav a.logout-link:hover { background: rgba(255,107,107,0.1); }
 
-    /* ── MAIN ── */
+    /* -- MAIN -- */
     .admin-main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
     .admin-topbar {
       background: #fff; padding: 14px 28px; display: flex; align-items: center;
@@ -85,11 +85,11 @@
     .topbar-user-details .t-login { font-size: 0.7rem; color: #8b9bb4; }
     .admin-content { padding: 28px; flex: 1; }
 
-    /* ── SECTIONS ── */
+    /* -- SECTIONS -- */
     .tab-section { display: none; }
     .tab-section.active { display: block; }
 
-    /* ── STAT CARDS ── */
+    /* -- STAT CARDS -- */
     .stats-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; margin-bottom: 28px;
     }
@@ -108,7 +108,7 @@
     .stat-info h3 { margin: 0; font-size: 1.6rem; font-weight: 700; color: #1a1f36; }
     .stat-info p  { margin: 3px 0 0; font-size: 0.78rem; color: #6c757d; }
 
-    /* ── PANEL ── */
+    /* -- PANEL -- */
     .panel { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; overflow: hidden; }
     .panel-header {
       padding: 16px 22px; border-bottom: 1px solid #f0f2f5;
@@ -117,7 +117,7 @@
     .panel-header h3 { margin: 0; font-size: 1rem; color: #1a1f36; }
     .panel-body { padding: 20px 22px; }
 
-    /* ── TABLE ── */
+    /* -- TABLE -- */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
     thead th { background: #f8f9fb; padding: 11px 14px; text-align: left; color: #6c757d; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -125,7 +125,7 @@
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: #fafbfc; }
 
-    /* ── BADGES ── */
+    /* -- BADGES -- */
     .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.73rem; font-weight: 600; text-transform: capitalize; }
     .badge-active, .badge-approved { background: #d4edda; color: #155724; }
     .badge-pending, .badge-submitted { background: #fff3cd; color: #856404; }
@@ -135,7 +135,7 @@
     .badge-member { background: #d1ecf1; color: #0c5460; }
     .badge-executive { background: #fff3cd; color: #856404; }
 
-    /* ── BUTTONS ── */
+    /* -- BUTTONS -- */
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; text-decoration: none; }
     .btn-primary { background: #2d6a4f; color: #fff; }
     .btn-primary:hover { background: #1b4332; }
@@ -149,7 +149,7 @@
     .btn-warn:hover { background: #856404; color: #fff; }
     .btn-sm { padding: 5px 12px; font-size: 0.78rem; }
 
-    /* ── FORM ── */
+    /* -- FORM -- */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-grid .full { grid-column: 1 / -1; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
@@ -161,18 +161,18 @@
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2d6a4f; }
     .form-actions { display: flex; gap: 10px; padding-top: 8px; }
 
-    /* ── ALERT ── */
+    /* -- ALERT -- */
     .alert { padding: 11px 16px; border-radius: 8px; margin-bottom: 14px; font-size: 0.88rem; display: none; }
     .alert.success { background: #d4edda; color: #155724; display: block; }
     .alert.error   { background: #f8d7da; color: #721c24; display: block; }
 
-    /* ── GALLERY GRID ── */
+    /* -- GALLERY GRID -- */
     .gallery-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; padding: 20px 22px; }
     .gallery-admin-item { border-radius: 10px; overflow: hidden; background: #f0f2f5; position: relative; aspect-ratio: 1; }
     .gallery-admin-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .gallery-admin-item .del-btn { position: absolute; top: 6px; right: 6px; background: rgba(220,38,38,0.85); color: #fff; border: none; border-radius: 6px; padding: 3px 8px; font-size: 0.75rem; cursor: pointer; }
 
-    /* ── NOTIFICATION ITEM ── */
+    /* -- NOTIFICATION ITEM -- */
     .notif-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
     .notif-item:last-child { border-bottom: none; }
     .notif-dot { width: 10px; height: 10px; border-radius: 50%; background: #2d6a4f; flex-shrink: 0; margin-top: 5px; }
@@ -180,7 +180,7 @@
     .notif-text p { margin: 0; font-size: 0.88rem; color: #344054; }
     .notif-text span { font-size: 0.76rem; color: #8b9bb4; }
 
-    /* ── REPORT CARDS ── */
+    /* -- REPORT CARDS -- */
     .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
     .report-card { background: #fff; border-radius: 12px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .report-card h4 { margin: 0 0 14px; font-size: 0.95rem; color: #1a1f36; }
@@ -188,16 +188,16 @@
     .report-row:last-child { border-bottom: none; }
     .report-row span:last-child { font-weight: 600; color: #2d6a4f; }
 
-    /* ── SETTINGS ── */
+    /* -- SETTINGS -- */
     .settings-section { margin-bottom: 28px; }
     .settings-section h3 { font-size: 1rem; color: #1a1f36; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #f0f2f5; }
 
-    /* ── EMPTY STATE ── */
+    /* -- EMPTY STATE -- */
     .empty-state { text-align: center; padding: 48px 20px; color: #8b9bb4; }
     .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
     .empty-state p { margin: 0; font-size: 0.9rem; }
 
-    /* ── DATATABLES OVERRIDES ── */
+    /* -- DATATABLES OVERRIDES -- */
     .dataTables_wrapper .dataTables_filter input {
       border: 1px solid #d0d5dd; border-radius: 8px; padding: 6px 12px;
       font-size: 0.85rem; outline: none; margin-left: 6px;
@@ -229,11 +229,11 @@
     }
     .dataTables_wrapper .dt-buttons .dt-button:hover { background: #2d6a4f; color: #fff; border-color: #2d6a4f; }
     table.dataTable thead th { cursor: pointer; user-select: none; }
-    table.dataTable thead th.sorting_asc::after  { content: ' �-�'; font-size: 0.65rem; color: #2d6a4f; }
-    table.dataTable thead th.sorting_desc::after { content: ' �-�'; font-size: 0.65rem; color: #2d6a4f; }
+    table.dataTable thead th.sorting_asc::after  { content: ' ?-?'; font-size: 0.65rem; color: #2d6a4f; }
+    table.dataTable thead th.sorting_desc::after { content: ' ?-?'; font-size: 0.65rem; color: #2d6a4f; }
     .dataTables_wrapper { padding: 0 22px 18px; }
 
-    /* ── RESPONSIVE ── */
+    /* -- RESPONSIVE -- */
     @media (max-width: 768px) {
       .admin-sidebar { width: 200px; }
       .admin-main { margin-left: 200px; }
@@ -262,7 +262,7 @@
 </div>
 <div class="admin-layout">
 
-  <!-- ════ SIDEBAR ════ -->
+  <!-- ---- SIDEBAR ---- -->
   <aside class="admin-sidebar">
     <div class="sidebar-brand">
       <h2>GUYGD</h2>
@@ -329,7 +329,7 @@
     </nav>
   </aside>
 
-  <!-- ════ MAIN ════ -->
+  <!-- ---- MAIN ---- -->
   <div class="admin-main">
 
     <!-- Top Bar -->
@@ -353,7 +353,7 @@
 
     <div class="admin-content">
 
-      <!-- ════ DASHBOARD ════ -->
+      <!-- ---- DASHBOARD ---- -->
       <div id="section-dashboard" class="tab-section active">
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-icon green">&#128101;</div><div class="stat-info"><h3 id="stat-members">-</h3><p>Members</p></div></div>
@@ -474,7 +474,7 @@
           <div style="padding:24px 28px;" id="modal-member-content"></div>
         </div>
       </div>
-      <!-- ════ EVENTS ════ -->
+      <!-- ---- EVENTS ---- -->
       <div id="section-events" class="tab-section">
         <div class="panel" id="event-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3 id="event-form-title">Add New Event</h3></div>
@@ -497,7 +497,7 @@
               <div class="form-group full">
                 <label>Event Photo</label>
                 <input type="file" id="ev-image-file" accept="image/*" style="padding:6px;"/>
-                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG — max 10MB)</p>
+                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG � max 10MB)</p>
                 <div id="ev-image-preview" style="display:none;margin-top:8px;"><img id="ev-img-thumb" style="max-height:120px;border-radius:8px;border:1px solid #e0e0e0;"/></div>
               </div>
               <div class="form-actions full">
@@ -522,7 +522,7 @@
       </div>
 
 
-      <!-- ════ NEWS ════ -->
+      <!-- ---- NEWS ---- -->
       <div id="section-news" class="tab-section">
         <div class="panel" id="news-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3>Add News Article</h3></div>
@@ -536,11 +536,11 @@
               <div class="form-group full">
                 <label>Article Photo</label>
                 <input type="file" id="news-image-file" accept="image/*" style="padding:6px;"/>
-                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG — max 10MB)</p>
+                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG � max 10MB)</p>
                 <div id="news-image-preview" style="display:none;margin-top:8px;"><img id="news-img-thumb" style="max-height:120px;border-radius:8px;border:1px solid #e0e0e0;"/></div>
               </div>
               <div class="form-actions full">
-                <button type="submit" class="btn btn-primary">🚀 Publish</button>
+                <button type="submit" class="btn btn-primary">?? Publish</button>
                 <button type="button" class="btn btn-outline" onclick="document.getElementById('news-form-panel').style.display='none'">Cancel</button>
               </div>
             </form>
@@ -561,7 +561,7 @@
       </div>
 
 
-      <!-- ════ TEAM ════ -->
+      <!-- ---- TEAM ---- -->
       <div id="section-team" class="tab-section">
         <div class="panel" id="team-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3>Add Team Member</h3></div>
@@ -591,7 +591,7 @@
         </div>
       </div>
 
-      <!-- ════ GALLERY ════ -->
+      <!-- ---- GALLERY ---- -->
       <div id="section-gallery" class="tab-section">
         <div class="panel" id="gallery-form-panel" style="display:none;margin-bottom:20px;">
           <div class="panel-header"><h3>Upload Image</h3></div>
@@ -603,7 +603,7 @@
               <div class="form-group full"><label>Caption</label><input type="text" id="gal-caption" placeholder="Short description"/></div>
               <div class="form-group full"><label>Image File *</label><input type="file" id="gal-file" accept="image/*" required/></div>
               <div class="form-actions full">
-                <button type="submit" class="btn btn-primary">📤 Upload</button>
+                <button type="submit" class="btn btn-primary">?? Upload</button>
                 <button type="button" class="btn btn-outline" onclick="document.getElementById('gallery-form-panel').style.display='none'">Cancel</button>
               </div>
             </form>
@@ -622,7 +622,7 @@
 
 
       
-      <!-- ════ PROGRAMS ════ -->
+      <!-- ---- PROGRAMS ---- -->
       <div id="section-programs" class="tab-section">
         <div class="panel">
           <div class="panel-header">
@@ -655,7 +655,7 @@
         </div>
       </div>
 
-      <!-- ════ DONATIONS ════ -->
+      <!-- ---- DONATIONS ---- -->
       <div id="section-donations" class="tab-section">
         <div class="panel">
           <div class="panel-header"><h3>Donation Records</h3></div>
@@ -670,7 +670,7 @@
         </div>
       </div>
 
-      <!-- ════ MESSAGES ════ -->
+      <!-- ---- MESSAGES ---- -->
       <div id="section-messages" class="tab-section">
         <div class="panel">
           <div class="panel-header"><h3>Contact Messages</h3></div>
@@ -683,7 +683,7 @@
         </div>
       </div>
 
-      <!-- ════ NOTIFICATIONS ════ -->
+      <!-- ---- NOTIFICATIONS ---- -->
       <div id="section-notifications" class="tab-section">
         <div class="panel">
           <div class="panel-header">
@@ -697,7 +697,7 @@
       </div>
 
 
-      <!-- ════ REPORTS ════ -->
+      <!-- ---- REPORTS ---- -->
       <div id="section-reports" class="tab-section">
         <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
           <button class="btn btn-primary" onclick="printReport()">&#128424; Print Report</button>
@@ -733,7 +733,7 @@
       </div>
 
 
-      <!-- ════ USERS ════ -->
+      <!-- ---- USERS ---- -->
       <div id="section-users" class="tab-section">
         <div class="panel" style="margin-bottom:20px;">
           <div class="panel-header"><h3>&#10133; Create Admin User</h3></div>
@@ -773,7 +773,7 @@
         </div>
       </div>
 
-      <!-- ════ SETTINGS ════ -->
+      <!-- ---- SETTINGS ---- -->
       <div id="section-idcard" class="tab-section">
         <div class="panel">
           <div class="panel-header"><h3>&#129979; Member ID Cards</h3></div>
@@ -831,7 +831,7 @@
                 <div class="form-group"><label>New Password</label><input type="password" id="set-new-pass" placeholder="Min 6 characters"/></div>
                 <div class="form-group"><label>Confirm New Password</label><input type="password" id="set-confirm-pass" placeholder="Repeat new password"/></div>
                 <div class="form-actions full">
-                  <button type="submit" class="btn btn-primary">🔒 Update Password</button>
+                  <button type="submit" class="btn btn-primary">?? Update Password</button>
                 </div>
               </form>
             </div>
@@ -890,7 +890,7 @@ async function apiFetch(endpoint, options = {}) {
 }
 </script>
 <script>
-// ── DATATABLES HELPER ────────────────────────────────
+// -- DATATABLES HELPER --------------------------------
 $.fn.DataTable.ext.errMode = 'none';
 function dtInit(id, opts) {
   if ($.fn.DataTable.isDataTable('#' + id)) {
@@ -911,14 +911,14 @@ function dtInit(id, opts) {
       searchPlaceholder: 'Search...',
       emptyTable: 'No data available',
       zeroRecords: 'No matching records found',
-      info: 'Showing _START_–_END_ of _TOTAL_ entries',
+      info: 'Showing _START_�_END_ of _TOTAL_ entries',
       infoEmpty: 'No entries',
       lengthMenu: 'Show _MENU_ entries'
     }
   }, opts || {}));
 }
 
-// ── INIT ──────────────────────────────────────────────
+// -- INIT ----------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   const user = getUser();
   if (!user || !['admin', 'executive', 'super_admin'].includes(user.role)) {
@@ -959,7 +959,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ── NAVIGATION ────────────────────────────────────────
+// -- NAVIGATION ----------------------------------------
 const sectionTitles = {
   dashboard: 'Dashboard', programs: 'Projects',
   applications: 'Membership Applications',
@@ -1000,7 +1000,7 @@ function logout() {
   window.location.href = '/dashboard/admin-login.html';
 }
 
-// ── HELPERS ───────────────────────────────────────────
+// -- HELPERS -------------------------------------------
 function badge(status) {
   return `<span class="badge badge-${status}">${status.replace('_', ' ')}</span>`;
 }
@@ -1013,7 +1013,7 @@ function showAlert(id, msg, type) {
 }
 
 
-// ── DASHBOARD ─────────────────────────────────────────
+// -- DASHBOARD -----------------------------------------
 async function loadDashboard() {
   const setStats = (m, ev, d, n, p) => {
     document.getElementById('stat-members').textContent   = m;
@@ -1051,7 +1051,7 @@ async function loadDashboard() {
       if (dbg) {
         let errDiv = document.getElementById('dash-error');
         if (!errDiv) { errDiv = document.createElement('div'); errDiv.id = 'dash-error'; errDiv.style.cssText = 'background:#fee2e2;color:#dc2626;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:0.88rem;'; dbg.prepend(errDiv); }
-        errDiv.textContent = '&#9888; API Error: ' + e.message + ' � Check your internet connection or try logging out and back in.';
+        errDiv.textContent = '&#9888; API Error: ' + e.message + ' ? Check your internet connection or try logging out and back in.';
       }
     }
   }
@@ -1184,7 +1184,7 @@ async function appApprove(id) {
 }
 
 async function appReject(id) {
-  const reason = prompt('Rejection reason (optional � will be included in the email to the applicant):');
+  const reason = prompt('Rejection reason (optional ? will be included in the email to the applicant):');
   if (reason === null) return; // cancelled
   if (!confirm('Reject this application? The applicant will be notified by email.')) return;
   try {
@@ -1383,7 +1383,7 @@ function printHTML(html) {
 
 
 
-// ── PROGRAMS ──────────────────────────────────────────
+// -- PROGRAMS ------------------------------------------
 let allPrograms = [];
 async function loadPrograms() {
   try {
@@ -1396,7 +1396,7 @@ async function loadPrograms() {
 function renderProgramsTable(list) {
   document.getElementById('programs-body').innerHTML = list.length ? list.map(p => `
     <tr>
-      <td style="font-size:1.4rem;">${p.icon || '📌'}</td>
+      <td style="font-size:1.4rem;">${p.icon || '??'}</td>
       <td><strong>${p.title}</strong></td>
       <td>${p.image_url ? `<img src="${p.image_url}" style="height:48px;border-radius:6px;object-fit:cover;"/>` : '<span style="color:#9ca3af;">No photo</span>'}</td>
       <td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.description}</td>
@@ -1453,7 +1453,7 @@ document.getElementById('program-form').addEventListener('submit', async functio
   } catch(e) { alert('Failed to save program.'); }
 });
 
-// ── EVENTS ────────────────────────────────────────────
+// -- EVENTS --------------------------------------------
 async function loadEvents() {
   try {
     const list = await apiFetch('/events');
@@ -1514,7 +1514,7 @@ async function deleteEvent(id) {
 }
 
 
-// ── NEWS ──────────────────────────────────────────────
+// -- NEWS ----------------------------------------------
 async function loadNews() {
   try {
     const list = await apiFetch('/news/all');
@@ -1572,7 +1572,7 @@ async function deleteNews(id) {
   catch(e) { alert('Failed to delete article.'); }
 }
 
-// ── GALLERY ───────────────────────────────────────────
+// -- GALLERY -------------------------------------------
 async function loadGallery() {
   try {
     const list = await apiFetch('/gallery');
@@ -1615,7 +1615,7 @@ async function deleteGallery(id) {
 }
 
 
-// ── MESSAGES ──────────────────────────────────────────
+// -- MESSAGES ------------------------------------------
 async function loadMessages() {
   try {
     const list = await apiFetch('/contact');
@@ -1631,11 +1631,11 @@ async function loadMessages() {
 
   } catch(e) {
     document.getElementById('messages-body').innerHTML =
-      '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error loading messages.</td></tr>';
+      '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error: ' + e.message + '</td></tr>';
   }
 }
 
-// ── NOTIFICATIONS ─────────────────────────────────────
+// -- NOTIFICATIONS -------------------------------------
 let notifications = [];
 async function loadNotifications() {
   try {
@@ -1674,7 +1674,7 @@ function markAllRead() {
   renderNotifications();
 }
 
-// ── TEAM ──────────────────────────────────────────────────
+// -- TEAM --------------------------------------------------
 async function loadTeam() {
   try {
     const list = await apiFetch('/team');
@@ -1724,7 +1724,7 @@ async function deleteTeam(id) {
   catch(e) { alert('Failed to remove.'); }
 }
 
-// ── SYSTEM CONFIG ─────────────────────────────────────
+// -- SYSTEM CONFIG -------------------------------------
 async function deleteDonation(id, name) {
   const u = getUser();
   if (!confirm(`Remove donation from "${name}"?`)) return;
@@ -1761,7 +1761,7 @@ async function loadDonations() {
   }
 }
 
-// ── REPORTS ───────────────────────────────────────────
+// -- REPORTS -------------------------------------------
 function printReport() {
   const content = document.getElementById('reports-grid').innerHTML;
   const user = getUser();
@@ -1819,7 +1819,7 @@ async function loadReports() {
   } catch(e) { console.error('Reports error:', e); }
 }
 
-// ── USERS ─────────────────────────────────────────────
+// -- USERS ---------------------------------------------
 async function loadUsers() {
   try {
     const list = await apiFetch('/members');
@@ -1888,7 +1888,7 @@ document.getElementById('create-admin-form').addEventListener('submit', async (e
   } catch(err) { showAlert('create-admin-alert', err.message || 'Failed to create admin.', 'error'); }
 });
 
-// ── SETTINGS ──────────────────────────────────────────
+// -- SETTINGS ------------------------------------------
 document.getElementById('settings-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const np = document.getElementById('set-new-pass').value;
