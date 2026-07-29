@@ -317,12 +317,10 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       try {
-        const [members, events, programs] = await Promise.all([
-          apiFetch('/members'), apiFetch('/events'), apiFetch('/programs').catch(()=>[])
-        ]);
-        animateCount('stat-members', members.length);
-        animateCount('stat-events', events.length);
-        animateCount('stat-communities', programs.length);
+        const stats = await apiFetch('/stats');
+        animateCount('stat-members', stats.members || 0);
+        animateCount('stat-events', stats.events || 0);
+        animateCount('stat-communities', stats.communities || 0);
       } catch {
         animateCount('stat-members', 0);
         animateCount('stat-events', 0);

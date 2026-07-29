@@ -22,6 +22,7 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/team', require('./routes/team'));
 app.use('/api/programs', require('./routes/programs'));
+app.use('/api/stats', require('./routes/stats'));
 app.use('/api/applications', require('./routes/applications'));
 
 const staticOpts = { setHeaders: (res, filePath) => {
