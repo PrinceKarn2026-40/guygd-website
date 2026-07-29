@@ -236,13 +236,13 @@ ul { list-style: none; }
 .hamburger.active .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* overlay behind open menu */
+/* overlay behind open menu — base (hidden) */
 .nav-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 1099;
+  background: rgba(0,0,0,0.65);
+  z-index: 1100;
   -webkit-tap-highlight-color: transparent;
 }
 .nav-overlay.open { display: block; }
@@ -711,27 +711,42 @@ tr:hover td { background: var(--g50); }
   .section { padding: 50px 5%; }
   .hero h1 { font-size: 1.9rem; }
 
-  .hamburger { display: flex; z-index: 1101; position: relative; }
+  /* show hamburger */
+  .hamburger {
+    display: flex;
+    z-index: 1200;
+    position: relative;
+  }
 
+  /* full-screen overlay */
+  .nav-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 1100;
+  }
+  .nav-overlay.open { display: block; }
+
+  /* drawer slides in from right */
   .nav-links {
     position: fixed;
     top: 0;
     right: 0;
-    width: 85%;
-    max-width: 340px;
-    height: 100vh;
+    width: 100%;
+    max-width: 320px;
+    height: 100%;
     height: 100dvh;
-    background: var(--g900);
+    background: #052e16;
     flex-direction: column;
     align-items: stretch;
-    padding-top: 64px; /* clears the mobile header */
+    padding: 0;
     gap: 0;
-    z-index: 1100;
+    z-index: 1150;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     transform: translateX(100%);
-    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
-    box-shadow: -8px 0 32px rgba(0,0,0,0.55);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
     visibility: hidden;
   }
   .nav-links.open {
@@ -739,7 +754,32 @@ tr:hover td { background: var(--g50); }
     visibility: visible;
   }
 
-  /* each nav link row */
+  /* header row inside drawer */
+  .nav-mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 60px;
+    background: rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(245,158,11,0.4);
+    font-size: 1rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 1.5px;
+    flex-shrink: 0;
+  }
+  .nav-mobile-header button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+
+  /* nav links */
   .nav-links a {
     display: block;
     padding: 16px 24px;
@@ -754,13 +794,13 @@ tr:hover td { background: var(--g50); }
   .nav-links a:hover,
   .nav-links a:active { background: rgba(255,255,255,0.08); color: #fff; }
   .nav-links a.active {
-    color: var(--gold);
-    border-left: 3px solid var(--gold);
+    color: #f59e0b;
+    border-left: 3px solid #f59e0b;
     padding-left: 21px;
     background: rgba(245,158,11,0.08);
   }
 
-  /* Join GUYGD CTA */
+  /* Join GUYGD button */
   .nav-links .btn-nav {
     display: block;
     margin: 20px 20px 8px;
@@ -769,32 +809,17 @@ tr:hover td { background: var(--g50); }
     padding: 15px 20px;
     font-size: 1rem;
     font-weight: 700;
-    background: var(--gold);
-    color: var(--g900);
+    background: #f59e0b;
+    color: #052e16;
     border-bottom: none;
   }
   .nav-links .btn-nav:hover,
-  .nav-links .btn-nav:active { background: var(--gold-dark); color: #fff; }
+  .nav-links .btn-nav:active { background: #d97706; color: #fff; }
 
-  .dark-toggle { display: block; margin: 8px 20px 28px; width: calc(100% - 40px); text-align: center; }
-
-  /* mobile header bar inside drawer */
-  .nav-mobile-header {
-    position: fixed;
-    top: 0;
-    width: 85%;
-    max-width: 340px;
-    height: 64px;
-    z-index: 1101;
-    background: rgba(5,46,22,0.98);
-    border-bottom: 1px solid rgba(245,158,11,0.35);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    font-size: 1rem;
-    font-weight: 800;
-    color: #fff;
-    letter-spacing: 1.5px;
+  .dark-toggle {
+    display: block;
+    margin: 8px 20px 28px;
+    width: calc(100% - 40px);
+    text-align: center;
   }
 }

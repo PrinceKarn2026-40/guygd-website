@@ -51,26 +51,28 @@ function toggleDark() {
 var _navOpen = false;
 
 function openMenu() {
-  var navLinks = document.querySelector('.nav-links');
-  var hamburger = document.querySelector('.hamburger');
+  var nav = document.getElementById('nav-links');
   var overlay = document.getElementById('nav-overlay');
-  if (!navLinks || _navOpen) return;
+  var hamburger = document.querySelector('.hamburger');
+  if (!nav || _navOpen) return;
   _navOpen = true;
-  navLinks.classList.add('open');
-  hamburger && hamburger.classList.add('active');
+  nav.classList.add('open');
   overlay && overlay.classList.add('open');
+  hamburger && hamburger.classList.add('active');
+  hamburger && hamburger.setAttribute('aria-expanded', 'true');
   document.body.style.overflow = 'hidden';
 }
 
 function closeMenu() {
-  var navLinks = document.querySelector('.nav-links');
-  var hamburger = document.querySelector('.hamburger');
+  var nav = document.getElementById('nav-links');
   var overlay = document.getElementById('nav-overlay');
-  if (!navLinks) return;
+  var hamburger = document.querySelector('.hamburger');
+  if (!nav) return;
   _navOpen = false;
-  navLinks.classList.remove('open');
-  hamburger && hamburger.classList.remove('active');
+  nav.classList.remove('open');
   overlay && overlay.classList.remove('open');
+  hamburger && hamburger.classList.remove('active');
+  hamburger && hamburger.setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
 }
 
@@ -160,15 +162,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('footer')) renderFooter();
 
   const hamburger = document.querySelector('.hamburger');
-  const navLinks  = document.querySelector('.nav-links');
-  if (!hamburger || !navLinks) return;
+  const nav = document.getElementById('nav-links');
+  if (!hamburger || !nav) return;
 
-  // Animated bars
+  // Hamburger bars
   hamburger.innerHTML = '<span class="bar"></span><span class="bar"></span><span class="bar"></span>';
-  hamburger.setAttribute('aria-label', 'Toggle menu');
+  hamburger.setAttribute('aria-label', 'Open menu');
   hamburger.setAttribute('aria-expanded', 'false');
 
-  // Create overlay with a fixed id so closeMenu can always find it
+  // Overlay
   let overlay = document.getElementById('nav-overlay');
   if (!overlay) {
     overlay = document.createElement('div');
@@ -177,38 +179,38 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(overlay);
   }
 
-  // Mobile header inside menu
-  if (!navLinks.querySelector('.nav-mobile-header')) {
-    const header = document.createElement('div');
-    header.className = 'nav-mobile-header';
-    const closeBtn = document.createElement('button');
-    closeBtn.setAttribute('aria-label', 'Close menu');
-    closeBtn.setAttribute('onclick', 'closeMenu()');
-    closeBtn.style.cssText = 'background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;line-height:1;padding:4px 10px;';
-    closeBtn.innerHTML = '&times;';
+  // Mobile header (logo + close button) — prepended inside drawer
+  if (!nav.querySelector('.nav-mobile-header')) {
+    const hdr = document.createElement('div');
+    hdr.className = 'nav-mobile-header';
+
     const logo = document.createElement('span');
     logo.textContent = '\uD83C\uDF3F GUYGD';
-    header.appendChild(logo);
-    header.appendChild(closeBtn);
-    navLinks.insertBefore(header, navLinks.firstChild);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', 'Close menu');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.addEventListener('click', closeMenu);
+
+    hdr.appendChild(logo);
+    hdr.appendChild(closeBtn);
+    nav.insertBefore(hdr, nav.firstChild);
   }
 
-  // Hamburger toggle
+  // Hamburger click
   hamburger.addEventListener('click', (e) => {
     e.stopPropagation();
     _navOpen ? closeMenu() : openMenu();
   });
 
-  // Tap on overlay closes menu
+  // Overlay click closes menu
   overlay.addEventListener('click', closeMenu);
-  overlay.addEventListener('touchend', (e) => { e.preventDefault(); closeMenu(); });
 
-  // Tap on a nav link — navigate immediately, menu closes
-  navLinks.addEventListener('click', (e) => {
+  // Nav link click — close then navigate
+  nav.addEventListener('click', (e) => {
     const a = e.target.closest('a');
-    if (!a) return;
-    closeMenu();
-    // Allow default navigation
+    if (a) closeMenu();
   });
 
   // Escape key
