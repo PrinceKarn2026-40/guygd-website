@@ -242,7 +242,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.65);
-  z-index: 1000;
+  z-index: 998;
   touch-action: none;
   pointer-events: all;
   -webkit-tap-highlight-color: transparent;
@@ -768,11 +768,12 @@ tr:hover td { background: var(--g50); }
     align-items: stretch;
     padding: 70px 0 30px;
     gap: 0;
-    z-index: 1001;
+    z-index: 1000;
     overflow-y: auto;
     transform: translateX(100%);
     transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
     box-shadow: -4px 0 20px rgba(0,0,0,0.4);
+    pointer-events: all;
   }
   .nav-links.open { transform: translateX(0); }
   .nav-links a {

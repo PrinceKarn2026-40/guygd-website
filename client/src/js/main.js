@@ -139,10 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
   hamburger.setAttribute('aria-label', 'Toggle menu');
   hamburger.setAttribute('aria-expanded', 'false');
 
-  // Create overlay
+  // Create overlay - insert BEFORE nav so it doesn't cover nav links
   const overlay = document.createElement('div');
   overlay.className = 'nav-overlay';
-  document.body.appendChild(overlay);
+  document.body.insertBefore(overlay, document.body.firstChild);
 
   function openMenu() {
     navLinks.classList.add('open');
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hamburger.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
     document.body.style.touchAction = 'none';
-    hamburger.style.zIndex = '1002';
+    hamburger.style.zIndex = '1001';
     if (!navLinks.querySelector('.nav-mobile-header')) {
       const header = document.createElement('div');
       header.className = 'nav-mobile-header';
