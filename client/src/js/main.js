@@ -94,12 +94,12 @@ function renderNavbar() {
 
   const links = navItems.map(item => {
     const isActive = page === item.href.replace('/', '') || path === item.href;
-    return `<a href="${item.href}"${isActive ? ' class="active"' : ''}>${item.label}</a>`;
+    return '<a href="' + item.href + '"' + (isActive ? ' class="active"' : '') + '>' + item.label + '</a>';
   }).join('');
 
   const cta = user
-    ? `<a href="${['admin','executive','super_admin'].includes(user.role) ? '/dashboard/admin.html' : '/dashboard/member.html'}" class="btn-nav">Dashboard</a>`
-    : `<a href="/membership.html" class="btn-nav">Join GUYGD</a>`;
+    ? '<a href="' + (['admin','executive','super_admin'].includes(user.role) ? '/dashboard/admin.html' : '/dashboard/member.html') + '" class="btn-nav">Dashboard</a>'
+    : '<a href="/membership.html" class="btn-nav">Join GUYGD</a>';
 
   document.getElementById('nav-links').innerHTML = links + cta;
 
@@ -181,7 +181,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!navLinks.querySelector('.nav-mobile-header')) {
     const header = document.createElement('div');
     header.className = 'nav-mobile-header';
-    header.innerHTML = '<span>\uD83C\uDF3F GUYGD</span><button onclick="closeMenu()" aria-label="Close menu" style="background:none;border:none;color:#fff;font-size:1.6rem;cursor:pointer;line-height:1;padding:4px 8px;">\u2715</button>';
+    const closeBtn = document.createElement('button');
+    closeBtn.setAttribute('aria-label', 'Close menu');
+    closeBtn.setAttribute('onclick', 'closeMenu()');
+    closeBtn.style.cssText = 'background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;line-height:1;padding:4px 10px;';
+    closeBtn.innerHTML = '&times;';
+    const logo = document.createElement('span');
+    logo.textContent = '\uD83C\uDF3F GUYGD';
+    header.appendChild(logo);
+    header.appendChild(closeBtn);
     navLinks.insertBefore(header, navLinks.firstChild);
   }
 
