@@ -104,16 +104,6 @@ function renderNavbar() {
     : '<a href="/membership.html" class="btn-nav">Join GUYGD</a>';
 
   document.getElementById('nav-links').innerHTML = links + cta;
-
-  // Dark toggle
-  if (!document.querySelector('.dark-toggle')) {
-    const btn = document.createElement('button');
-    btn.className = 'dark-toggle';
-    btn.title = 'Toggle dark mode';
-    btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
-    btn.addEventListener('click', toggleDark);
-    document.getElementById('nav-links').after(btn);
-  }
 }
 
 function renderFooter() {
@@ -165,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const nav = document.getElementById('nav-links');
   if (!hamburger || !nav) return;
 
-  // Hamburger bars
   hamburger.innerHTML = '<span class="bar"></span><span class="bar"></span><span class="bar"></span>';
   hamburger.setAttribute('aria-label', 'Open menu');
   hamburger.setAttribute('aria-expanded', 'false');
@@ -179,41 +168,36 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(overlay);
   }
 
-  // Mobile header (logo + close button) — prepended inside drawer
+  // Mobile header inside drawer
   if (!nav.querySelector('.nav-mobile-header')) {
     const hdr = document.createElement('div');
     hdr.className = 'nav-mobile-header';
-
     const logo = document.createElement('span');
     logo.textContent = '\uD83C\uDF3F GUYGD';
-
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.setAttribute('aria-label', 'Close menu');
     closeBtn.innerHTML = '&times;';
     closeBtn.addEventListener('click', closeMenu);
-
     hdr.appendChild(logo);
     hdr.appendChild(closeBtn);
     nav.insertBefore(hdr, nav.firstChild);
   }
 
-  // Hamburger click
   hamburger.addEventListener('click', (e) => {
     e.stopPropagation();
     _navOpen ? closeMenu() : openMenu();
   });
 
-  // Overlay click closes menu
   overlay.addEventListener('click', closeMenu);
 
-  // Nav link click — close then navigate
+  // Close on link tap, then navigate
   nav.addEventListener('click', (e) => {
     const a = e.target.closest('a');
-    if (a) closeMenu();
+    if (!a) return;
+    closeMenu();
   });
 
-  // Escape key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeMenu();
   });
