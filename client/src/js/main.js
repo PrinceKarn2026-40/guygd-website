@@ -145,7 +145,7 @@ function renderFooter() {
         <h4>Contact</h4>
         <a href="/contact.html">Contact Us</a>
         <a href="mailto:info@guygd.org">info@guygd.org</a>
-        <a href="https://www.google.com/maps/place/Karnplay/@7.2644956,-8.5066949,17z/data=!3m1!4b1!4m6!3m5!1s0xfa5a749bca6995d:0xb6b0c81a43fbb4f0!8m2!3d7.2644956!4d-8.50412!16s%2Fg%2F11sdsjnb3j?hl=en&entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener">&#128205; Gbeh-lay, Liberia</a>
+        <a href="https://www.google.com/maps/place/Karnplay/@7.2644956,-8.5066949,17z/data=!3m1!4b1!4m6!3m5!1s0xfa5a749bca6995d:0xb6b0c81a43fbb4f0!8m2!3d7.2644956!4d-8.50412!16s%2Fg%2F11sdsjnb3j?hl=en&entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener">&#128205; Gbehlay Geh Statutory District</a>
       </div>
     </div>
     <div class="footer-bottom">
