@@ -185,11 +185,7 @@
     </div>
   </section>
 
-  <div class="stats-row">
-    <div class="stat"><span class="stat-num" id="stat-members">0+</span><span>Members</span></div>
-    <div class="stat"><span class="stat-num" id="stat-events">0+</span><span>Events Held</span></div>
-    <div class="stat"><span class="stat-num" id="stat-communities">0+</span><span>Communities Reached</span></div>
-  </div>
+
 
   <section class="section what-we-do">
     <div class="container">
@@ -304,29 +300,7 @@
 
   <script src="/src/js/main.js"></script>
   <script>
-    function animateCount(id, target) {
-      let count = 0;
-      const step = Math.ceil(target / 60);
-      const el = document.getElementById(id);
-      const timer = setInterval(() => {
-        count = Math.min(count + step, target);
-        el.textContent = count + '+';
-        if (count >= target) clearInterval(timer);
-      }, 30);
-    }
-
     document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        const stats = await apiFetch('/stats');
-        animateCount('stat-members', stats.members || 0);
-        animateCount('stat-events', stats.events || 0);
-        animateCount('stat-communities', stats.communities || 0);
-      } catch {
-        animateCount('stat-members', 0);
-        animateCount('stat-events', 0);
-        animateCount('stat-communities', 0);
-      }
-
       // Team
       try {
         const team = await apiFetch('/team');
