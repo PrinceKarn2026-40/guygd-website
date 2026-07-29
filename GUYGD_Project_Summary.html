@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>GUYGD Website – Project Summary</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background:#f4f4f4; color:#1a1a1a; font-size:13px; line-height:1.6; }
+
+  .page { width:210mm; min-height:297mm; margin:0 auto; background:#fff; padding:18mm 18mm 14mm; }
+
+  /* HEADER */
+  .header { background:linear-gradient(135deg,#052e16,#15803d); color:#fff; padding:28px 32px; border-radius:10px; margin-bottom:28px; display:flex; align-items:center; gap:24px; }
+  .header-logo { width:64px; height:64px; background:#d4a017; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; flex-shrink:0; }
+  .header-text h1 { font-size:22px; font-weight:900; letter-spacing:1px; }
+  .header-text h2 { font-size:12px; font-weight:400; opacity:0.8; margin-top:4px; }
+  .header-meta { margin-left:auto; text-align:right; font-size:11px; opacity:0.75; }
+  .header-meta strong { display:block; font-size:13px; color:#f59e0b; }
+
+  /* SECTION */
+  .section { margin-bottom:24px; }
+  .section-title {
+    font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:1px;
+    color:#052e16; border-left:4px solid #f59e0b; padding-left:10px;
+    margin-bottom:12px;
+  }
+
+  /* TWO COL */
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+
+  /* CARD */
+  .card { background:#f8fdf9; border:1px solid #d1fae5; border-radius:8px; padding:14px 16px; }
+  .card h4 { font-size:12px; font-weight:700; color:#052e16; margin-bottom:6px; }
+  .card p, .card li { font-size:11.5px; color:#374151; line-height:1.6; }
+  .card ul { padding-left:16px; list-style:disc; }
+
+  /* TABLE */
+  table { width:100%; border-collapse:collapse; font-size:11.5px; margin-top:8px; }
+  th { background:#052e16; color:#fff; padding:8px 10px; text-align:left; font-weight:600; font-size:11px; }
+  td { padding:7px 10px; border-bottom:1px solid #e5e7eb; vertical-align:top; }
+  tr:nth-child(even) td { background:#f9fafb; }
+  td:first-child { font-weight:600; color:#052e16; white-space:nowrap; }
+
+  /* BADGE */
+  .badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:700; }
+  .badge-green { background:#dcfce7; color:#15803d; }
+  .badge-gold  { background:#fef3c7; color:#92400e; }
+  .badge-blue  { background:#dbeafe; color:#1e40af; }
+
+  /* FLOW */
+  .flow { display:flex; gap:0; align-items:stretch; margin-top:8px; flex-wrap:wrap; }
+  .flow-step { flex:1; min-width:80px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 8px; text-align:center; font-size:10.5px; position:relative; }
+  .flow-step strong { display:block; font-size:11px; color:#052e16; margin-bottom:3px; }
+  .flow-arrow { display:flex; align-items:center; padding:0 4px; color:#16a34a; font-size:16px; font-weight:900; }
+
+  /* FOOTER */
+  .doc-footer { margin-top:32px; border-top:2px solid #052e16; padding-top:12px; display:flex; justify-content:space-between; font-size:10px; color:#6b7280; }
+  .doc-footer strong { color:#052e16; }
+
+  /* HIGHLIGHT BOX */
+  .highlight { background:#fef3c7; border:1px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-top:10px; font-size:11.5px; }
+  .highlight strong { color:#92400e; }
+
+  /* URL */
+  .url { color:#15803d; font-weight:700; font-size:12px; }
+
+  @media print {
+    body { background:#fff; }
+    .page { padding:12mm 14mm; box-shadow:none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">🌿</div>
+    <div class="header-text">
+      <h1>GUYGD — Official Website</h1>
+      <h2>Gbeh-lay United Youths for Growth and Development</h2>
+      <div style="margin-top:8px;font-size:11px;opacity:0.7;">
+        📍 Gbehlay Geh Statutory District &nbsp;|&nbsp; Est. May 14, 2023 &nbsp;|&nbsp; Motto: Voice of the Voiceless
+      </div>
+    </div>
+    <div class="header-meta">
+      <strong>Project Summary</strong>
+      Live Site:<br/>
+      <span style="color:#86efac;font-size:10px;">guygd-website-production<br/>.up.railway.app</span>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="section">
+    <div class="section-title">📌 Project Overview</div>
+    <p style="font-size:12px;color:#374151;line-height:1.8;">
+      The GUYGD website is a full-stack web platform built for the Gbeh-lay United Youths for Growth and Development organization.
+      It serves as the official digital presence for the organization — enabling youth registration, scholarship applications,
+      event management, news publishing, gallery uploads, donation tracking, and administrative oversight through a secure dashboard.
+    </p>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="section">
+    <div class="section-title">⚙️ Technology Stack</div>
+    <div class="three-col">
+      <div class="card">
+        <h4>🖥️ Frontend</h4>
+        <ul>
+          <li>HTML5, CSS3</li>
+          <li>Vanilla JavaScript</li>
+          <li>Responsive design</li>
+          <li>Dark mode support</li>
+          <li>CSS animations</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🔧 Backend</h4>
+        <ul>
+          <li>Node.js v18+</li>
+          <li>Express.js</li>
+          <li>REST API</li>
+          <li>JWT Authentication</li>
+          <li>Bcrypt password hashing</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🗄️ Infrastructure</h4>
+        <ul>
+          <li>PostgreSQL (Railway)</li>
+          <li>Railway hosting</li>
+          <li>GitHub (version control)</li>
+          <li>Nodemailer (email)</li>
+          <li>Multer (file uploads)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section">
+    <div class="section-title">🔄 How the System Works</div>
+    <div class="flow">
+      <div class="flow-step"><strong>User visits</strong>Public website pages</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>Browser</strong>Loads HTML/CSS/JS from Express static server</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>JS calls</strong>REST API endpoints (/api/...)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>Express</strong>Routes → Controllers → PostgreSQL</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>JSON</strong>Response rendered in browser</div>
+    </div>
+    <div class="highlight" style="margin-top:14px;">
+      <strong>Startup sequence:</strong> On every deploy, <code>server/index.js</code> runs <code>migrate()</code> first —
+      which safely applies any schema changes (ALTER TABLE, CREATE TABLE IF NOT EXISTS) — then seeds the super_admin account
+      if it doesn't exist, then starts the Express server on the assigned Railway PORT.
+    </div>
+  </div>
+
+  <!-- PROJECT STRUCTURE -->
+  <div class="section">
+    <div class="section-title">📁 Project Structure</div>
+    <div class="two-col">
+      <div class="card">
+        <h4>Client (Frontend) — <code>client/</code></h4>
+        <ul>
+          <li><strong>src/pages/</strong> — All HTML pages</li>
+          <li><strong>src/css/main.css</strong> — Global styles + responsive</li>
+          <li><strong>src/js/main.js</strong> — Shared JS (nav, footer, API helper)</li>
+          <li><strong>src/pages/dashboard/admin.html</strong> — Admin panel</li>
+          <li><strong>src/pages/dashboard/member.html</strong> — Member portal</li>
+          <li><strong>public/assets/images/</strong> — Static images</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Server (Backend) — <code>server/</code></h4>
+        <ul>
+          <li><strong>index.js</strong> — App entry, migrate, seed, listen</li>
+          <li><strong>config/db.js</strong> — PostgreSQL connection pool</li>
+          <li><strong>routes/</strong> — Express route definitions</li>
+          <li><strong>controllers/</strong> — Business logic per feature</li>
+          <li><strong>middleware/</strong> — Auth + Role guards</li>
+          <li><strong>models/schema.sql</strong> — Database schema</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- API ENDPOINTS -->
+  <div class="section">
+    <div class="section-title">🔌 API Endpoints</div>
+    <table>
+      <thead><tr><th>Route</th><th>Methods</th><th>Auth Required</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>/api/auth</td><td>POST register, POST login</td><td><span class="badge badge-green">Public</span></td><td>Register new member / Login and receive JWT token</td></tr>
+        <tr><td>/api/stats</td><td>GET</td><td><span class="badge badge-green">Public</span></td><td>Returns member count, event count, programs count</td></tr>
+        <tr><td>/api/events</td><td>GET, POST, PUT, DELETE</td><td>GET public / others Admin</td><td>Manage organization events</td></tr>
+        <tr><td>/api/news</td><td>GET, POST, PUT, DELETE</td><td>GET public / others Admin</td><td>Publish and manage news articles</td></tr>
+        <tr><td>/api/gallery</td><td>GET, POST, DELETE</td><td>GET public / others Admin</td><td>Photo gallery management</td></tr>
+        <tr><td>/api/team</td><td>GET, POST, PUT, DELETE</td><td>GET public / others Admin</td><td>Executive leadership team</td></tr>
+        <tr><td>/api/programs</td><td>GET, POST, PUT, DELETE</td><td>GET public / others Admin</td><td>Community programs/projects</td></tr>
+        <tr><td>/api/members</td><td>GET, PUT, PATCH, DELETE</td><td><span class="badge badge-gold">Admin only</span></td><td>View and manage all members</td></tr>
+        <tr><td>/api/applications</td><td>GET, POST, PATCH</td><td>POST public / GET Admin</td><td>Membership applications (approve/reject)</td></tr>
+        <tr><td>/api/scholarships</td><td>GET, POST, PUT</td><td>POST member / GET Admin</td><td>Scholarship applications</td></tr>
+        <tr><td>/api/donations</td><td>GET, POST</td><td>POST public / GET Admin</td><td>Donation records</td></tr>
+        <tr><td>/api/contact</td><td>GET, POST, DELETE</td><td>POST public / GET+DELETE Admin</td><td>Contact form messages</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DATABASE -->
+  <div class="section">
+    <div class="section-title">🗄️ Database Tables</div>
+    <table>
+      <thead><tr><th>Table</th><th>Key Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>members</td><td>id, member_id, full_name, email, password_hash, role, status, joined_at</td><td>All users — members, admins, executives, super_admin</td></tr>
+        <tr><td>applications</td><td>id, full_name, email, status (pending/approved/rejected), submitted_at</td><td>New membership applications awaiting review</td></tr>
+        <tr><td>scholarships</td><td>id, member_id, applicant_name, school, level, status</td><td>Scholarship applications from members</td></tr>
+        <tr><td>events</td><td>id, title, description, location, event_date, image_url</td><td>Upcoming and past organization events</td></tr>
+        <tr><td>news</td><td>id, title, content, summary, image_url, published, created_at</td><td>News articles and announcements</td></tr>
+        <tr><td>donations</td><td>id, donor_name, email, amount, purpose, screenshot_url</td><td>Donation records with optional screenshot proof</td></tr>
+        <tr><td>contact_messages</td><td>id, sender_name, email, subject, message, received_at</td><td>Contact form submissions from the public</td></tr>
+        <tr><td>gallery</td><td>id, title, image_url, caption, category, uploaded_at</td><td>Photo gallery images</td></tr>
+        <tr><td>team</td><td>id, name, position, bio, photo, sort_order</td><td>Executive leadership team profiles</td></tr>
+        <tr><td>programs</td><td>id, title, icon, description, bullets, image_url, sort_order</td><td>Community programs and projects</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- USER ROLES -->
+  <div class="section">
+    <div class="section-title">👥 User Roles &amp; Access</div>
+    <table>
+      <thead><tr><th>Role</th><th>Access Level</th><th>Capabilities</th></tr></thead>
+      <tbody>
+        <tr><td>super_admin</td><td><span class="badge badge-gold">Full Access</span></td><td>All admin features + user role management + create admin accounts</td></tr>
+        <tr><td>admin</td><td><span class="badge badge-gold">High</span></td><td>Manage members, events, news, gallery, scholarships, donations, messages</td></tr>
+        <tr><td>executive</td><td><span class="badge badge-blue">Medium</span></td><td>View and manage most content, approve applications</td></tr>
+        <tr><td>member</td><td><span class="badge badge-green">Basic</span></td><td>View member dashboard, apply for scholarships, update own profile</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAGES -->
+  <div class="section">
+    <div class="section-title">🌐 Website Pages</div>
+    <div class="two-col">
+      <div class="card">
+        <h4>Public Pages</h4>
+        <ul>
+          <li><strong>/</strong> — Home (hero, team carousel, events, news, gallery)</li>
+          <li><strong>/about</strong> — Mission, vision, values, timeline</li>
+          <li><strong>/leadership</strong> — Executive team profiles</li>
+          <li><strong>/programs</strong> — Community projects</li>
+          <li><strong>/events</strong> — Upcoming &amp; past events</li>
+          <li><strong>/news</strong> — Articles &amp; announcements</li>
+          <li><strong>/gallery</strong> — Photo gallery</li>
+          <li><strong>/campaign</strong> — Active campaigns</li>
+          <li><strong>/donate</strong> — Donation form</li>
+          <li><strong>/contact</strong> — Contact form + WhatsApp</li>
+          <li><strong>/membership</strong> — Register / Login</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Protected Pages</h4>
+        <ul>
+          <li><strong>/dashboard/admin</strong> — Full admin panel with sections: Dashboard, Applications, Members, Events, News, Gallery, Donations, Messages, Notifications, Reports, Users, Settings</li>
+          <li><strong>/dashboard/member</strong> — Member portal: profile, scholarship applications, membership card</li>
+          <li><strong>/dashboard/admin-login</strong> — Dedicated admin login page</li>
+        </ul>
+        <h4 style="margin-top:12px;">Authentication Flow</h4>
+        <ul>
+          <li>User logs in → JWT token issued</li>
+          <li>Token stored in localStorage</li>
+          <li>Every API call sends <code>Authorization: Bearer &lt;token&gt;</code></li>
+          <li>authMiddleware verifies token on protected routes</li>
+          <li>roleMiddleware checks user role for admin routes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPLOYMENT -->
+  <div class="section">
+    <div class="section-title">🚀 Deployment &amp; Hosting</div>
+    <div class="two-col">
+      <div class="card">
+        <h4>Railway Platform</h4>
+        <ul>
+          <li>Auto-deploys on every push to <strong>main</strong> branch</li>
+          <li>Builder: Railpack (detects Node.js automatically)</li>
+          <li>Start command: <code>npm start</code> → <code>node server/index.js</code></li>
+          <li>Region: US West (sfo)</li>
+          <li>1 Replica, restart on failure (max 10 retries)</li>
+          <li>PostgreSQL database provisioned on Railway</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Environment Variables (Railway)</h4>
+        <ul>
+          <li><strong>DATABASE_URL</strong> — PostgreSQL connection string</li>
+          <li><strong>JWT_SECRET</strong> — Secret key for token signing</li>
+          <li><strong>NODE_ENV</strong> — production</li>
+          <li><strong>CLIENT_URL</strong> — Live site URL for CORS</li>
+          <li><strong>EMAIL_USER</strong> — Gmail address for Nodemailer</li>
+          <li><strong>EMAIL_PASS</strong> — Gmail app password</li>
+          <li><strong>PORT</strong> — Assigned automatically by Railway</li>
+        </ul>
+      </div>
+    </div>
+    <div class="highlight">
+      <strong>Deploy workflow:</strong> git add . → git commit -m "message" → git push origin main → Railway detects push →
+      Railpack builds → New container starts → migrate() runs → Server listens → Live ✅
+    </div>
+  </div>
+
+  <!-- ADMIN CREDENTIALS -->
+  <div class="section">
+    <div class="section-title">🔐 Default Admin Credentials</div>
+    <table>
+      <thead><tr><th>Field</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Email</td><td>admin@guygd.org</td></tr>
+        <tr><td>Password</td><td>Admin@2025</td></tr>
+        <tr><td>Role</td><td>super_admin</td></tr>
+        <tr><td>Login URL</td><td>/dashboard/admin-login</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span><strong>GUYGD</strong> — Gbeh-lay United Youths for Growth and Development</span>
+    <span>📍 Gbehlay Geh Statutory District &nbsp;|&nbsp; info@guygd.org &nbsp;|&nbsp; wa.me/+231778639764</span>
+    <span><strong>© 2025 GUYGD</strong></span>
+  </div>
+
+</div>
+
+<script>
+  // Auto-print dialog when opened in browser
+  window.addEventListener('load', () => {
+    setTimeout(() => window.print(), 800);
+  });
+</script>
+</body>
+</html>
