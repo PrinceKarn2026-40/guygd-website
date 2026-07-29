@@ -31,15 +31,35 @@
     .what-we-do .card li { color: rgba(255,255,255,0.7) !important; }
     .what-we-do .card-icon { filter: none; }
 
-    /* TEAM GRID */
+    /* TEAM CAROUSEL */
     .team-section { background: var(--g50); }
-    .team-carousel-wrap { width: 100%; }
+    .team-carousel-wrap {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      padding: 12px 0;
+    }
+    .team-carousel-wrap::before,
+    .team-carousel-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .team-carousel-wrap::before { left: 0; background: linear-gradient(to right, var(--g50), transparent); }
+    .team-carousel-wrap::after  { right: 0; background: linear-gradient(to left, var(--g50), transparent); }
     .team-carousel-track {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: flex;
       gap: 24px;
-      max-width: 560px;
-      margin: 0 auto;
+      width: max-content;
+      animation: scrollLeft 30s linear infinite;
+    }
+    .team-carousel-track:hover { animation-play-state: paused; }
+    @keyframes scrollLeft {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
     .team-card {
       background: #fff;
@@ -48,9 +68,11 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       transition: transform 0.2s, box-shadow 0.2s;
       cursor: pointer;
+      width: 200px;
+      flex-shrink: 0;
     }
     .team-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.14); }
-    .team-card-photo { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .team-card-photo { width: 100%; height: 180px; object-fit: cover; display: block; }
     .team-card-photo-placeholder {
       width: 100%; aspect-ratio: 4/3;
       background: linear-gradient(135deg, var(--g600), var(--g800));
@@ -314,7 +336,7 @@
         const tc = document.getElementById('home-team');
         if (!team.length) { tc.innerHTML = '<p style="color:var(--gray);padding:20px;">Team info coming soon.</p>'; }
         else {
-          const cards = team.map(m => `
+          const makeCards = () => team.map(m => `
             <div class="team-card" onclick="openTeamModal(${m.id})">
               ${m.photo
                 ? `<img src="${m.photo}" alt="${m.name}" class="team-card-photo"/>`
@@ -324,7 +346,8 @@
                 <span>${m.position}</span>
               </div>
             </div>`).join('');
-          tc.innerHTML = cards;
+          // Duplicate cards for seamless infinite scroll
+          tc.innerHTML = makeCards() + makeCards();
         }
       } catch { document.getElementById('home-team').innerHTML = '<p style="color:var(--gray);padding:20px;">Could not load team.</p>'; }
 
