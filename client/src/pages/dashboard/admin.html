@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>GUYGD – Admin Dashboard</title>
+  <title>GUYGD ï¿½ Admin Dashboard</title>
   <link rel="stylesheet" href="/src/css/dashboard.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
   <!-- DataTables -->
@@ -497,7 +497,7 @@
               <div class="form-group full">
                 <label>Event Photo</label>
                 <input type="file" id="ev-image-file" accept="image/*" style="padding:6px;"/>
-                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG — max 10MB)</p>
+                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG ï¿½ max 10MB)</p>
                 <div id="ev-image-preview" style="display:none;margin-top:8px;"><img id="ev-img-thumb" style="max-height:120px;border-radius:8px;border:1px solid #e0e0e0;"/></div>
               </div>
               <div class="form-actions full">
@@ -536,7 +536,7 @@
               <div class="form-group full">
                 <label>Article Photo</label>
                 <input type="file" id="news-image-file" accept="image/*" style="padding:6px;"/>
-                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG — max 10MB)</p>
+                <p style="font-size:0.75rem;color:#8b9bb4;margin-top:4px;">Upload a photo (JPG, PNG ï¿½ max 10MB)</p>
                 <div id="news-image-preview" style="display:none;margin-top:8px;"><img id="news-img-thumb" style="max-height:120px;border-radius:8px;border:1px solid #e0e0e0;"/></div>
               </div>
               <div class="form-actions full">
@@ -676,7 +676,7 @@
           <div class="panel-header"><h3>Contact Messages</h3></div>
           <div class="table-wrap">
             <table id="dt-messages" class="admin-dt" style="width:100%">
-              <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th></tr></thead>
+              <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th><th></th></tr></thead>
               <tbody id="messages-body"></tbody>
             </table>
           </div>
@@ -911,7 +911,7 @@ function dtInit(id, opts) {
       searchPlaceholder: 'Search...',
       emptyTable: 'No data available',
       zeroRecords: 'No matching records found',
-      info: 'Showing _START_–_END_ of _TOTAL_ entries',
+      info: 'Showing _START_ï¿½_END_ of _TOTAL_ entries',
       infoEmpty: 'No entries',
       lengthMenu: 'Show _MENU_ entries'
     }
@@ -1619,20 +1619,28 @@ async function deleteGallery(id) {
 async function loadMessages() {
   try {
     const list = await apiFetch('/contact');
-    document.getElementById('messages-body').innerHTML = list.length ? list.map(m => `
-      <tr>
-        <td><strong>${m.sender_name || m.name || '-'}</strong></td>
-        <td>${m.email}</td>
-        <td>${m.subject || '-'}</td>
-        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${m.message}">${m.message}</td>
-        <td>${fmtDate(m.received_at || m.created_at)}</td>
-      </tr>`).join('')
-      : '<tr><td colspan="5" style="text-align:center;color:#8b9bb4;">No messages yet.</td></tr>';
-
+    document.getElementById('messages-body').innerHTML = list.length ? list.map(m =>
+      '<tr>' +
+      '<td><strong>' + (m.sender_name || m.name || '-') + '</strong></td>' +
+      '<td>' + m.email + '</td>' +
+      '<td>' + (m.subject || '-') + '</td>' +
+      '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + m.message + '">' + m.message + '</td>' +
+      '<td>' + fmtDate(m.received_at || m.created_at) + '</td>' +
+      '<td><button onclick="deleteMessage(' + m.id + ')" title="Delete" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#ef4444;padding:4px 8px;border-radius:6px;">&#128465;</button></td>' +
+      '</tr>').join('')
+      : '<tr><td colspan="6" style="text-align:center;color:#8b9bb4;">No messages yet.</td></tr>';
   } catch(e) {
     document.getElementById('messages-body').innerHTML =
-      '<tr><td colspan="5" style="text-align:center;color:#e74c3c;">Error: ' + e.message + '</td></tr>';
+      '<tr><td colspan="6" style="text-align:center;color:#e74c3c;">Error: ' + e.message + '</td></tr>';
   }
+}
+
+async function deleteMessage(id) {
+  if (!confirm('Delete this message?')) return;
+  try {
+    await apiFetch('/contact/' + id, { method: 'DELETE' });
+    loadMessages();
+  } catch(e) { alert('Failed to delete: ' + e.message); }
 }
 
 // -- NOTIFICATIONS -------------------------------------
