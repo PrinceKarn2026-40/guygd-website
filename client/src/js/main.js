@@ -36,53 +36,82 @@ function toggleDark() {
   localStorage.setItem('guygd_theme', isDark ? 'light' : 'dark');
   applyTheme(!isDark);
   document.querySelectorAll('.dark-toggle').forEach(btn => {
-    btn.textContent = isDark ? '🌙' : '☀️';
+    btn.textContent = isDark ? '\uD83C\uDF19' : '\u2600\uFE0F';
   });
 }
 
 // Apply saved theme immediately
-(function() {
+(function () {
   const saved = localStorage.getItem('guygd_theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   applyTheme(saved ? saved === 'dark' : prefersDark);
 })();
 
+// ── GLOBAL NAV STATE ──────────────────────────────────
+var _navOpen = false;
+
+function openMenu() {
+  var navLinks = document.querySelector('.nav-links');
+  var hamburger = document.querySelector('.hamburger');
+  var overlay = document.getElementById('nav-overlay');
+  if (!navLinks || _navOpen) return;
+  _navOpen = true;
+  navLinks.classList.add('open');
+  hamburger && hamburger.classList.add('active');
+  overlay && overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMenu() {
+  var navLinks = document.querySelector('.nav-links');
+  var hamburger = document.querySelector('.hamburger');
+  var overlay = document.getElementById('nav-overlay');
+  if (!navLinks) return;
+  _navOpen = false;
+  navLinks.classList.remove('open');
+  hamburger && hamburger.classList.remove('active');
+  overlay && overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 function renderNavbar() {
   const user = getUser();
-  const links = `
-    <a href="/index.html">Home</a>
-    <a href="/about.html">About</a>
-    <a href="/leadership.html">Leadership</a>
-    <a href="/programs.html">Projects</a>
-    <a href="/events.html">Events</a>
-    <a href="/news.html">News</a>
-    <a href="/gallery.html">Gallery</a>
-    <a href="/campaign.html">Campaign</a>
-    <a href="/donate.html">Donate</a>
-    <a href="/contact.html">Contact</a>
-    ${user
-      ? `<a href="${['admin','executive','super_admin'].includes(user.role) ? '/dashboard/admin.html' : '/dashboard/member.html'}" class="btn-nav">Dashboard</a>`
-      : `<a href="/membership.html" class="btn-nav">Join GUYGD</a>`}
-  `;
-  document.getElementById('nav-links').innerHTML = links;
-  // inject dark toggle after nav-links
-  const existing = document.querySelector('.dark-toggle');
-  if (!existing) {
+  const path = window.location.pathname;
+  const page = path.split('/').pop() || 'index.html';
+
+  const navItems = [
+    { href: '/index.html',      label: 'Home' },
+    { href: '/about.html',      label: 'About' },
+    { href: '/leadership.html', label: 'Leadership' },
+    { href: '/programs.html',   label: 'Projects' },
+    { href: '/events.html',     label: 'Events' },
+    { href: '/news.html',       label: 'News' },
+    { href: '/gallery.html',    label: 'Gallery' },
+    { href: '/campaign.html',   label: 'Campaign' },
+    { href: '/donate.html',     label: 'Donate' },
+    { href: '/contact.html',    label: 'Contact' },
+  ];
+
+  const links = navItems.map(item => {
+    const isActive = page === item.href.replace('/', '') || path === item.href;
+    return `<a href="${item.href}"${isActive ? ' class="active"' : ''}>${item.label}</a>`;
+  }).join('');
+
+  const cta = user
+    ? `<a href="${['admin','executive','super_admin'].includes(user.role) ? '/dashboard/admin.html' : '/dashboard/member.html'}" class="btn-nav">Dashboard</a>`
+    : `<a href="/membership.html" class="btn-nav">Join GUYGD</a>`;
+
+  document.getElementById('nav-links').innerHTML = links + cta;
+
+  // Dark toggle
+  if (!document.querySelector('.dark-toggle')) {
     const btn = document.createElement('button');
     btn.className = 'dark-toggle';
     btn.title = 'Toggle dark mode';
-    btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
     btn.addEventListener('click', toggleDark);
     document.getElementById('nav-links').after(btn);
   }
-  highlightActiveLink();
-}
-
-function highlightActiveLink() {
-  const path = window.location.pathname.split('/').pop();
-  document.querySelectorAll('.nav-links a').forEach(a => {
-    if (a.getAttribute('href').includes(path)) a.classList.add('active');
-  });
 }
 
 function renderFooter() {
@@ -120,8 +149,8 @@ function renderFooter() {
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© ${new Date().getFullYear()} GUYGD. All rights reserved.</span>
-      <span>Built with ❤️ for the youth of Gbeh-lay</span>
+      <span>&copy; ${new Date().getFullYear()} GUYGD. All rights reserved.</span>
+      <span>Built with &#10084;&#65039; for the youth of Gbeh-lay</span>
     </div>
   `;
 }
@@ -134,56 +163,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const navLinks  = document.querySelector('.nav-links');
   if (!hamburger || !navLinks) return;
 
-  // Replace hamburger inner content with animated bars
+  // Animated bars
   hamburger.innerHTML = '<span class="bar"></span><span class="bar"></span><span class="bar"></span>';
   hamburger.setAttribute('aria-label', 'Toggle menu');
   hamburger.setAttribute('aria-expanded', 'false');
 
-  // Create overlay - insert BEFORE nav so it doesn't cover nav links
-  const overlay = document.createElement('div');
-  overlay.className = 'nav-overlay';
-  document.body.insertBefore(overlay, document.body.firstChild);
-
-  function openMenu() {
-    navLinks.classList.add('open');
-    hamburger.classList.add('active');
-    overlay.classList.add('open');
-    hamburger.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
-    hamburger.style.zIndex = '1001';
-    if (!navLinks.querySelector('.nav-mobile-header')) {
-      const header = document.createElement('div');
-      header.className = 'nav-mobile-header';
-      header.innerHTML = '<span>🌿 GUYGD</span><button onclick="closeMenu()" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;line-height:1;">✕</button>';
-      navLinks.insertBefore(header, navLinks.firstChild);
-    }
+  // Create overlay with a fixed id so closeMenu can always find it
+  let overlay = document.getElementById('nav-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'nav-overlay';
+    overlay.className = 'nav-overlay';
+    document.body.appendChild(overlay);
   }
 
-  function closeMenu() {
-    navLinks.classList.remove('open');
-    hamburger.classList.remove('active');
-    overlay.classList.remove('open');
-    hamburger.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-    document.body.style.touchAction = '';
-    hamburger.style.zIndex = '';
+  // Mobile header inside menu
+  if (!navLinks.querySelector('.nav-mobile-header')) {
+    const header = document.createElement('div');
+    header.className = 'nav-mobile-header';
+    header.innerHTML = '<span>\uD83C\uDF3F GUYGD</span><button onclick="closeMenu()" aria-label="Close menu" style="background:none;border:none;color:#fff;font-size:1.6rem;cursor:pointer;line-height:1;padding:4px 8px;">\u2715</button>';
+    navLinks.insertBefore(header, navLinks.firstChild);
   }
 
-  hamburger.addEventListener('click', () => {
-    navLinks.classList.contains('open') ? closeMenu() : openMenu();
+  // Hamburger toggle
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    _navOpen ? closeMenu() : openMenu();
   });
 
-  // Close when any nav link is tapped
-  navLinks.addEventListener('click', e => {
-    if (e.target.tagName === 'A') closeMenu();
-  });
-
-  // Close when overlay is tapped
+  // Tap on overlay closes menu
   overlay.addEventListener('click', closeMenu);
+  overlay.addEventListener('touchend', (e) => { e.preventDefault(); closeMenu(); });
 
-  // Close on Escape key
-  document.addEventListener('keydown', e => {
+  // Tap on a nav link — navigate immediately, menu closes
+  navLinks.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    closeMenu();
+    // Allow default navigation
+  });
+
+  // Escape key
+  document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeMenu();
   });
 });

@@ -241,10 +241,8 @@ ul { list-style: none; }
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
-  z-index: 998;
-  touch-action: none;
-  pointer-events: all;
+  background: rgba(0,0,0,0.6);
+  z-index: 1099;
   -webkit-tap-highlight-color: transparent;
 }
 .nav-overlay.open { display: block; }
@@ -755,38 +753,57 @@ tr:hover td { background: var(--g50); }
   .form-row { grid-template-columns: 1fr; }
   .section { padding: 50px 5%; }
   .hero h1 { font-size: 1.9rem; }
-  .hamburger { display: flex; }
+
+  .hamburger { display: flex; z-index: 1101; position: relative; }
+
   .nav-links {
     position: fixed;
     top: 0;
     right: 0;
-    width: 80%;
+    width: 82%;
     max-width: 320px;
     height: 100vh;
     background: var(--g900);
     flex-direction: column;
     align-items: stretch;
-    padding: 70px 0 30px;
+    padding: 0;
     gap: 0;
-    z-index: 1000;
+    z-index: 1100;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     transform: translateX(100%);
-    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
-    box-shadow: -4px 0 20px rgba(0,0,0,0.4);
-    pointer-events: all;
+    transition: transform 0.3s ease;
+    box-shadow: -6px 0 24px rgba(0,0,0,0.5);
+    pointer-events: auto;
+    visibility: hidden;
   }
-  .nav-links.open { transform: translateX(0); }
+  .nav-links.open {
+    transform: translateX(0);
+    visibility: visible;
+  }
   .nav-links a {
-    padding: 16px 24px;
+    display: block;
+    padding: 17px 24px;
     border-radius: 0;
     border-bottom: 1px solid rgba(255,255,255,0.07);
     font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    -webkit-tap-highlight-color: rgba(255,255,255,0.1);
   }
+  .nav-links a:active { background: rgba(255,255,255,0.08); }
+  .nav-links a.active { color: var(--gold); border-left: 3px solid var(--gold); padding-left: 21px; }
   .nav-links .btn-nav {
-    margin: 16px 24px 0;
-    border-radius: 8px;
+    display: block;
+    margin: 20px 24px 8px;
+    border-radius: 10px;
     text-align: center;
-    padding: 12px 20px;
+    padding: 14px 20px;
+    font-size: 1rem;
+    font-weight: 700;
+    background: var(--gold);
+    color: var(--g900);
   }
-  .dark-toggle { margin: 16px 24px 0; }
+  .nav-links .btn-nav:active { background: var(--gold-dark); }
+  .dark-toggle { display: block; margin: 8px 24px 24px; width: calc(100% - 48px); text-align: center; }
 }
