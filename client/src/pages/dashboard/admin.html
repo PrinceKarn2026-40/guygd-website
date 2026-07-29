@@ -2059,7 +2059,12 @@ function printMemberProfile(id) {
     + '<div style="color:#15803d;font-weight:600;font-size:0.85rem;margin-top:3px;">' + (m.membership_type || 'Regular Member') + '</div>'
     + '<div style="display:flex;gap:8px;margin-top:8px;">'
     + '<span style="background:' + (m.status==='active'?'#d4edda':'#fff3cd') + ';color:' + (m.status==='active'?'#155724':'#856404') + ';padding:3px 12px;border-radius:20px;font-size:0.72rem;font-weight:700;">' + m.status + '</span>'
-    + '</div></div></div>'
+    + '</div></div>'
+    + '<div style="text-align:center;flex-shrink:0;">'
+    + '<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=' + encodeURIComponent(origin) + '&color=052e16&bgcolor=ffffff" width="80" height="80" style="border-radius:6px;border:2px solid #d1fae5;display:block;"/>'
+    + '<div style="font-size:0.55rem;color:#9ca3af;margin-top:4px;">Scan to visit</div>'
+    + '</div>'
+    + '</div>'
     + '<div class="sec"><div class="sec-title">Personal Information</div><table>'
     + row('Full Name', m.full_name) + row('Gender', m.gender)
     + row('Date of Birth', m.date_of_birth ? new Date(m.date_of_birth).toLocaleDateString() : null)
@@ -2076,12 +2081,9 @@ function printMemberProfile(id) {
     + row('Role', (m.role||'').replace('_',' ')) + row('Status', m.status)
     + row('Date Joined', m.joined_at ? new Date(m.joined_at).toLocaleDateString() : '-')
     + '</table></div>'
-    + '<div style="margin-top:16px;padding-top:10px;border-top:1px dashed #d1fae5;display:flex;justify-content:space-between;align-items:center;">'
+    + '<div style="margin-top:16px;padding-top:10px;border-top:1px dashed #d1fae5;display:flex;justify-content:space-between;">'
     + '<div style="font-size:0.65rem;color:#9ca3af;">Confidential &mdash; issued by GUYGD Administration<br/>Printed: ' + new Date().toLocaleString() + '</div>'
-    + '<div style="text-align:center;">'
-    + '<img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=' + encodeURIComponent(origin) + '&color=052e16&bgcolor=ffffff" style="border-radius:4px;border:2px solid #d1fae5;display:block;" width="70" height="70" alt="QR Code"/>'
-    + '<div style="font-size:0.55rem;color:#9ca3af;margin-top:3px;">Scan to visit website</div>'
-    + '</div>'
+    + '<div style="font-size:0.65rem;color:#9ca3af;text-align:right;">Authorized use only</div>'
     + '</div></div></body></html>';
   printHTML(html);
 }
@@ -2150,12 +2152,18 @@ function printMemberCard(id) {
 function printIDCard() {
   const preview = document.getElementById('idc-preview');
   if (!preview) return;
-  const html = preview.innerHTML;
   const siteUrl = window.location.origin;
+  const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' + encodeURIComponent(siteUrl) + '&color=052e16&bgcolor=ffffff';
+  let html = preview.innerHTML;
+  const qrBase = 'https://api.qrserver.com/v1/create-qr-code/';
+  const qrStart = html.indexOf(qrBase);
+  if (qrStart !== -1) {
+    const qrEnd = html.indexOf('"', qrStart);
+    html = html.substring(0, qrStart) + qrUrl + html.substring(qrEnd);
+  }
   const page = '<!DOCTYPE html><html><head><title>ID Card</title>'
     + '<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#e5e7eb;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;}'
-    + '.card{width:320px;border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.25);}'
-    + '#idc-qr-container img{display:block;}'
+    + '.card{width:320px;border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.25);}img{max-width:100%;display:block;}'
     + '@media print{body{background:#fff;}.card{box-shadow:none;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}}'
     + '</style></head><body>'
     + '<div class="card">' + html + '</div>'
