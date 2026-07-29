@@ -1967,8 +1967,7 @@ function getIDCValues() {
     showPhoto:  document.getElementById('idc-show-photo').checked,
     showId:     document.getElementById('idc-show-id').checked,
     showRole:   document.getElementById('idc-show-role').checked,
-    showExpiry: document.getElementById('idc-show-expiry').checked,
-    logo: idcLogoUrl, memberName, memberId, memberRole, memberPhoto
+        logo: idcLogoUrl, memberName, memberId, memberRole, memberPhoto
   };
 }
 function renderIDCard() {
@@ -1992,7 +1991,7 @@ function renderIDCard() {
             <div style="font-size:1rem;font-weight:800;margin-bottom:6px;">${c.memberName}</div>
             ${c.showRole ? `<div style="font-size:0.72rem;background:${c.accent};color:#000;display:inline-block;padding:2px 10px;border-radius:20px;font-weight:700;margin-bottom:8px;">${c.memberRole}</div>` : ''}
             ${c.showId     ? `<div style="font-size:0.7rem;opacity:0.75;">ID: <strong>${c.memberId}</strong></div>` : ''}
-            ${c.showExpiry ? `<div style="font-size:0.7rem;opacity:0.75;">Expires: <strong>${expiry.toLocaleDateString()}</strong></div>` : ''}
+            
           </div>
         </div>
         <div style="background:rgba(0,0,0,0.2);padding:8px 18px;font-size:0.6rem;text-align:center;opacity:0.75;">${c.footer}</div>
@@ -2092,8 +2091,6 @@ function printMemberCard(id) {
   const m = allMembers.find(x => x.id === id);
   if (!m) return;
   const memberId = m.member_id || ('GUYGD-' + new Date().getFullYear() + '-' + String(m.id).padStart(4,'0'));
-  const expiry = new Date(); expiry.setFullYear(expiry.getFullYear() + 1);
-  const expiryStr = expiry.toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'});
   const origin = window.location.origin;
   const photo = m.profile_photo
     ? '<img src="' + m.profile_photo + '" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #d4a017;"/>'
@@ -2131,7 +2128,7 @@ function printMemberCard(id) {
     + '<tr><td style="color:#6b7280;">Phone</td><td>' + (m.phone || '-') + '</td></tr>'
     + '<tr><td style="color:#6b7280;">County</td><td>' + (m.county || '-') + '</td></tr>'
     + '<tr><td style="color:#6b7280;">Joined</td><td>' + (m.joined_at ? new Date(m.joined_at).toLocaleDateString() : '-') + '</td></tr>'
-    + '<tr><td style="color:#6b7280;">Expires</td><td style="color:#dc2626;font-weight:600;">' + expiryStr + '</td></tr>'
+    + '<tr><td style="color:#6b7280;">'
     + '</table></div></div>'
     + '<div class="cf">'
     + '<div style="font-size:0.6rem;color:rgba(255,255,255,0.6);font-style:italic;">Voice of the Voiceless &mdash; Est. May 14, 2023</div>'
