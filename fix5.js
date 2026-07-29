@@ -1,0 +1,62 @@
+const fs = require('fs');
+const { execSync } = require('child_process');
+const os = require('os');
+
+let c = fs.readFileSync('client/src/pages/dashboard/admin.html', 'utf8');
+
+// Find and replace printReport function
+const start = c.indexOf('function printReport()');
+const endMarker = 'printHTML(_html3);\n}';
+const end = c.indexOf(endMarker, start) + endMarker.length;
+
+const newPrintReport = `function printReport() {
+  const content = document.getElementById('reports-grid').innerHTML;
+  const user = getUser();
+  const parts = [
+    '<!DOCTYPE html><html><head><title>GUYGD Report</title>',
+    '<style>',
+    '*{box-sizing:border-box;margin:0;padding:0;}',
+    'body{font-family:"Segoe UI",sans-serif;padding:28px;background:#fff;}',
+    'h2{color:#052e16;margin-bottom:4px;font-size:1.3rem;}',
+    'p{color:#6b7280;font-size:0.85rem;margin-bottom:24px;}',
+    '.report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}',
+    '.report-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:18px;}',
+    '.report-card h4{margin:0 0 12px;font-size:0.95rem;color:#1a1f36;border-bottom:1px solid #e5e7eb;padding-bottom:8px;}',
+    '.report-row{display:flex;justify-content:space-between;padding:5px 0;font-size:0.85rem;border-bottom:1px solid #f0f2f5;}',
+    '.report-row:last-child{border-bottom:none;}',
+    '.report-row span:last-child{font-weight:700;color:#2d6a4f;}',
+    '.footer{margin-top:28px;padding-top:12px;border-top:1px solid #e5e7eb;display:flex;justify-content:space-between;font-size:0.75rem;color:#9ca3af;}',
+    '@media print{body{padding:12px;} .no-print{display:none;}}',
+    '</style></head><body>',
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">',
+    '<div><h2>&#128202; GUYGD Summary Report</h2>',
+    '<p>Gbeh-lay United Youths for Growth and Development &mdash; Generated: ' + new Date().toLocaleString() + '</p></div>',
+    '<button class="no-print" onclick="window.print()" style="padding:8px 20px;background:#2d6a4f;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.9rem;">&#128424; Print</button>',
+    '</div>',
+    '<div class="report-grid">' + content + '</div>',
+    '<div class="footer">',
+    '<span>Printed by: ' + (user ? user.full_name : 'Admin') + ' (' + (user ? user.role : '') + ')</span>',
+    '<span>GUYGD &bull; Gbeh-lay, Liberia &bull; info@guygd.org</span>',
+    '</div></body></html>'
+  ];
+  printHTML(parts.join(''));
+}`;
+
+c = c.substring(0, start) + newPrintReport + c.substring(end);
+fs.writeFileSync('client/src/pages/dashboard/admin.html', c, 'utf8');
+
+// Validate
+const tmp = os.tmpdir() + '/t.js';
+const scripts = c.match(/<script>([\s\S]*?)<\/script>/g) || [];
+console.log('Script blocks:', scripts.length);
+scripts.forEach((s, i) => {
+  const js = s.replace(/<\/?script>/g, '');
+  fs.writeFileSync(tmp, js);
+  try {
+    execSync('node --check ' + tmp, { stdio: 'pipe' });
+    console.log('Block', i + 1, 'OK');
+  } catch(e) {
+    const err = e.stderr.toString().split('\n')[0];
+    console.log('Block', i + 1, 'ERROR:', err);
+  }
+});
