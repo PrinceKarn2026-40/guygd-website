@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hamburger.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
     document.body.style.touchAction = 'none';
+    hamburger.style.zIndex = '1002';
     if (!navLinks.querySelector('.nav-mobile-header')) {
       const header = document.createElement('div');
       header.className = 'nav-mobile-header';
@@ -166,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hamburger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
     document.body.style.touchAction = '';
+    hamburger.style.zIndex = '';
   }
 
   hamburger.addEventListener('click', () => {
