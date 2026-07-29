@@ -122,7 +122,10 @@
       </div>
       <div class="field">
         <label>Password</label>
-        <input type="password" id="password" placeholder="Enter your password" required/>
+        <div style="position:relative;">
+          <input type="password" id="password" placeholder="Enter your password" required style="padding-right:44px;width:100%;"/>
+          <button type="button" onclick="togglePw()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1.1rem;color:#6b7280;padding:4px;line-height:1;">&#128065;</button>
+        </div>
       </div>
       <button type="submit" class="btn" id="btn">🔐 Sign In to Admin Panel</button>
     </form>
@@ -133,6 +136,13 @@
   </div>
 
   <script>
+    function togglePw() {
+      const inp = document.getElementById('password');
+      const btn = inp.nextElementSibling;
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      btn.innerHTML = show ? '&#128683;' : '&#128065;';
+    }
     const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
 
     // Force light mode on this page

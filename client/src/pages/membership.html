@@ -515,7 +515,10 @@
             </div>
             <div class="form-group" style="margin-bottom:22px;">
               <label>Password <span class="req">*</span></label>
-              <input type="password" id="login-password" placeholder="Your password" required/>
+              <div style="position:relative;">
+                <input type="password" id="login-password" placeholder="Your password" required style="padding-right:44px;width:100%;"/>
+                <button type="button" onclick="togglePw('login-password',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1.1rem;color:#6b7280;padding:4px;line-height:1;">&#128065;</button>
+              </div>
             </div>
             <button type="submit" class="submit-btn">🔓 Sign In</button>
             <p class="switch-link" style="margin-top:16px;">Want to join? <a onclick="showTab('register')">Apply for membership</a></p>
@@ -528,6 +531,12 @@
 
   <script src="/src/js/main.js"></script>
   <script>
+    function togglePw(id, btn) {
+      const inp = document.getElementById(id);
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      btn.innerHTML = show ? '&#128683;' : '&#128065;';
+    }
     function showTab(tab) {
       document.getElementById('register-section').style.display = tab==='register' ? 'block' : 'none';
       document.getElementById('login-section').style.display    = tab==='login'    ? 'block' : 'none';
