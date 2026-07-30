@@ -1251,6 +1251,28 @@ function renderMembers(list) {
     </tr>`;
   }).join('');
 
+  if ($.fn.DataTable.isDataTable('#dt-members')) $('#dt-members').DataTable().destroy();
+  $('#dt-members').DataTable({
+    responsive: true,
+    pageLength: 25,
+    lengthMenu: [10, 25, 50, 100],
+    dom: '<"dt-top"Bf>rt<"dt-bottom"lip>',
+    buttons: [
+      { extend: 'excelHtml5', text: '&#11015; Excel', className: 'dt-btn', title: 'GUYGD Members List',
+        exportOptions: { columns: [1,2,3,4,5,6,7,8,9,10] } },
+      { extend: 'csvHtml5',   text: '&#11015; CSV',   className: 'dt-btn', title: 'GUYGD Members List',
+        exportOptions: { columns: [1,2,3,4,5,6,7,8,9,10] } },
+      { extend: 'print',      text: '&#128424; Print', className: 'dt-btn', title: 'GUYGD Members List',
+        exportOptions: { columns: [1,2,3,4,5,6,7,8,9,10] } }
+    ],
+    language: {
+      search: '', searchPlaceholder: 'Search...',
+      emptyTable: 'No members found', zeroRecords: 'No matching members',
+      info: 'Showing _START_-_END_ of _TOTAL_ members',
+      lengthMenu: 'Show _MENU_ entries'
+    },
+    columnDefs: [{ orderable: false, targets: [0, 11] }]
+  });
 }
 function searchMembers() {
   const q = document.getElementById('member-search').value.toLowerCase();
