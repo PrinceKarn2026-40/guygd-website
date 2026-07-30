@@ -244,21 +244,28 @@
       .admin-sidebar { transform: translateX(-100%); transition: transform 0.25s ease; width: 260px; z-index: 200; }
       .admin-sidebar.open { transform: translateX(0); }
       .admin-main { margin-left: 0; }
-      .admin-content { padding: 16px; padding-top: 68px; }
+      .admin-content { padding: 16px; padding-top: 64px; }
       .mobile-bar { display: flex !important; }
     }
     .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 199; }
     .sidebar-overlay.open { display: block; }
-    .mobile-bar { display: none; position: fixed; top: 12px; left: 12px; z-index: 150; height: 44px; align-items: center; gap: 8px; background: #1a1f36; border-radius: 10px; padding: 0 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
-    .mob-menu-btn { background: none; border: none; color: #8b9bb4; font-size: 1.5rem; cursor: pointer; padding: 8px; }
-    .mob-logout-btn { background: none; border: none; color: #ff6b6b; font-size: 0.85rem; cursor: pointer; padding: 8px; display: flex; align-items: center; gap: 6px; }
+    .mobile-bar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 150; height: 52px; align-items: center; gap: 0; background: #fff; border-bottom: 1px solid #e8ecf0; padding: 0 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .mob-menu-btn { background: none; border: none; color: #374151; font-size: 1.4rem; cursor: pointer; padding: 8px 12px 8px 0; line-height: 1; }
+    .mob-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 1.05rem; }
+    .mob-breadcrumb .mob-admin { color: #c0392b; font-weight: 600; }
+    .mob-breadcrumb .mob-sep { color: #9ca3af; font-weight: 300; font-size: 1.1rem; }
+    .mob-breadcrumb .mob-section { color: #6b7280; font-weight: 400; }
   </style>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 <div class="mobile-bar">
-  <button class="mob-menu-btn" onclick="toggleSidebar()">&#9776; Menu</button>
-
+  <button class="mob-menu-btn" onclick="toggleSidebar()">&#9776;</button>
+  <div class="mob-breadcrumb">
+    <span class="mob-admin" id="mob-admin-name">Admin</span>
+    <span class="mob-sep">/</span>
+    <span class="mob-section" id="mob-section-title">Dashboard</span>
+  </div>
 </div>
 <div class="admin-layout">
 
@@ -931,6 +938,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('topbar-role').textContent  = user.role.replace('_', ' ');
   const initials = (user.full_name || 'A').split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
   document.getElementById('topbar-avatar').textContent = initials;
+  const mobName = document.getElementById('mob-admin-name');
+  if (mobName) mobName.textContent = (user.full_name || 'Admin').split(' ')[0];
 
   // Role-based sidebar visibility
   if (user.role === 'executive') {
@@ -976,6 +985,8 @@ function showSection(name, el) {
   document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
   if (el) el.classList.add('active');
   document.getElementById('topbar-title').textContent = sectionTitles[name] || name;
+  const mobTitle = document.getElementById('mob-section-title');
+  if (mobTitle) mobTitle.textContent = sectionTitles[name] || name;
   const loaders = {
     dashboard: loadDashboard, programs: loadPrograms,
     applications: loadApplications,
