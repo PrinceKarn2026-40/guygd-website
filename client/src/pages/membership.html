@@ -183,7 +183,9 @@
       width:88px; height:88px; border-radius:50%; object-fit:cover;
       border:3px solid #16a34a; display:none; margin:0 auto 10px;
       box-shadow:0 4px 16px rgba(22,163,74,0.3);
+      transition:opacity 0.2s;
     }
+    .photo-preview-img:hover { opacity:0.75; }
 
     /* ── SUBMIT BTN ── */
     .submit-btn {
@@ -429,7 +431,7 @@
 
             <div class="form-section-title">📷 Profile Photo</div>
             <div class="photo-wrap">
-              <img id="photo-preview" class="photo-preview-img" src="" alt="Preview"/>
+              <img id="photo-preview" class="photo-preview-img" src="" alt="Preview" onclick="document.getElementById('reg-photo').click()" title="Click to change photo" style="cursor:pointer;"/>
               <div class="photo-circle" id="photo-placeholder" onclick="document.getElementById('reg-photo').click()">📷</div>
               <input type="file" id="reg-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)"/>
               <p style="font-size:0.74rem;color:#9ca3af;margin-top:2px;">Click to upload <span style="color:#ef4444;font-weight:700;">*</span> (required)</p>
