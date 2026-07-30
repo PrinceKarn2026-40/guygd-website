@@ -367,8 +367,8 @@
 
       <div id="section-applications" class="tab-section">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-          <button class="btn btn-primary btn-sm" id="app-tab-all"      onclick="filterApplications('all')">All</button>
-          <button class="btn btn-outline btn-sm" id="app-tab-pending"  onclick="filterApplications('pending')">&#9203; Pending</button>
+          <button class="btn btn-outline btn-sm" id="app-tab-all"      onclick="filterApplications('all')">All</button>
+          <button class="btn btn-primary btn-sm" id="app-tab-pending"  onclick="filterApplications('pending')">&#9203; Pending</button>
           <button class="btn btn-outline btn-sm" id="app-tab-approved" onclick="filterApplications('approved')">&#10003; Approved</button>
           <button class="btn btn-outline btn-sm" id="app-tab-rejected" onclick="filterApplications('rejected')">&#10007; Rejected</button>
           <input type="text" id="app-search" placeholder="Search name, email or phone..." oninput="searchApplications()"
@@ -1057,7 +1057,7 @@ async function loadDashboard() {
   }
 }
 
-let allApplications = [], currentAppFilter = 'all';
+let allApplications = [], currentAppFilter = 'pending';
 async function loadApplications() {
   try {
     allApplications = await apiFetch('/applications');
